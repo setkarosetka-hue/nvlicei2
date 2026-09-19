@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Особистий кабінет — Ліцей №2</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .dashboard-page {
+            min-height: 100vh;
+            background: var(--background);
+        }
+
+        .dashboard-header {
+            padding: 35px 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .welcome-card {
+            position: relative;
+            overflow: hidden;
+
+            padding: 30px;
+            border-radius: 24px;
+
+            background: linear-gradient(
+                135deg,
+                var(--primary),
+                #8178ff
+            );
+
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .welcome-card::after {
+            content: "";
+            position: absolute;
+
+            width: 220px;
+            height: 220px;
+
+            right: -70px;
+            top: -80px;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,.10);
+        }
+
+        .welcome-card h1 {
+            position: relative;
+            z-index: 1;
+
+            font-size: clamp(25px, 4vw, 36px);
+            margin-bottom: 8px;
+        }
+
+        .welcome-card p {
+            position: relative;
+            z-index: 1;
+
+            opacity: .9;
+            font-size: 14px;
+        }
+
+        .user-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            position: relative;
+            z-index: 1;
+
+            margin-top: 18px;
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            background: rgba(255,255,255,.16);
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+
+            margin-top: 20px;
+        }
+
+        .dashboard-nav a {
+            padding: 10px 14px;
+
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+
+            color: var(--text);
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            transition: .2s ease;
+        }
+
+        .dashboard-nav a:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .section-title {
+            margin: 30px 0 15px;
+
+            font-size: 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 16px;
+        }
+
+        .dashboard-card {
+            position: relative;
+
+            padding: 22px;
+
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+
+            text-decoration: none;
+            color: var(--text);
+
+            box-shadow: var(--shadow-sm);
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                border-color .2s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .dashboard-card-icon {
+            width: 45px;
+            height: 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 15px;
+
+            background: var(--primary-soft);
+            border-radius: 13px;
+
+            font-size: 22px;
+        }
+
+        .dashboard-card h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .dashboard-card p {
+            color: var(--text-light);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .card-arrow {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        .quick-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+
+            margin-top: 30px;
+        }
+
+        .info-box {
+            padding: 18px;
+
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+        }
+
+        .info-box span {
+            display: block;
+
+            color: var(--text-muted);
+            font-size: 11px;
+
+            margin-bottom: 7px;
+        }
+
+        .info-box strong {
+            font-size: 20px;
+        }
+
+        .logout-section {
+            display: flex;
+            justify-content: flex-end;
+
+            margin: 30px 0;
+        }
+
+        .logout-button {
+            border: 1px solid #ffd2d2;
+
+            background: #fff3f3;
+            color: #d34343;
+
+            padding: 11px 16px;
+
+            border-radius: 10px;
+
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 12px;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+        }
+
+        .logout-button:hover {
+            background: #ffe7e7;
+        }
+
+        .dashboard-footer {
+            padding: 25px 20px;
+
+            text-align: center;
+
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        @media (max-width: 850px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .dashboard-header {
+                padding: 20px 12px;
+            }
+
+            .welcome-card {
+                padding: 23px;
+                border-radius: 19px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .dashboard-nav {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .dashboard-nav a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-page">
+
+        <header class="dashboard-header">
+
+            <div class="dashboard-container">
+
+                <div class="welcome-card">
+
+                    <h1 id="welcomeTitle">
+                        Вітаємо!
+                    </h1>
+
+                    <p>
+                        Ласкаво просимо до особистого кабінету
+                        електронної системи Ліцею №2.
+                    </p>
+
+                    <div class="user-role" id="userRole">
+                        🎓 Учень
+                    </div>
+
+                </div>
+
+
+                <nav class="dashboard-nav">
+
+                    <a href="schedule.html">
+                        📅 Розклад
+                    </a>
+
+                    <a href="homework.html">
+                        📚 Домашні завдання
+                    </a>
+
+                    <a href="tests.html">
+                        📝 Тести
+                    </a>
+
+                    <a href="attendance.html">
+                        ✅ Відвідування
+                    </a>
+
+                    <a href="messages.html">
+                        💬 Повідомлення
+                    </a>
+
+                    <a href="announcements.html">
+                        📢 Оголошення
+                    </a>
+
+                </nav>
+
+
+                <h2 class="section-title">
+                    Швидкий доступ
+                </h2>
+
+
+                <div class="dashboard-grid">
+
+                    <a
+                        class="dashboard-card"
+                        href="schedule.html"
+                    >
+
+                        <div class="dashboard-card-icon">
+                            📅
+                        </div>
+
+                        <h3>
+                            Розклад
+                        </h3>
+
+                        <p>
+                            Переглянути уроки та заняття
+                            на сьогодні й наступні дні.
+                        </p>
+
+                        <span class="card-arrow">
+                            →
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        class="dashboard-card"
+                        href="homework.html"
+                    >
+
+                        <div class="dashboard-card-icon">
+                            📚
+                        </div>
+
+                        <h3>
+                            Домашні завдання
+                        </h3>
+
+                        <p>
+                            Переглянути актуальні завдання
+                            та терміни їх виконання.
+                        </p>
+
+                        <span class="card-arrow">
+                            →
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        class="dashboard-card"
+                        href="tests.html"
+                    >
+
+                        <div class="dashboard-card-icon">
+                            📝
+                        </div>
+
+                        <h3>
+                            Тести
+                        </h3>
+
+                        <p>
+                            Доступні тести та навчальні перевірки.
+                        </p>
+
+                        <span class="card-arrow">
+                            →
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        class="dashboard-card"
+                        href="attendance.html"
+                    >
+
+                        <div class="dashboard-card-icon">
+                            ✅
+                        </div>
+
+                        <h3>
+                            Відвідування
+                        </h3>
+
+                        <p>
+                            Перегляд інформації про відвідування
+                            занять.
+                        </p>
+
+                        <span class="card-arrow">
+                            →
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        class="dashboard-card"
+                        href="events.html"
+                    >
+
+                        <div class="dashboard-card-icon">
+                            🎉
+                        </div>
+
+                        <h3>
+                            Події
+                        </h3>
+
+                        <p>
+                            Шкільні заходи, зустрічі та важливі дати.
+                        </p>
+
+                        <span class="card-arrow">
+                            →
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        class="dashboard-card"
+                        href="messages.html"
+                    >
+
+                        <div class="dashboard-card-icon">
+                            💬
+                        </div>
+
+                        <h3>
+                            Повідомлення
+                        </h3>
+
+                        <p>
+                            Особисті повідомлення та спілкування
+                            з учителями.
+                        </p>
+
+                        <span class="card-arrow">
+                            →
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <h2 class="section-title">
+                    Огляд
+                </h2>
+
+
+                <div class="quick-info">
+
+                    <div class="info-box">
+
+                        <span>
+                            Сьогодні
+                        </span>
+
+                        <strong>
+                            6 уроків
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span>
+                            Завдання
+                        </span>
+
+                        <strong>
+                            3
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span>
+                            Повідомлення
+                        </span>
+
+                        <strong>
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span>
+                            Події
+                        </span>
+
+                        <strong>
+                            2
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="logout-section">
+
+                    <button
+                        class="logout-button"
+                        id="logoutButton"
+                    >
+                        Вийти із системи
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <footer class="dashboard-footer">
+
+            Ліцей №2 · Електронна система · Версія 0.1.0
+
+        </footer>
+
+    </div>
+
+
+    <script src="app.js"></script>
+
+    <script>
+
+        const savedUser =
+            localStorage.getItem("lyceum2_user");
+
+
+        if (!savedUser) {
+
+            window.location.href =
+                "login.html";
+
+        } else {
+
+            try {
+
+                const user =
+                    JSON.parse(savedUser);
+
+                const welcomeTitle =
+                    document.getElementById(
+                        "welcomeTitle"
+                    );
+
+                const userRole =
+                    document.getElementById(
+                        "userRole"
+                    );
+
+
+                if (user.login) {
+
+                    welcomeTitle.textContent =
+                        "Вітаємо, " + user.login + "!";
+
+                }
+
+
+                const roleNames = {
+
+                    student: "🎓 Учень",
+
+                    teacher: "👨‍🏫 Вчитель",
+
+                    parent: "👨‍👩‍👧 Батьки",
+
+                    admin: "⚙️ Адміністратор"
+
+                };
+
+
+                userRole.textContent =
+                    roleNames[user.role] ||
+                    "👤 Користувач";
+
+
+            } catch (error) {
+
+                localStorage.removeItem(
+                    "lyceum2_user"
+                );
+
+                window.location.href =
+                    "login.html";
+
+            }
+
+        }
+
+
+        document
+            .getElementById("logoutButton")
+            .addEventListener(
+                "click",
+                () => {
+
+                    localStorage.removeItem(
+                        "lyceum2_user"
+                    );
+
+                    window.location.href =
+                        "login.html";
+
+                }
+            );
+
+    </script>
+
+</body>
+</html>
