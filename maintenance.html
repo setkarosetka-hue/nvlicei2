@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Технічні роботи — Ліцей №2</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .maintenance-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background:
+                radial-gradient(
+                    circle at top,
+                    rgba(79, 70, 229, 0.12),
+                    transparent 45%
+                ),
+                var(--background);
+        }
+
+        .maintenance-container {
+            width: 100%;
+            max-width: 680px;
+        }
+
+        .maintenance-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 42px 32px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            animation: maintenanceAppear 0.5s ease;
+        }
+
+        .maintenance-icon {
+            width: 92px;
+            height: 92px;
+            margin: 0 auto 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 28px;
+
+            background: rgba(79, 70, 229, 0.1);
+
+            font-size: 46px;
+
+            animation: maintenanceFloat 2.5s ease-in-out infinite;
+        }
+
+        .maintenance-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-bottom: 18px;
+            padding: 8px 14px;
+
+            border-radius: 999px;
+
+            background: rgba(245, 158, 11, 0.12);
+            color: #b45309;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .maintenance-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #f59e0b;
+
+            animation: maintenancePulse 1.5s infinite;
+        }
+
+        .maintenance-card h1 {
+            margin: 0 0 14px;
+
+            font-size: clamp(28px, 5vw, 42px);
+            line-height: 1.15;
+
+            color: var(--text);
+        }
+
+        .maintenance-card > p {
+            margin: 0 auto;
+
+            max-width: 540px;
+
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .maintenance-reason {
+            display: none;
+
+            margin-top: 26px;
+            padding: 18px;
+
+            border-radius: 16px;
+
+            background: var(--background);
+            border: 1px solid var(--border);
+
+            text-align: left;
+        }
+
+        .maintenance-reason.visible {
+            display: block;
+        }
+
+        .maintenance-reason-title {
+            margin-bottom: 7px;
+
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .maintenance-reason-text {
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .maintenance-end {
+            display: none;
+
+            margin-top: 16px;
+
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .maintenance-end.visible {
+            display: block;
+        }
+
+        .maintenance-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+
+            margin-top: 30px;
+        }
+
+        .maintenance-footer {
+            margin-top: 24px;
+
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        @keyframes maintenanceAppear {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes maintenanceFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-7px);
+            }
+        }
+
+        @keyframes maintenancePulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.45;
+                transform: scale(0.75);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .maintenance-page {
+                padding: 16px;
+            }
+
+            .maintenance-card {
+                padding: 32px 20px;
+                border-radius: 22px;
+            }
+
+            .maintenance-icon {
+                width: 78px;
+                height: 78px;
+                font-size: 38px;
+            }
+
+            .maintenance-card > p {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="maintenance-page">
+
+        <div class="maintenance-container">
+
+            <section class="maintenance-card">
+
+                <div class="maintenance-icon">
+                    🔧
+                </div>
+
+                <div class="maintenance-badge">
+                    <span class="maintenance-dot"></span>
+                    Технічні роботи
+                </div>
+
+                <h1>
+                    Система тимчасово недоступна
+                </h1>
+
+                <p>
+                    Зараз проводяться технічні роботи.
+                    Будь ласка, спробуйте зайти пізніше.
+                </p>
+
+                <div
+                    class="maintenance-reason"
+                    id="maintenanceReason"
+                >
+                    <div class="maintenance-reason-title">
+                        Причина
+                    </div>
+
+                    <div
+                        class="maintenance-reason-text"
+                        id="maintenanceReasonText"
+                    ></div>
+                </div>
+
+                <div
+                    class="maintenance-end"
+                    id="maintenanceEnd"
+                >
+                    Очікуване завершення:
+                    <strong id="maintenanceEndText"></strong>
+                </div>
+
+                <div class="maintenance-actions">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="location.reload()"
+                    >
+                        🔄 Оновити сторінку
+                    </button>
+
+                    <a
+                        href="index.html"
+                        class="btn btn-secondary"
+                    >
+                        На головну
+                    </a>
+
+                </div>
+
+                <div class="maintenance-footer">
+                    Ліцей №2 · Електронна система
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+    <script>
+        "use strict";
+
+        function loadMaintenanceInformation() {
+
+            try {
+
+                const saved =
+                    localStorage.getItem(
+                        "lyceum2_maintenance"
+                    );
+
+                if (!saved) {
+                    return;
+                }
+
+                const state = JSON.parse(saved);
+
+                if (!state || !state.enabled) {
+                    return;
+                }
+
+
+                /* Причина */
+
+                if (state.reason) {
+
+                    const reasonBox =
+                        document.getElementById(
+                            "maintenanceReason"
+                        );
+
+                    const reasonText =
+                        document.getElementById(
+                            "maintenanceReasonText"
+                        );
+
+                    reasonText.textContent =
+                        state.reason;
+
+                    reasonBox.classList.add(
+                        "visible"
+                    );
+                }
+
+
+                /* Время окончания */
+
+                if (state.endAt) {
+
+                    const endDate =
+                        new Date(state.endAt);
+
+                    if (
+                        !Number.isNaN(
+                            endDate.getTime()
+                        )
+                    ) {
+
+                        const endElement =
+                            document.getElementById(
+                                "maintenanceEnd"
+                            );
+
+                        const endText =
+                            document.getElementById(
+                                "maintenanceEndText"
+                            );
+
+                        endText.textContent =
+                            endDate.toLocaleString(
+                                "uk-UA",
+                                {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit"
+                                }
+                            );
+
+                        endElement.classList.add(
+                            "visible"
+                        );
+                    }
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Не вдалося завантажити інформацію:",
+                    error
+                );
+            }
+        }
+
+        loadMaintenanceInformation();
+    </script>
+
+</body>
+</html>
