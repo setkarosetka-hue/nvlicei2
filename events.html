@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Події — Ліцей №2</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px 70px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #667085;
+            text-decoration: none;
+            margin-bottom: 25px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .back-link:hover {
+            color: #2563eb;
+            transform: translateX(-3px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 34px;
+            color: #101828;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #667085;
+            font-size: 16px;
+        }
+
+        .test-notice {
+            background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+            border: 1px solid #dbeafe;
+            border-radius: 16px;
+            padding: 15px 18px;
+            margin-bottom: 28px;
+            color: #475467;
+            font-size: 14px;
+        }
+
+        .events-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .calendar-card,
+        .events-card {
+            background: #ffffff;
+            border: 1px solid #eaecf0;
+            border-radius: 22px;
+            box-shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
+        }
+
+        .calendar-card {
+            padding: 22px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #101828;
+        }
+
+        .month-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .month-btn {
+            width: 34px;
+            height: 34px;
+            border: 1px solid #eaecf0;
+            background: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .month-btn:hover {
+            background: #f2f4f7;
+        }
+
+        .weekdays,
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #98a2b3;
+            padding: 7px 0;
+        }
+
+        .calendar-day {
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #344054;
+            cursor: pointer;
+            position: relative;
+            transition: 0.2s;
+        }
+
+        .calendar-day:hover {
+            background: #f2f4f7;
+        }
+
+        .calendar-day.empty {
+            cursor: default;
+        }
+
+        .calendar-day.today {
+            background: #2563eb;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .calendar-day.event-day::after {
+            content: "";
+            width: 5px;
+            height: 5px;
+            background: #7c3aed;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 5px;
+        }
+
+        .calendar-day.today.event-day::after {
+            background: #fff;
+        }
+
+        .selected-day {
+            outline: 2px solid #2563eb;
+            outline-offset: -2px;
+        }
+
+        .calendar-info {
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid #eaecf0;
+        }
+
+        .calendar-info-title {
+            font-size: 13px;
+            color: #667085;
+            margin-bottom: 5px;
+        }
+
+        .calendar-info-date {
+            font-size: 17px;
+            font-weight: 700;
+            color: #101828;
+        }
+
+        .events-card {
+            padding: 25px;
+        }
+
+        .events-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .events-top h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #101828;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            border: 1px solid #eaecf0;
+            background: #fff;
+            color: #475467;
+            padding: 9px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: #f9fafb;
+        }
+
+        .filter-btn.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: #fff;
+        }
+
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .event-item {
+            display: grid;
+            grid-template-columns: 75px 1fr auto;
+            gap: 18px;
+            align-items: center;
+            border: 1px solid #eaecf0;
+            border-radius: 16px;
+            padding: 16px;
+            transition: 0.2s;
+        }
+
+        .event-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 24, 40, 0.07);
+            border-color: #d0d5dd;
+        }
+
+        .event-date {
+            text-align: center;
+            background: #f2f4f7;
+            border-radius: 13px;
+            padding: 9px 5px;
+        }
+
+        .event-date .day {
+            display: block;
+            font-size: 24px;
+            line-height: 1;
+            font-weight: 800;
+            color: #101828;
+        }
+
+        .event-date .month {
+            display: block;
+            margin-top: 5px;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #667085;
+            font-weight: 700;
+        }
+
+        .event-content h3 {
+            margin: 0 0 6px;
+            font-size: 16px;
+            color: #101828;
+        }
+
+        .event-content p {
+            margin: 0 0 7px;
+            font-size: 13px;
+            color: #667085;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 12px;
+            color: #98a2b3;
+        }
+
+        .event-type {
+            padding: 7px 10px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .type-school {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .type-meeting {
+            background: #f5f3ff;
+            color: #7c3aed;
+        }
+
+        .type-sport {
+            background: #ecfdf3;
+            color: #039855;
+        }
+
+        .type-olympiad {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .empty-events {
+            text-align: center;
+            padding: 45px 20px;
+            color: #98a2b3;
+            display: none;
+        }
+
+        .empty-events-icon {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 850px) {
+            .events-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-card {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .page-wrapper {
+                padding: 25px 14px 50px;
+            }
+
+            .page-header {
+                flex-direction: column;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+            .events-card {
+                padding: 17px;
+            }
+
+            .events-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .event-item {
+                grid-template-columns: 62px 1fr;
+            }
+
+            .event-type {
+                grid-column: 2;
+                justify-self: start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <div class="header-inner">
+
+            <a href="index.html" class="logo">
+                <span class="logo-mark">Л2</span>
+                <span>Ліцей №2</span>
+            </a>
+
+            <nav class="navigation">
+                <a href="dashboard.html">Кабінет</a>
+                <a href="schedule.html">Розклад</a>
+                <a href="homework.html">Домашні завдання</a>
+                <a href="events.html" class="active">Події</a>
+            </nav>
+
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                ☰
+            </button>
+
+        </div>
+    </div>
+</header>
+
+<main class="page-wrapper">
+
+    <a href="dashboard.html" class="back-link">
+        ← Назад до кабінету
+    </a>
+
+    <div class="page-header">
+        <div>
+            <h1>📅 Події</h1>
+            <p>Шкільні заходи, зустрічі та важливі події</p>
+        </div>
+    </div>
+
+    <div class="test-notice">
+        ℹ️ <strong>Тестові дані.</strong>
+        Зараз тут використовуються демонстраційні події.
+        Після підключення Supabase інформація завантажуватиметься із системи.
+    </div>
+
+    <div class="events-layout">
+
+        <!-- Календар -->
+        <section class="calendar-card">
+
+            <div class="calendar-header">
+                <h2 id="calendarMonth">Вересень 2026</h2>
+
+                <div class="month-buttons">
+                    <button class="month-btn" onclick="changeMonth(-1)">
+                        ‹
+                    </button>
+
+                    <button class="month-btn" onclick="changeMonth(1)">
+                        ›
+                    </button>
+                </div>
+            </div>
+
+            <div class="weekdays">
+                <div class="weekday">Пн</div>
+                <div class="weekday">Вт</div>
+                <div class="weekday">Ср</div>
+                <div class="weekday">Чт</div>
+                <div class="weekday">Пт</div>
+                <div class="weekday">Сб</div>
+                <div class="weekday">Нд</div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid"></div>
+
+            <div class="calendar-info">
+                <div class="calendar-info-title">
+                    Обрана дата
+                </div>
+
+                <div class="calendar-info-date" id="selectedDate">
+                    19 вересня 2026
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Події -->
+        <section class="events-card">
+
+            <div class="events-top">
+
+                <h2>Найближчі події</h2>
+
+                <div class="filter-buttons">
+
+                    <button
+                        class="filter-btn active"
+                        data-filter="all"
+                        onclick="filterEvents('all', this)"
+                    >
+                        Усі
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        data-filter="school"
+                        onclick="filterEvents('school', this)"
+                    >
+                        Шкільні
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        data-filter="meeting"
+                        onclick="filterEvents('meeting', this)"
+                    >
+                        Зустрічі
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        data-filter="sport"
+                        onclick="filterEvents('sport', this)"
+                    >
+                        Спорт
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="events-list" id="eventsList">
+
+                <article
+                    class="event-item"
+                    data-type="school"
+                    data-date="2026-09-21"
+                >
+
+                    <div class="event-date">
+                        <span class="day">21</span>
+                        <span class="month">Вер</span>
+                    </div>
+
+                    <div class="event-content">
+                        <h3>Загальношкільна лінійка</h3>
+
+                        <p>
+                            Важлива інформація для учнів та працівників ліцею.
+                        </p>
+
+                        <div class="event-meta">
+                            <span>🕘 08:00</span>
+                            <span>📍 Актова зала</span>
+                        </div>
+                    </div>
+
+                    <span class="event-type type-school">
+                        Шкільна
+                    </span>
+
+                </article>
+
+
+                <article
+                    class="event-item"
+                    data-type="meeting"
+                    data-date="2026-09-22"
+                >
+
+                    <div class="event-date">
+                        <span class="day">22</span>
+                        <span class="month">Вер</span>
+                    </div>
+
+                    <div class="event-content">
+                        <h3>Зустріч із класним керівником</h3>
+
+                        <p>
+                            Організаційні питання та обговорення навчання.
+                        </p>
+
+                        <div class="event-meta">
+                            <span>🕓 16:00</span>
+                            <span>📍 Кабінет 205</span>
+                        </div>
+                    </div>
+
+                    <span class="event-type type-meeting">
+                        Зустріч
+                    </span>
+
+                </article>
+
+
+                <article
+                    class="event-item"
+                    data-type="sport"
+                    data-date="2026-09-24"
+                >
+
+                    <div class="event-date">
+                        <span class="day">24</span>
+                        <span class="month">Вер</span>
+                    </div>
+
+                    <div class="event-content">
+                        <h3>Спортивний день</h3>
+
+                        <p>
+                            Спортивні активності та командні змагання.
+                        </p>
+
+                        <div class="event-meta">
+                            <span>🕙 10:00</span>
+                            <span>📍 Спортивний майданчик</span>
+                        </div>
+                    </div>
+
+                    <span class="event-type type-sport">
+                        Спорт
+                    </span>
+
+                </article>
+
+
+                <article
+                    class="event-item"
+                    data-type="school"
+                    data-date="2026-09-25"
+                >
+
+                    <div class="event-date">
+                        <span class="day">25</span>
+                        <span class="month">Вер</span>
+                    </div>
+
+                    <div class="event-content">
+                        <h3>День відкритих дверей</h3>
+
+                        <p>
+                            Ознайомлення з навчальним процесом та ліцеєм.
+                        </p>
+
+                        <div class="event-meta">
+                            <span>🕐 13:30</span>
+                            <span>📍 Ліцей №2</span>
+                        </div>
+                    </div>
+
+                    <span class="event-type type-school">
+                        Шкільна
+                    </span>
+
+                </article>
+
+
+                <article
+                    class="event-item"
+                    data-type="meeting"
+                    data-date="2026-09-29"
+                >
+
+                    <div class="event-date">
+                        <span class="day">29</span>
+                        <span class="month">Вер</span>
+                    </div>
+
+                    <div class="event-content">
+                        <h3>Батьківська зустріч</h3>
+
+                        <p>
+                            Обговорення навчального процесу та організаційних питань.
+                        </p>
+
+                        <div class="event-meta">
+                            <span>🕕 18:00</span>
+                            <span>📍 Актова зала</span>
+                        </div>
+                    </div>
+
+                    <span class="event-type type-meeting">
+                        Зустріч
+                    </span>
+
+                </article>
+
+
+                <article
+                    class="event-item"
+                    data-type="olympiad"
+                    data-date="2026-09-30"
+                >
+
+                    <div class="event-date">
+                        <span class="day">30</span>
+                        <span class="month">Вер</span>
+                    </div>
+
+                    <div class="event-content">
+                        <h3>Предметна олімпіада</h3>
+
+                        <p>
+                            Демонстраційний захід для перевірки знань учнів.
+                        </p>
+
+                        <div class="event-meta">
+                            <span>🕘 09:00</span>
+                            <span>📍 Кабінет 301</span>
+                        </div>
+                    </div>
+
+                    <span class="event-type type-olympiad">
+                        Олімпіада
+                    </span>
+
+                </article>
+
+            </div>
+
+            <div class="empty-events" id="emptyEvents">
+                <div class="empty-events-icon">📭</div>
+                <strong>Подій не знайдено</strong>
+                <p>Для цього фільтра поки немає подій.</p>
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<script src="app.js"></script>
+
+<script>
+    const monthNames = [
+        "Січень",
+        "Лютий",
+        "Березень",
+        "Квітень",
+        "Травень",
+        "Червень",
+        "Липень",
+        "Серпень",
+        "Вересень",
+        "Жовтень",
+        "Листопад",
+        "Грудень"
+    ];
+
+    const monthNamesGenitive = [
+        "січня",
+        "лютого",
+        "березня",
+        "квітня",
+        "травня",
+        "червня",
+        "липня",
+        "серпня",
+        "вересня",
+        "жовтня",
+        "листопада",
+        "грудня"
+    ];
+
+    let calendarDate = new Date(2026, 8, 1);
+
+    const eventDates = [
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-24",
+        "2026-09-25",
+        "2026-09-29",
+        "2026-09-30"
+    ];
+
+    function formatDateKey(year, month, day) {
+        return (
+            year +
+            "-" +
+            String(month + 1).padStart(2, "0") +
+            "-" +
+            String(day).padStart(2, "0")
+        );
+    }
+
+    function renderCalendar() {
+
+        const year = calendarDate.getFullYear();
+        const month = calendarDate.getMonth();
+
+        document.getElementById("calendarMonth").textContent =
+            monthNames[month] + " " + year;
+
+        const grid = document.getElementById("calendarGrid");
+
+        grid.innerHTML = "";
+
+        const firstDay = new Date(year, month, 1);
+
+        let startDay = firstDay.getDay();
+
+        // Перетворюємо неділю з 0 на 7
+        if (startDay === 0) {
+            startDay = 7;
+        }
+
+        const daysInMonth =
+            new Date(year, month + 1, 0).getDate();
+
+        // Порожні клітинки перед першим днем
+        for (let i = 1; i < startDay; i++) {
+
+            const empty = document.createElement("div");
+
+            empty.className = "calendar-day empty";
+
+            grid.appendChild(empty);
+        }
+
+        // Дні місяця
+        for (let day = 1; day <= daysInMonth; day++) {
+
+            const cell = document.createElement("div");
+
+            cell.className = "calendar-day";
+
+            const dateKey =
+                formatDateKey(year, month, day);
+
+            cell.textContent = day;
+
+            if (eventDates.includes(dateKey)) {
+                cell.classList.add("event-day");
+            }
+
+            // Поточна дата для демонстрації
+            if (
+                year === 2026 &&
+                month === 8 &&
+                day === 19
+            ) {
+                cell.classList.add("today");
+            }
+
+            cell.addEventListener("click", () => {
+
+                document
+                    .querySelectorAll(".calendar-day")
+                    .forEach((dayElement) => {
+                        dayElement.classList.remove("selected-day");
+                    });
+
+                cell.classList.add("selected-day");
+
+                document.getElementById("selectedDate")
+                    .textContent =
+                    day +
+                    " " +
+                    monthNamesGenitive[month] +
+                    " " +
+                    year;
+            });
+
+            grid.appendChild(cell);
+        }
+    }
+
+    function changeMonth(direction) {
+
+        calendarDate.setMonth(
+            calendarDate.getMonth() + direction
+        );
+
+        renderCalendar();
+    }
+
+    function filterEvents(type, button) {
+
+        const events =
+            document.querySelectorAll(".event-item");
+
+        const buttons =
+            document.querySelectorAll(".filter-btn");
+
+        buttons.forEach((btn) => {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        let visibleCount = 0;
+
+        events.forEach((event) => {
+
+            const eventType =
+                event.dataset.type;
+
+            if (
+                type === "all" ||
+                eventType === type
+            ) {
+                event.style.display = "grid";
+                visibleCount++;
+            } else {
+                event.style.display = "none";
+            }
+        });
+
+        document.getElementById("emptyEvents").style.display =
+            visibleCount === 0 ? "block" : "none";
+    }
+
+    renderCalendar();
+</script>
+
+</body>
+</html>
