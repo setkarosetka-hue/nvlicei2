@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Вхід — Ліцей №2</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 16px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-logo .logo-icon {
+            margin: 0 auto 15px;
+        }
+
+        .login-logo h1 {
+            font-size: 32px;
+            margin-bottom: 7px;
+        }
+
+        .login-logo p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .login-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-card h2 {
+            font-size: 22px;
+            margin-bottom: 7px;
+        }
+
+        .login-description {
+            color: var(--text-light);
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 48px;
+            padding: 0 45px 0 15px;
+
+            border: 1px solid var(--border);
+            border-radius: 12px;
+
+            background: #fff;
+            color: var(--text);
+
+            font-family: inherit;
+            font-size: 14px;
+
+            outline: none;
+            transition: .2s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 91, 255, .10);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+
+            font-size: 18px;
+            padding: 5px;
+        }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .role-option {
+            position: relative;
+        }
+
+        .role-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .role-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 13px;
+
+            border: 1px solid var(--border);
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition: .2s ease;
+        }
+
+        .role-label:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .role-option input:checked + .role-label {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .role-icon {
+            font-size: 20px;
+        }
+
+        .login-button {
+            width: 100%;
+            height: 50px;
+
+            border: 0;
+            border-radius: 13px;
+
+            background: var(--primary);
+            color: white;
+
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            margin-top: 8px;
+
+            box-shadow: 0 10px 25px rgba(99, 91, 255, .22);
+
+            transition: .2s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            background: var(--primary-dark);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px 14px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .login-message.error {
+            display: block;
+            background: #fff0f0;
+            color: #c63d3d;
+            border: 1px solid #ffd0d0;
+        }
+
+        .login-message.success {
+            display: block;
+            background: #effbf3;
+            color: #27844b;
+            border: 1px solid #c9efd6;
+        }
+
+        .login-links {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+
+            margin-top: 20px;
+            padding-top: 18px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .login-links a {
+            color: var(--primary);
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+
+        .test-info {
+            margin-top: 18px;
+            padding: 13px;
+
+            background: #f5f7fb;
+            border-radius: 12px;
+
+            color: var(--text-light);
+            font-size: 11px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .login-page {
+                padding: 18px 12px;
+            }
+
+            .login-card {
+                padding: 22px 18px;
+                border-radius: 19px;
+            }
+
+            .role-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .login-logo h1 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <div class="login-container">
+
+            <div class="login-logo">
+
+                <div class="logo-icon">
+                    Л2
+                </div>
+
+                <h1>
+                    Ліцей №2
+                </h1>
+
+                <p>
+                    Електронна система
+                </p>
+
+            </div>
+
+
+            <section class="login-card">
+
+                <h2>
+                    Вхід до системи
+                </h2>
+
+                <p class="login-description">
+                    Увійдіть до свого особистого кабінету.
+                </p>
+
+
+                <form id="loginForm">
+
+                    <div class="form-group">
+
+                        <label>
+                            Логін або електронна пошта
+                        </label>
+
+                        <input
+                            id="login"
+                            class="form-input"
+                            type="text"
+                            placeholder="Введіть логін"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Пароль
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <input
+                                id="password"
+                                class="form-input"
+                                type="password"
+                                placeholder="Введіть пароль"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <button
+                                class="password-toggle"
+                                type="button"
+                                id="togglePassword"
+                                aria-label="Показати пароль"
+                            >
+                                👁️
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Ваша роль
+                        </label>
+
+                        <div class="role-grid">
+
+                            <div class="role-option">
+
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    id="roleStudent"
+                                    value="student"
+                                    checked
+                                >
+
+                                <label
+                                    class="role-label"
+                                    for="roleStudent"
+                                >
+                                    <span class="role-icon">🎓</span>
+                                    Учень
+                                </label>
+
+                            </div>
+
+
+                            <div class="role-option">
+
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    id="roleTeacher"
+                                    value="teacher"
+                                >
+
+                                <label
+                                    class="role-label"
+                                    for="roleTeacher"
+                                >
+                                    <span class="role-icon">👨‍🏫</span>
+                                    Вчитель
+                                </label>
+
+                            </div>
+
+
+                            <div class="role-option">
+
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    id="roleParent"
+                                    value="parent"
+                                >
+
+                                <label
+                                    class="role-label"
+                                    for="roleParent"
+                                >
+                                    <span class="role-icon">👨‍👩‍👧</span>
+                                    Батьки
+                                </label>
+
+                            </div>
+
+
+                            <div class="role-option">
+
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    id="roleAdmin"
+                                    value="admin"
+                                >
+
+                                <label
+                                    class="role-label"
+                                    for="roleAdmin"
+                                >
+                                    <span class="role-icon">⚙️</span>
+                                    Адміністратор
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="login-button"
+                    >
+                        Увійти до системи
+                    </button>
+
+
+                    <div
+                        id="loginMessage"
+                        class="login-message"
+                    ></div>
+
+                </form>
+
+
+                <div class="test-info">
+
+                    🧪 <strong>Тестовий режим</strong><br>
+
+                    Авторизація наразі працює локально.
+                    Пізніше її буде підключено до Supabase
+                    з реальною системою облікових записів.
+
+                </div>
+
+
+                <div class="login-links">
+
+                    <a href="index.html">
+                        ← На головну
+                    </a>
+
+                    <a href="consent.html">
+                        Правила системи
+                    </a>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+    <script>
+
+        const loginForm =
+            document.getElementById("loginForm");
+
+        const passwordInput =
+            document.getElementById("password");
+
+        const togglePassword =
+            document.getElementById("togglePassword");
+
+        const loginMessage =
+            document.getElementById("loginMessage");
+
+
+        togglePassword.addEventListener(
+            "click",
+            () => {
+
+                if (passwordInput.type === "password") {
+
+                    passwordInput.type = "text";
+
+                    togglePassword.textContent = "🙈";
+
+                } else {
+
+                    passwordInput.type = "password";
+
+                    togglePassword.textContent = "👁️";
+
+                }
+
+            }
+        );
+
+
+        loginForm.addEventListener(
+            "submit",
+            (event) => {
+
+                event.preventDefault();
+
+                const login =
+                    document
+                        .getElementById("login")
+                        .value
+                        .trim();
+
+                const password =
+                    passwordInput.value;
+
+                const role =
+                    document.querySelector(
+                        'input[name="role"]:checked'
+                    ).value;
+
+
+                if (!login || !password) {
+
+                    showMessage(
+                        "Будь ласка, заповніть усі поля.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const user = {
+
+                    login: login,
+
+                    role: role,
+
+                    loggedIn: true,
+
+                    loginAt:
+                        new Date().toISOString()
+
+                };
+
+
+                localStorage.setItem(
+                    "lyceum2_user",
+                    JSON.stringify(user)
+                );
+
+
+                showMessage(
+                    "Вхід виконано. Перенаправлення...",
+                    "success"
+                );
+
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "dashboard.html";
+
+                }, 700);
+
+            }
+        );
+
+
+        function showMessage(text, type) {
+
+            loginMessage.textContent = text;
+
+            loginMessage.className =
+                "login-message " + type;
+
+        }
+
+    </script>
+
+</body>
+</html>
