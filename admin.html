@@ -2,255 +2,406 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Оголошення — Ліцей №2</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Адміністратор — Ліцей №2</title>
 
     <link rel="stylesheet" href="style.css">
 
     <style>
-        .page-wrapper {
-            max-width: 1200px;
+        body {
+            background: #f5f7fb;
+        }
+
+        .admin-page {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 40px 20px 70px;
+            padding: 32px 20px 60px;
         }
 
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #667085;
-            text-decoration: none;
-            margin-bottom: 25px;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .back-link:hover {
-            color: #2563eb;
-            transform: translateX(-3px);
-        }
-
-        .page-header {
+        .admin-header {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: flex-start;
             gap: 20px;
             margin-bottom: 28px;
         }
 
-        .page-header h1 {
-            margin: 0 0 8px;
-            font-size: 34px;
-            color: #101828;
+        .admin-title h1 {
+            margin: 0 0 6px;
+            font-size: 32px;
         }
 
-        .page-header p {
+        .admin-title p {
             margin: 0;
-            color: #667085;
+            color: var(--muted);
         }
 
-        .test-notice {
-            background: linear-gradient(135deg, #eff6ff, #f5f3ff);
-            border: 1px solid #dbeafe;
-            border-radius: 16px;
-            padding: 15px 18px;
-            margin-bottom: 28px;
-            color: #475467;
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(79, 70, 229, 0.1);
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .stat-label {
+            margin-top: 4px;
+            color: var(--muted);
             font-size: 14px;
         }
 
-        .filters {
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 24px;
+        }
+
+        .admin-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .admin-card-header {
             display: flex;
-            gap: 9px;
-            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
             margin-bottom: 22px;
         }
 
-        .filter-btn {
-            border: 1px solid #eaecf0;
-            background: #fff;
-            color: #475467;
-            padding: 9px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: 0.2s;
+        .admin-card-header h2 {
+            margin: 0 0 5px;
+            font-size: 21px;
         }
 
-        .filter-btn:hover {
-            background: #f9fafb;
+        .admin-card-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
         }
 
-        .filter-btn.active {
-            background: #2563eb;
-            border-color: #2563eb;
-            color: #fff;
-        }
-
-        .announcements-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .announcement {
-            background: #fff;
-            border: 1px solid #eaecf0;
-            border-radius: 20px;
-            padding: 22px;
-            box-shadow: 0 8px 25px rgba(16, 24, 40, 0.05);
-            transition: 0.2s;
-        }
-
-        .announcement:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(16, 24, 40, 0.08);
-        }
-
-        .announcement.pinned {
-            border-color: #bfdbfe;
-            background: linear-gradient(135deg, #ffffff, #f8fbff);
-        }
-
-        .announcement-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 15px;
-            margin-bottom: 13px;
-        }
-
-        .announcement-title {
+        .system-status {
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 14px;
+            padding: 18px;
+            border-radius: 16px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
         }
 
-        .announcement-title h2 {
-            margin: 0;
-            font-size: 19px;
-            color: #101828;
+        .system-status-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(79, 70, 229, 0.1);
+            font-size: 22px;
         }
 
-        .pin {
+        .system-status-text strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 16px;
+        }
+
+        .system-status-text span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .maintenance-form {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 18px;
+            background: #fffaf0;
+            border: 1px solid #f5d08a;
+        }
+
+        .maintenance-form.visible {
+            display: block;
+        }
+
+        .maintenance-form h3 {
+            margin: 0 0 6px;
             font-size: 17px;
         }
 
-        .announcement-date {
-            color: #98a2b3;
-            font-size: 12px;
-            white-space: nowrap;
-        }
-
-        .announcement-text {
-            color: #475467;
-            line-height: 1.6;
+        .maintenance-form > p {
+            margin: 0 0 18px;
+            color: var(--muted);
             font-size: 14px;
-            margin: 0 0 17px;
         }
 
-        .announcement-footer {
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 220px;
+            gap: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group textarea,
+        .form-group input {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            background: white;
+            color: var(--text);
+            font: inherit;
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group textarea:focus,
+        .form-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .button-row {
             display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            padding-top: 14px;
-            border-top: 1px solid #f2f4f7;
+            gap: 12px;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
         }
 
-        .announcement-author {
+        .user-left {
             display: flex;
             align-items: center;
-            gap: 9px;
-            color: #667085;
-            font-size: 12px;
+            gap: 12px;
+            min-width: 0;
         }
 
-        .author-avatar {
-            width: 32px;
-            height: 32px;
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            background: #eff6ff;
-            color: #2563eb;
-            font-size: 11px;
+            background: rgba(79, 70, 229, 0.1);
             font-weight: 800;
         }
 
-        .announcement-tag {
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 11px;
+        .user-info {
+            min-width: 0;
+        }
+
+        .user-name {
             font-weight: 700;
         }
 
-        .tag-important {
-            background: #fef3f2;
-            color: #b42318;
+        .user-login {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 3px;
         }
 
-        .tag-study {
-            background: #eff6ff;
-            color: #175cd3;
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 9px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
         }
 
-        .tag-event {
-            background: #f5f3ff;
-            color: #6941c6;
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
 
-        .tag-general {
-            background: #ecfdf3;
-            color: #027a48;
+        .quick-action {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            background: white;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s ease;
         }
 
-        .empty-state {
-            display: none;
-            text-align: center;
-            padding: 55px 20px;
-            background: #fff;
-            border: 1px solid #eaecf0;
-            border-radius: 20px;
-            color: #98a2b3;
+        .quick-action:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
         }
 
-        .empty-icon {
-            font-size: 42px;
-            margin-bottom: 10px;
+        .quick-action-icon {
+            font-size: 23px;
+            margin-bottom: 9px;
+        }
+
+        .quick-action strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .quick-action span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .log-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: #f8fafc;
+        }
+
+        .log-icon {
+            font-size: 18px;
+        }
+
+        .log-text {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .log-time {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .test-warning {
+            margin-bottom: 24px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #9a3412;
+        }
+
+        .test-warning strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 1050px) {
+            .admin-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 650px) {
-            .page-wrapper {
-                padding: 25px 14px 50px;
+            .admin-page {
+                padding: 20px 14px 40px;
             }
 
-            .page-header {
+            .admin-header {
                 flex-direction: column;
-            }
-
-            .page-header h1 {
-                font-size: 28px;
-            }
-
-            .announcement {
-                padding: 17px;
-            }
-
-            .announcement-top {
-                flex-direction: column;
-            }
-
-            .announcement-date {
-                order: -1;
-            }
-
-            .announcement-footer {
                 align-items: flex-start;
-                flex-direction: column;
+            }
+
+            .admin-title h1 {
+                font-size: 27px;
+            }
+
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .user-item {
+                align-items: flex-start;
             }
         }
     </style>
@@ -258,399 +409,928 @@
 
 <body>
 
-<header class="site-header">
-    <div class="container">
-        <div class="header-inner">
+    <header class="site-header">
+
+        <div class="header-container">
 
             <a href="index.html" class="logo">
                 <span class="logo-mark">Л2</span>
-                <span>Ліцей №2</span>
+
+                <span>
+                    Ліцей №2
+                </span>
             </a>
 
             <nav class="navigation">
-                <a href="dashboard.html">Кабінет</a>
-                <a href="schedule.html">Розклад</a>
-                <a href="homework.html">Домашні завдання</a>
-                <a href="announcements.html" class="active">Оголошення</a>
+
+                <a href="dashboard.html">
+                    Кабінет
+                </a>
+
+                <a href="schedule.html">
+                    Розклад
+                </a>
+
+                <a href="announcements.html">
+                    Оголошення
+                </a>
+
+                <a href="admin.html" class="active">
+                    Адмін
+                </a>
+
             </nav>
 
-            <button class="mobile-menu-btn" onclick="toggleMenu()">
+            <button
+                class="mobile-menu"
+                onclick="toggleMenu()"
+                aria-label="Меню"
+            >
                 ☰
             </button>
 
         </div>
-    </div>
-</header>
 
-<main class="page-wrapper">
+    </header>
 
-    <a href="dashboard.html" class="back-link">
-        ← Назад до кабінету
-    </a>
 
-    <div class="page-header">
-        <div>
-            <h1>📢 Оголошення</h1>
-            <p>Важлива інформація від адміністрації та вчителів</p>
-        </div>
-    </div>
+    <main class="admin-page">
 
-    <div class="test-notice">
-        ℹ️ <strong>Тестові дані.</strong>
-        Оголошення зараз демонстраційні. Після підключення Supabase
-        адміністрація зможе публікувати їх безпосередньо в системі.
-    </div>
+        <div class="admin-header">
 
-    <div class="filters">
+            <div class="admin-title">
 
-        <button
-            class="filter-btn active"
-            onclick="filterAnnouncements('all', this)"
-        >
-            Усі
-        </button>
+                <h1>
+                    Адміністративна панель
+                </h1>
 
-        <button
-            class="filter-btn"
-            onclick="filterAnnouncements('important', this)"
-        >
-            Важливі
-        </button>
-
-        <button
-            class="filter-btn"
-            onclick="filterAnnouncements('study', this)"
-        >
-            Навчання
-        </button>
-
-        <button
-            class="filter-btn"
-            onclick="filterAnnouncements('event', this)"
-        >
-            Події
-        </button>
-
-        <button
-            class="filter-btn"
-            onclick="filterAnnouncements('general', this)"
-        >
-            Загальні
-        </button>
-
-    </div>
-
-    <section class="announcements-list" id="announcementsList">
-
-        <!-- Важливе -->
-
-        <article
-            class="announcement pinned"
-            data-category="important"
-        >
-
-            <div class="announcement-top">
-
-                <div class="announcement-title">
-                    <span class="pin">📌</span>
-
-                    <h2>
-                        Важливе оголошення
-                    </h2>
-                </div>
-
-                <span class="announcement-date">
-                    18 вересня 2026
-                </span>
+                <p>
+                    Керування електронною системою
+                </p>
 
             </div>
 
-            <p class="announcement-text">
-                Нагадування про дотримання правил безпеки
-                та внутрішнього розпорядку ліцею.
-                Будь ласка, уважно ознайомтеся з актуальною
-                інформацією у своєму кабінеті.
-            </p>
+            <div class="admin-actions">
 
-            <div class="announcement-footer">
+                <a
+                    href="dashboard.html"
+                    class="btn btn-secondary"
+                >
+                    ← Кабінет
+                </a>
 
-                <div class="announcement-author">
-
-                    <span class="author-avatar">
-                        АД
-                    </span>
-
-                    Адміністрація
-
-                </div>
-
-                <span class="announcement-tag tag-important">
-                    Важливе
-                </span>
+                <button
+                    class="btn btn-primary"
+                    onclick="logout()"
+                >
+                    Вийти
+                </button>
 
             </div>
 
-        </article>
-
-
-        <!-- Навчання -->
-
-        <article
-            class="announcement"
-            data-category="study"
-        >
-
-            <div class="announcement-top">
-
-                <div class="announcement-title">
-                    <h2>
-                        Зміни в розкладі
-                    </h2>
-                </div>
-
-                <span class="announcement-date">
-                    17 вересня 2026
-                </span>
-
-            </div>
-
-            <p class="announcement-text">
-                Перевірте оновлений розклад занять на наступний
-                навчальний день. Зміни можуть стосуватися кабінетів
-                та часу проведення окремих уроків.
-            </p>
-
-            <div class="announcement-footer">
-
-                <div class="announcement-author">
-
-                    <span class="author-avatar">
-                        АД
-                    </span>
-
-                    Адміністрація
-
-                </div>
-
-                <span class="announcement-tag tag-study">
-                    Навчання
-                </span>
-
-            </div>
-
-        </article>
-
-
-        <!-- Подія -->
-
-        <article
-            class="announcement"
-            data-category="event"
-        >
-
-            <div class="announcement-top">
-
-                <div class="announcement-title">
-                    <h2>
-                        День відкритих дверей
-                    </h2>
-                </div>
-
-                <span class="announcement-date">
-                    16 вересня 2026
-                </span>
-
-            </div>
-
-            <p class="announcement-text">
-                У календарі подій додано демонстраційний захід.
-                Перейдіть до розділу «Події», щоб переглянути
-                дату, час та місце проведення.
-            </p>
-
-            <div class="announcement-footer">
-
-                <div class="announcement-author">
-
-                    <span class="author-avatar">
-                        ОР
-                    </span>
-
-                    Організатори
-
-                </div>
-
-                <span class="announcement-tag tag-event">
-                    Подія
-                </span>
-
-            </div>
-
-        </article>
-
-
-        <!-- Загальне -->
-
-        <article
-            class="announcement"
-            data-category="general"
-        >
-
-            <div class="announcement-top">
-
-                <div class="announcement-title">
-                    <h2>
-                        Оновлення електронної системи
-                    </h2>
-                </div>
-
-                <span class="announcement-date">
-                    15 вересня 2026
-                </span>
-
-            </div>
-
-            <p class="announcement-text">
-                Електронна система ліцею продовжує розвиватися.
-                Деякі розділи поки працюють у тестовому режимі.
-                Нові функції будуть додаватися поступово.
-            </p>
-
-            <div class="announcement-footer">
-
-                <div class="announcement-author">
-
-                    <span class="author-avatar">
-                        АД
-                    </span>
-
-                    Адміністрація
-
-                </div>
-
-                <span class="announcement-tag tag-general">
-                    Загальне
-                </span>
-
-            </div>
-
-        </article>
-
-
-        <!-- Навчання -->
-
-        <article
-            class="announcement"
-            data-category="study"
-        >
-
-            <div class="announcement-top">
-
-                <div class="announcement-title">
-                    <h2>
-                        Домашні завдання
-                    </h2>
-                </div>
-
-                <span class="announcement-date">
-                    12 вересня 2026
-                </span>
-
-            </div>
-
-            <p class="announcement-text">
-                Нагадування: актуальні домашні завдання можна
-                переглянути у відповідному розділі електронного
-                кабінету.
-            </p>
-
-            <div class="announcement-footer">
-
-                <div class="announcement-author">
-
-                    <span class="author-avatar">
-                        ВЧ
-                    </span>
-
-                    Учителі
-
-                </div>
-
-                <span class="announcement-tag tag-study">
-                    Навчання
-                </span>
-
-            </div>
-
-        </article>
-
-    </section>
-
-
-    <div class="empty-state" id="emptyState">
-
-        <div class="empty-icon">
-            📭
         </div>
 
-        <strong>
-            Оголошень не знайдено
-        </strong>
 
-        <p>
-            У цій категорії поки немає оголошень.
-        </p>
+        <div class="test-warning">
 
-    </div>
+            <strong>
+                ⚠️ Тестовий режим
+            </strong>
 
-</main>
+            Дані цієї адміністративної панелі
+            поки що зберігаються локально.
+            Після підключення Supabase вони будуть
+            перенесені в захищену базу даних.
 
-<script src="app.js"></script>
+        </div>
 
-<script>
 
-    function filterAnnouncements(category, button) {
+        <!-- СТАТИСТИКА -->
 
-        const announcements =
-            document.querySelectorAll(".announcement");
+        <section class="admin-grid">
 
-        const buttons =
-            document.querySelectorAll(".filter-btn");
+            <div class="stat-card">
 
-        buttons.forEach((btn) => {
-            btn.classList.remove("active");
-        });
+                <div class="stat-icon">
+                    👥
+                </div>
 
-        button.classList.add("active");
+                <div class="stat-value">
+                    248
+                </div>
 
-        let visible = 0;
+                <div class="stat-label">
+                    Всього користувачів
+                </div>
 
-        announcements.forEach((announcement) => {
+            </div>
 
-            const announcementCategory =
-                announcement.dataset.category;
 
-            if (
-                category === "all" ||
-                announcementCategory === category
-            ) {
+            <div class="stat-card">
 
-                announcement.style.display = "block";
-                visible++;
+                <div class="stat-icon">
+                    👨‍🏫
+                </div>
+
+                <div class="stat-value">
+                    31
+                </div>
+
+                <div class="stat-label">
+                    Вчителів
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🎓
+                </div>
+
+                <div class="stat-value">
+                    198
+                </div>
+
+                <div class="stat-label">
+                    Учнів
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🟢
+                </div>
+
+                <div class="stat-value">
+                    241
+                </div>
+
+                <div class="stat-label">
+                    Активних
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="admin-layout">
+
+            <div>
+
+
+                <!-- СТАТУС СИСТЕМЫ -->
+
+                <section class="admin-card">
+
+                    <div class="admin-card-header">
+
+                        <div>
+
+                            <h2>
+                                Статус системи
+                            </h2>
+
+                            <p>
+                                Керування режимом технічних робіт
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="system-status">
+
+                        <div
+                            class="system-status-icon"
+                            id="systemStatusIcon"
+                        >
+                            🟢
+                        </div>
+
+                        <div class="system-status-text">
+
+                            <strong
+                                id="systemStatusTitle"
+                            >
+                                Система працює
+                            </strong>
+
+                            <span
+                                id="systemStatusDescription"
+                            >
+                                Користувачі можуть
+                                користуватися системою.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="maintenance-form"
+                        id="maintenanceForm"
+                    >
+
+                        <h3>
+                            Увімкнення технічних робіт
+                        </h3>
+
+                        <p>
+                            Після активації звичайні
+                            користувачі не зможуть
+                            користуватися системою.
+                            Адміністратори матимуть доступ.
+                        </p>
+
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label for="maintenanceReason">
+                                    Причина
+                                </label>
+
+                                <textarea
+                                    id="maintenanceReason"
+                                    placeholder="Наприклад: оновлення електронного журналу..."
+                                ></textarea>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="maintenanceEnd">
+                                    Завершення
+                                </label>
+
+                                <input
+                                    type="datetime-local"
+                                    id="maintenanceEnd"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="button-row">
+
+                            <button
+                                class="btn btn-primary"
+                                onclick="activateMaintenance()"
+                            >
+                                🔧 Увімкнути
+                            </button>
+
+                            <button
+                                class="btn btn-secondary"
+                                onclick="hideMaintenanceForm()"
+                            >
+                                Скасувати
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="button-row"
+                        id="maintenanceButtons"
+                    >
+
+                        <button
+                            class="btn btn-primary"
+                            onclick="showMaintenanceForm()"
+                        >
+                            🔧 Технічні роботи
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ПОЛЬЗОВАТЕЛИ -->
+
+                <section class="admin-card">
+
+                    <div class="admin-card-header">
+
+                        <div>
+
+                            <h2>
+                                Користувачі
+                            </h2>
+
+                            <p>
+                                Тестовий список користувачів
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="user-list">
+
+                        <div class="user-item">
+
+                            <div class="user-left">
+
+                                <div class="user-avatar">
+                                    А
+                                </div>
+
+                                <div class="user-info">
+
+                                    <div class="user-name">
+                                        Адміністратор
+                                    </div>
+
+                                    <div class="user-login">
+                                        admin
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <span class="role-badge">
+                                Адміністратор
+                            </span>
+
+                        </div>
+
+
+                        <div class="user-item">
+
+                            <div class="user-left">
+
+                                <div class="user-avatar">
+                                    О
+                                </div>
+
+                                <div class="user-info">
+
+                                    <div class="user-name">
+                                        Олена Коваленко
+                                    </div>
+
+                                    <div class="user-login">
+                                        teacher_01
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <span class="role-badge">
+                                Вчитель
+                            </span>
+
+                        </div>
+
+
+                        <div class="user-item">
+
+                            <div class="user-left">
+
+                                <div class="user-avatar">
+                                    С
+                                </div>
+
+                                <div class="user-info">
+
+                                    <div class="user-name">
+                                        Самуїл Шапошников
+                                    </div>
+
+                                    <div class="user-login">
+                                        student_01
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <span class="role-badge">
+                                Учень
+                            </span>
+
+                        </div>
+
+
+                        <div class="user-item">
+
+                            <div class="user-left">
+
+                                <div class="user-avatar">
+                                    Б
+                                </div>
+
+                                <div class="user-info">
+
+                                    <div class="user-name">
+                                        Батько учня
+                                    </div>
+
+                                    <div class="user-login">
+                                        parent_01
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <span class="role-badge">
+                                Батько / мати
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <div>
+
+
+                <!-- БЫСТРЫЕ ДЕЙСТВИЯ -->
+
+                <section class="admin-card">
+
+                    <div class="admin-card-header">
+
+                        <div>
+
+                            <h2>
+                                Швидкі дії
+                            </h2>
+
+                            <p>
+                                Керування системою
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+                        <button
+                            class="quick-action"
+                            onclick="adminAction('users')"
+                        >
+
+                            <div class="quick-action-icon">
+                                👤
+                            </div>
+
+                            <strong>
+                                Додати користувача
+                            </strong>
+
+                            <span>
+                                Створення нового облікового запису
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            class="quick-action"
+                            onclick="adminAction('announcement')"
+                        >
+
+                            <div class="quick-action-icon">
+                                📢
+                            </div>
+
+                            <strong>
+                                Оголошення
+                            </strong>
+
+                            <span>
+                                Створити нове оголошення
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            class="quick-action"
+                            onclick="adminAction('schedule')"
+                        >
+
+                            <div class="quick-action-icon">
+                                📅
+                            </div>
+
+                            <strong>
+                                Розклад
+                            </strong>
+
+                            <span>
+                                Керування розкладом
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            class="quick-action"
+                            onclick="adminAction('journal')"
+                        >
+
+                            <div class="quick-action-icon">
+                                📚
+                            </div>
+
+                            <strong>
+                                Журнал
+                            </strong>
+
+                            <span>
+                                Оцінки та відвідування
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ЛОГ -->
+
+                <section class="admin-card">
+
+                    <div class="admin-card-header">
+
+                        <div>
+
+                            <h2>
+                                Журнал системи
+                            </h2>
+
+                            <p>
+                                Останні дії
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="log-list">
+
+                        <div class="log-item">
+
+                            <div class="log-icon">
+                                🔐
+                            </div>
+
+                            <div class="log-text">
+
+                                Вхід адміністратора
+
+                                <div class="log-time">
+                                    Сьогодні, 15:20
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="log-item">
+
+                            <div class="log-icon">
+                                📢
+                            </div>
+
+                            <div class="log-text">
+
+                                Оновлено оголошення
+
+                                <div class="log-time">
+                                    Сьогодні, 14:45
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="log-item">
+
+                            <div class="log-icon">
+                                👤
+                            </div>
+
+                            <div class="log-text">
+
+                                Перевірено користувачів
+
+                                <div class="log-time">
+                                    Сьогодні, 13:10
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+
+    <script>
+        "use strict";
+
+
+        /* =====================================================
+           ТЕКУЩЕЕ СОСТОЯНИЕ
+           ===================================================== */
+
+        function updateMaintenancePanel() {
+
+            const state =
+                getMaintenanceState();
+
+
+            const title =
+                document.getElementById(
+                    "systemStatusTitle"
+                );
+
+            const description =
+                document.getElementById(
+                    "systemStatusDescription"
+                );
+
+            const icon =
+                document.getElementById(
+                    "systemStatusIcon"
+                );
+
+            const buttons =
+                document.getElementById(
+                    "maintenanceButtons"
+                );
+
+            const form =
+                document.getElementById(
+                    "maintenanceForm"
+                );
+
+
+            if (state.enabled) {
+
+                icon.textContent = "🔧";
+
+                title.textContent =
+                    "Технічні роботи активні";
+
+                description.textContent =
+                    state.reason ||
+                    "Система тимчасово недоступна для звичайних користувачів.";
+
+                buttons.innerHTML = `
+                    <button
+                        class="btn btn-primary"
+                        onclick="disableMaintenance()"
+                    >
+                        ✅ Завершити технічні роботи
+                    </button>
+
+                    <a
+                        href="maintenance.html"
+                        class="btn btn-secondary"
+                    >
+                        Переглянути сторінку
+                    </a>
+                `;
+
+                form.classList.remove(
+                    "visible"
+                );
 
             } else {
 
-                announcement.style.display = "none";
+                icon.textContent = "🟢";
 
+                title.textContent =
+                    "Система працює";
+
+                description.textContent =
+                    "Користувачі можуть користуватися системою.";
+
+                buttons.innerHTML = `
+                    <button
+                        class="btn btn-primary"
+                        onclick="showMaintenanceForm()"
+                    >
+                        🔧 Технічні роботи
+                    </button>
+                `;
+            }
+        }
+
+
+        /* =====================================================
+           ПОКАЗАТЬ ФОРМУ
+           ===================================================== */
+
+        function showMaintenanceForm() {
+
+            const form =
+                document.getElementById(
+                    "maintenanceForm"
+                );
+
+            const reason =
+                document.getElementById(
+                    "maintenanceReason"
+                );
+
+            if (form) {
+                form.classList.add(
+                    "visible"
+                );
             }
 
-        });
+            if (reason) {
+                reason.focus();
+            }
+        }
 
-        document.getElementById("emptyState").style.display =
-            visible === 0 ? "block" : "none";
-    }
 
-</script>
+        /* =====================================================
+           СКРЫТЬ ФОРМУ
+           ===================================================== */
+
+        function hideMaintenanceForm() {
+
+            const form =
+                document.getElementById(
+                    "maintenanceForm"
+                );
+
+            if (form) {
+                form.classList.remove(
+                    "visible"
+                );
+            }
+        }
+
+
+        /* =====================================================
+           ВКЛЮЧИТЬ ТЕХНИЧЕСКИЕ РАБОТЫ
+           ===================================================== */
+
+        function activateMaintenance() {
+
+            const reason =
+                document.getElementById(
+                    "maintenanceReason"
+                ).value.trim();
+
+            const endAt =
+                document.getElementById(
+                    "maintenanceEnd"
+                ).value;
+
+
+            const finalReason =
+                reason ||
+                "Проводяться планові технічні роботи.";
+
+
+            const confirmed =
+                confirm(
+                    "Увімкнути режим технічних робіт?\n\n" +
+                    "Звичайні користувачі будуть направлені " +
+                    "на сторінку технічних робіт."
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            enableMaintenanceMode(
+                finalReason,
+                endAt
+            );
+
+
+            hideMaintenanceForm();
+
+            updateMaintenancePanel();
+
+
+            alert(
+                "Режим технічних робіт увімкнено."
+            );
+        }
+
+
+        /* =====================================================
+           ВЫКЛЮЧИТЬ ТЕХНИЧЕСКИЕ РАБОТЫ
+           ===================================================== */
+
+        function disableMaintenance() {
+
+            const confirmed =
+                confirm(
+                    "Завершити технічні роботи?\n\n" +
+                    "Система знову стане доступною користувачам."
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            disableMaintenanceMode();
+
+            updateMaintenancePanel();
+
+
+            alert(
+                "Технічні роботи завершено."
+            );
+        }
+
+
+        /* =====================================================
+           БЫСТРЫЕ ДЕЙСТВИЯ
+           ===================================================== */
+
+        function adminAction(action) {
+
+            const messages = {
+
+                users:
+                    "Модуль керування користувачами буде підключено на наступному етапі.",
+
+                announcement:
+                    "Модуль оголошень буде підключено на наступному етапі.",
+
+                schedule:
+                    "Модуль керування розкладом буде підключено на наступному етапі.",
+
+                journal:
+                    "Електронний журнал буде підключено на наступному етапі."
+            };
+
+
+            alert(
+                messages[action] ||
+                "Ця функція ще розробляється."
+            );
+        }
+
+
+        /* =====================================================
+           ЗАПУСК
+           ===================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                updateMaintenancePanel();
+            }
+        );
+    </script>
 
 </body>
 </html>
