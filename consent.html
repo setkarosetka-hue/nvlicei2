@@ -1,0 +1,646 @@
+```html
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Правила та згода — Ліцей №2</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .consent-page {
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .consent-container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .consent-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .consent-header .logo-icon {
+            margin: 0 auto 18px;
+        }
+
+        .consent-header h1 {
+            font-size: clamp(30px, 5vw, 46px);
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .consent-header p {
+            color: var(--text-light);
+            max-width: 650px;
+            margin: auto;
+        }
+
+        .consent-warning {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+
+            padding: 18px;
+            margin-bottom: 20px;
+
+            background: #fff8e7;
+            border: 1px solid #f7dfaa;
+            border-radius: 16px;
+        }
+
+        .consent-warning-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .consent-warning strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .consent-warning p {
+            color: #78632f;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .rules-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .rules-header {
+            padding: 25px 28px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rules-header h2 {
+            font-size: 21px;
+            margin-bottom: 5px;
+        }
+
+        .rules-header p {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .rules-list {
+            padding: 10px 28px;
+        }
+
+        .rule-item {
+            display: flex;
+            gap: 15px;
+            padding: 19px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rule-item:last-child {
+            border-bottom: 0;
+        }
+
+        .rule-number {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--primary-soft);
+            color: var(--primary);
+
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .rule-content {
+            flex: 1;
+        }
+
+        .rule-content h3 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .rule-content p {
+            color: var(--text-light);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .required-label {
+            display: inline-block;
+            margin-left: 7px;
+            padding: 3px 7px;
+
+            background: #fff0f0;
+            color: #d64545;
+
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .consent-options {
+            padding: 24px 28px;
+            background: var(--surface-soft);
+            border-top: 1px solid var(--border);
+        }
+
+        .consent-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 13px 0;
+        }
+
+        .consent-option input {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: var(--primary);
+        }
+
+        .consent-option label {
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .consent-option small {
+            display: block;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .consent-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 22px 28px;
+            border-top: 1px solid var(--border);
+        }
+
+        .consent-actions button {
+            flex: 1;
+            min-width: 190px;
+
+            border: 0;
+            cursor: pointer;
+
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+
+            padding: 14px 18px;
+            border-radius: 13px;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                background .2s ease;
+        }
+
+        .consent-all {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 10px 25px rgba(99, 91, 255, .22);
+        }
+
+        .consent-all:hover {
+            transform: translateY(-2px);
+            background: var(--primary-dark);
+        }
+
+        .consent-required {
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border) !important;
+        }
+
+        .consent-required:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .consent-custom {
+            background: #eef0f7;
+            color: var(--text);
+        }
+
+        .consent-custom:hover {
+            transform: translateY(-2px);
+            background: #e5e8f2;
+        }
+
+        .consent-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        @media (max-width: 600px) {
+            .consent-page {
+                padding: 20px 12px;
+                align-items: flex-start;
+            }
+
+            .consent-header {
+                margin-top: 15px;
+            }
+
+            .rules-header,
+            .rules-list,
+            .consent-options,
+            .consent-actions {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .rules-card {
+                border-radius: 18px;
+            }
+
+            .consent-actions {
+                flex-direction: column;
+            }
+
+            .consent-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="consent-page">
+
+        <div class="consent-container">
+
+            <div class="consent-header">
+
+                <div class="logo-icon">
+                    Л2
+                </div>
+
+                <h1>
+                    Правила системи
+                </h1>
+
+                <p>
+                    Перед продовженням, будь ласка, ознайомтеся
+                    з правилами використання електронної системи.
+                </p>
+
+            </div>
+
+
+            <div class="consent-warning">
+
+                <div class="consent-warning-icon">
+                    ⚠️
+                </div>
+
+                <div>
+
+                    <strong>
+                        Система ще не підтверджена школою
+                    </strong>
+
+                    <p>
+                        Цей вебпроєкт наразі перебуває у розробці
+                        та тестуванні. Він не є офіційно затвердженою
+                        електронною системою школи, доки адміністрація
+                        школи офіційно не підтвердить його.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <section class="rules-card">
+
+                <div class="rules-header">
+
+                    <h2>
+                        📋 Основні правила
+                    </h2>
+
+                    <p>
+                        Версія правил: 1.0 · 2026
+                    </p>
+
+                </div>
+
+
+                <div class="rules-list">
+
+                    <div class="rule-item">
+
+                        <div class="rule-number">
+                            1
+                        </div>
+
+                        <div class="rule-content">
+
+                            <h3>
+                                Використовуйте систему відповідально
+                                <span class="required-label">
+                                    Обов'язково
+                                </span>
+                            </h3>
+
+                            <p>
+                                Заборонено навмисно пошкоджувати,
+                                перевантажувати або намагатися
+                                обійти захист системи.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rule-item">
+
+                        <div class="rule-number">
+                            2
+                        </div>
+
+                        <div class="rule-content">
+
+                            <h3>
+                                Не передавайте дані для входу
+                                <span class="required-label">
+                                    Обов'язково
+                                </span>
+                            </h3>
+
+                            <p>
+                                Логін і пароль повинні залишатися
+                                особистими та не передаватися іншим
+                                користувачам.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rule-item">
+
+                        <div class="rule-number">
+                            3
+                        </div>
+
+                        <div class="rule-content">
+
+                            <h3>
+                                Поважайте інших користувачів
+                                <span class="required-label">
+                                    Обов'язково
+                                </span>
+                            </h3>
+
+                            <p>
+                                Не використовуйте систему для образ,
+                                цькування, погроз або іншої неприйнятної
+                                поведінки.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rule-item">
+
+                        <div class="rule-number">
+                            4
+                        </div>
+
+                        <div class="rule-content">
+
+                            <h3>
+                                Конфіденційність
+                                <span class="required-label">
+                                    Обов'язково
+                                </span>
+                            </h3>
+
+                            <p>
+                                Не поширюйте персональні дані,
+                                оцінки, повідомлення або іншу
+                                приватну інформацію інших людей.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rule-item">
+
+                        <div class="rule-number">
+                            5
+                        </div>
+
+                        <div class="rule-content">
+
+                            <h3>
+                                Додаткові налаштування
+                            </h3>
+
+                            <p>
+                                Необов'язкові функції та налаштування
+                                можуть бути змінені користувачем
+                                відповідно до доступних параметрів.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="consent-options">
+
+                    <div class="consent-option">
+
+                        <input
+                            type="checkbox"
+                            id="analyticsConsent"
+                        >
+
+                        <label for="analyticsConsent">
+
+                            Дозволити додаткові функції
+
+                            <small>
+                                Необов'язкове налаштування.
+                            </small>
+
+                        </label>
+
+                    </div>
+
+                    <div class="consent-option">
+
+                        <input
+                            type="checkbox"
+                            id="notificationsConsent"
+                        >
+
+                        <label for="notificationsConsent">
+
+                            Отримувати системні сповіщення
+
+                            <small>
+                                Необов'язкове налаштування.
+                            </small>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <div class="consent-actions">
+
+                    <button
+                        class="consent-all"
+                        type="button"
+                        onclick="acceptAllRules()"
+                    >
+                        ✓ Погодитися з усіма
+                    </button>
+
+                    <button
+                        class="consent-required"
+                        type="button"
+                        onclick="acceptRequiredRules()"
+                    >
+                        Погодитися лише з обов'язковими
+                    </button>
+
+                    <button
+                        class="consent-custom"
+                        type="button"
+                        onclick="acceptCustomRules()"
+                    >
+                        ⚙ Налаштувати
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <div class="consent-footer">
+
+                Ліцей №2 · Електронна система · Версія 0.1.0
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+    <script>
+
+        function saveUserConsent(settings) {
+
+            const consentData = {
+
+                rulesVersion: "1.0",
+
+                acceptedAt:
+                    new Date().toISOString(),
+
+                settings: settings
+
+            };
+
+            localStorage.setItem(
+                "lyceum2_consent",
+                JSON.stringify(consentData)
+            );
+
+            window.location.href =
+                "login.html";
+
+        }
+
+
+        function acceptAllRules() {
+
+            saveUserConsent({
+
+                additionalFeatures: true,
+
+                notifications: true
+
+            });
+
+        }
+
+
+        function acceptRequiredRules() {
+
+            saveUserConsent({
+
+                additionalFeatures: false,
+
+                notifications: false
+
+            });
+
+        }
+
+
+        function acceptCustomRules() {
+
+            saveUserConsent({
+
+                additionalFeatures:
+                    document.getElementById(
+                        "analyticsConsent"
+                    ).checked,
+
+                notifications:
+                    document.getElementById(
+                        "notificationsConsent"
+                    ).checked
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>
+```
