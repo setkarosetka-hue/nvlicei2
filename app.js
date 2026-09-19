@@ -2,46 +2,24 @@
 
 /* =========================================================
    ЛІЦЕЙ №2 — ОСНОВНОЙ JAVASCRIPT
-   Версия: 0.2.0
+   Версия 0.3.0
    ========================================================= */
 
 
 /* =========================================================
-   1. НАСТРОЙКИ СИСТЕМЫ
+   1. НАСТРОЙКИ
    ========================================================= */
 
 const SYSTEM_CONFIG = {
-    version: "0.2.0",
+    version: "0.3.0",
     officiallyApproved: false,
     rulesVersion: "1.0",
-
-    // Пока работает локальный тестовый режим.
-    // Позже это будет перенесено в Supabase.
     testMode: true
 };
 
 
 /* =========================================================
-   2. СТРАНИЦЫ И РОЛИ
-   ========================================================= */
-
-const PAGE_ROLES = {
-    "admin.html": ["admin"],
-    "teacher.html": ["teacher", "admin"],
-    "student.html": ["student", "admin"],
-    "parent.html": ["parent", "admin"]
-};
-
-const PUBLIC_PAGES = [
-    "",
-    "index.html",
-    "consent.html",
-    "login.html"
-];
-
-
-/* =========================================================
-   3. КЛЮЧИ LOCAL STORAGE
+   2. КЛЮЧИ LOCAL STORAGE
    ========================================================= */
 
 const USER_STORAGE_KEY = "lyceum2_user";
@@ -50,43 +28,96 @@ const MAINTENANCE_STORAGE_KEY = "lyceum2_maintenance";
 
 
 /* =========================================================
+   3. СТРАНИЦЫ
+   ========================================================= */
+
+const PUBLIC_PAGES = [
+    "",
+    "index.html",
+    "consent.html",
+    "login.html",
+    "maintenance.html"
+];
+
+
+/* Какие роли могут открывать страницы */
+
+const PAGE_ROLES = {
+    "admin.html": ["admin"],
+
+    "teacher.html": [
+        "teacher",
+        "admin"
+    ],
+
+    "student.html": [
+        "student",
+        "admin"
+    ],
+
+    "parent.html": [
+        "parent",
+        "admin"
+    ]
+};
+
+
+/* =========================================================
    4. МОБИЛЬНОЕ МЕНЮ
    ========================================================= */
 
 function toggleMenu() {
-    const navigation = document.querySelector(".navigation");
+
+    const navigation =
+        document.querySelector(".navigation");
 
     if (!navigation) {
         return;
     }
 
-    navigation.classList.toggle("mobile-open");
+    navigation.classList.toggle(
+        "mobile-open"
+    );
 }
 
 
-/* Закрываем мобильное меню после перехода */
+/* Закрытие меню после перехода */
 
-document.addEventListener("click", (event) => {
-    const navigation = document.querySelector(".navigation");
+document.addEventListener("click", function (event) {
+
+    const navigation =
+        document.querySelector(".navigation");
 
     if (!navigation) {
         return;
     }
 
-    const link = event.target.closest("a");
+    const link =
+        event.target.closest("a");
 
-    if (link && navigation.classList.contains("mobile-open")) {
-        navigation.classList.remove("mobile-open");
+    if (
+        link &&
+        navigation.classList.contains(
+            "mobile-open"
+        )
+    ) {
+        navigation.classList.remove(
+            "mobile-open"
+        );
     }
 });
 
 
 /* =========================================================
-   5. ТЕКУЩАЯ СТРАНИЦА
+   5. ОПРЕДЕЛЕНИЕ ТЕКУЩЕЙ СТРАНИЦЫ
    ========================================================= */
 
 function getCurrentPage() {
-    let page = window.location.pathname.split("/").pop();
+
+    let page =
+        window.location.pathname
+            .split("/")
+            .pop();
 
     if (!page) {
         page = "index.html";
@@ -101,33 +132,52 @@ function getCurrentPage() {
    ========================================================= */
 
 function getCurrentUser() {
+
     try {
-        const savedUser = localStorage.getItem(USER_STORAGE_KEY);
+
+        const savedUser =
+            localStorage.getItem(
+                USER_STORAGE_KEY
+            );
 
         if (!savedUser) {
             return null;
         }
 
-        const user = JSON.parse(savedUser);
+        const user =
+            JSON.parse(savedUser);
 
-        if (!user || typeof user !== "object") {
+        if (
+            !user ||
+            typeof user !== "object"
+        ) {
             return null;
         }
 
         return user;
 
     } catch (error) {
-        console.error("Ошибка чтения пользователя:", error);
 
-        localStorage.removeItem(USER_STORAGE_KEY);
+        console.error(
+            "Ошибка чтения пользователя:",
+            error
+        );
+
+        localStorage.removeItem(
+            USER_STORAGE_KEY
+        );
 
         return null;
     }
 }
 
 
+/* Проверка входа */
+
 function isLoggedIn() {
-    const user = getCurrentUser();
+
+    const user =
+        getCurrentUser();
 
     return !!(
         user &&
@@ -138,27 +188,36 @@ function isLoggedIn() {
 
 
 /* =========================================================
-   7. СОГЛАСИЕ С ПРАВИЛАМИ
+   7. СОГЛАСИЕ
    ========================================================= */
 
 function getConsent() {
+
     try {
+
         const savedConsent =
-            localStorage.getItem(CONSENT_STORAGE_KEY);
+            localStorage.getItem(
+                CONSENT_STORAGE_KEY
+            );
 
         if (!savedConsent) {
             return null;
         }
 
-        return JSON.parse(savedConsent);
+        return JSON.parse(
+            savedConsent
+        );
 
     } catch (error) {
+
         console.error(
             "Ошибка чтения согласия:",
             error
         );
 
-        localStorage.removeItem(CONSENT_STORAGE_KEY);
+        localStorage.removeItem(
+            CONSENT_STORAGE_KEY
+        );
 
         return null;
     }
@@ -166,7 +225,9 @@ function getConsent() {
 
 
 function hasValidConsent() {
-    const consent = getConsent();
+
+    const consent =
+        getConsent();
 
     if (!consent) {
         return false;
@@ -179,15 +240,17 @@ function hasValidConsent() {
 }
 
 
-/* =========================================================
-   8. СОХРАНЕНИЕ СОГЛАСИЯ
-   ========================================================= */
+/* Сохранение согласия */
 
 function saveConsent(settings = {}) {
-    const consentData = {
-        rulesVersion: SYSTEM_CONFIG.rulesVersion,
 
-        acceptedAt: new Date().toISOString(),
+    const consentData = {
+
+        rulesVersion:
+            SYSTEM_CONFIG.rulesVersion,
+
+        acceptedAt:
+            new Date().toISOString(),
 
         settings: {
             required: true,
@@ -205,10 +268,11 @@ function saveConsent(settings = {}) {
 
 
 /* =========================================================
-   9. ПЕРЕНАПРАВЛЕНИЕ
+   8. ПЕРЕХОД НА СТРАНИЦУ
    ========================================================= */
 
 function redirectTo(page) {
+
     if (!page) {
         return;
     }
@@ -218,27 +282,38 @@ function redirectTo(page) {
 
 
 /* =========================================================
-   10. ПРОВЕРКА СОГЛАСИЯ
+   9. ПРОВЕРКА СОГЛАСИЯ
    ========================================================= */
 
 function checkConsent() {
-    const currentPage = getCurrentPage();
+
+    const currentPage =
+        getCurrentPage();
 
     /*
-       На публичных страницах согласие не требуется.
+       Публичные страницы можно открывать
+       без предварительного согласия.
     */
 
-    if (PUBLIC_PAGES.includes(currentPage)) {
+    if (
+        PUBLIC_PAGES.includes(
+            currentPage
+        )
+    ) {
         return true;
     }
 
     /*
-       Если согласия нет или версия правил устарела —
-       отправляем пользователя на страницу согласия.
+       Если согласие отсутствует —
+       отправляем пользователя на правила.
     */
 
     if (!hasValidConsent()) {
-        redirectTo("consent.html");
+
+        redirectTo(
+            "consent.html"
+        );
+
         return false;
     }
 
@@ -247,18 +322,36 @@ function checkConsent() {
 
 
 /* =========================================================
-   11. ПРОВЕРКА АВТОРИЗАЦИИ
+   10. ПРОВЕРКА АВТОРИЗАЦИИ
    ========================================================= */
 
 function checkAuthentication() {
-    const currentPage = getCurrentPage();
 
-    if (PUBLIC_PAGES.includes(currentPage)) {
+    const currentPage =
+        getCurrentPage();
+
+    /*
+       Публичные страницы
+    */
+
+    if (
+        PUBLIC_PAGES.includes(
+            currentPage
+        )
+    ) {
         return true;
     }
 
+    /*
+       Пользователь должен быть авторизован.
+    */
+
     if (!isLoggedIn()) {
-        redirectTo("login.html");
+
+        redirectTo(
+            "login.html"
+        );
+
         return false;
     }
 
@@ -267,37 +360,55 @@ function checkAuthentication() {
 
 
 /* =========================================================
-   12. ПРОВЕРКА РОЛИ
+   11. ПРОВЕРКА РОЛИ
    ========================================================= */
 
 function checkRoleAccess() {
-    const currentPage = getCurrentPage();
+
+    const currentPage =
+        getCurrentPage();
 
     /*
-       Если для страницы нет ограничений по роли,
-       она доступна любому авторизованному пользователю.
+       Если страница не имеет
+       специального ограничения,
+       её могут открыть все авторизованные.
     */
 
     if (!PAGE_ROLES[currentPage]) {
         return true;
     }
 
-    const user = getCurrentUser();
+    const user =
+        getCurrentUser();
 
-    if (!user || !user.role) {
-        redirectTo("login.html");
+    if (
+        !user ||
+        !user.role
+    ) {
+
+        redirectTo(
+            "login.html"
+        );
+
         return false;
     }
 
-    const allowedRoles = PAGE_ROLES[currentPage];
+    const allowedRoles =
+        PAGE_ROLES[currentPage];
 
-    if (!allowedRoles.includes(user.role)) {
+    if (
+        !allowedRoles.includes(
+            user.role
+        )
+    ) {
 
         alert(
             "Ця сторінка недоступна для вашої ролі."
         );
 
-        redirectTo("dashboard.html");
+        redirectTo(
+            "dashboard.html"
+        );
 
         return false;
     }
@@ -307,28 +418,35 @@ function checkRoleAccess() {
 
 
 /* =========================================================
-   13. ВЫХОД
+   12. ВЫХОД
    ========================================================= */
 
 function logout() {
-    localStorage.removeItem(USER_STORAGE_KEY);
 
-    window.location.href = "login.html";
+    localStorage.removeItem(
+        USER_STORAGE_KEY
+    );
+
+    window.location.href =
+        "login.html";
 }
 
 
 /* =========================================================
-   14. ТЕХНИЧЕСКИЕ РАБОТЫ
+   13. ТЕХНИЧЕСКИЕ РАБОТЫ
    ========================================================= */
 
 function getMaintenanceState() {
+
     try {
+
         const saved =
             localStorage.getItem(
                 MAINTENANCE_STORAGE_KEY
             );
 
         if (!saved) {
+
             return {
                 enabled: false,
                 reason: "",
@@ -337,18 +455,28 @@ function getMaintenanceState() {
             };
         }
 
-        const state = JSON.parse(saved);
+        const state =
+            JSON.parse(saved);
 
         return {
-            enabled: state.enabled === true,
-            reason: state.reason || "",
-            endAt: state.endAt || "",
-            updatedAt: state.updatedAt || null
+
+            enabled:
+                state.enabled === true,
+
+            reason:
+                state.reason || "",
+
+            endAt:
+                state.endAt || "",
+
+            updatedAt:
+                state.updatedAt || null
         };
 
     } catch (error) {
+
         console.error(
-            "Ошибка чтения режима технических работ:",
+            "Ошибка чтения технических работ:",
             error
         );
 
@@ -362,16 +490,27 @@ function getMaintenanceState() {
 }
 
 
+/* Сохранение режима */
+
 function setMaintenanceState(
     enabled,
     reason = "",
     endAt = ""
 ) {
+
     const state = {
-        enabled: enabled === true,
-        reason: reason,
-        endAt: endAt,
-        updatedAt: new Date().toISOString()
+
+        enabled:
+            enabled === true,
+
+        reason:
+            String(reason || ""),
+
+        endAt:
+            String(endAt || ""),
+
+        updatedAt:
+            new Date().toISOString()
     };
 
     localStorage.setItem(
@@ -385,10 +524,13 @@ function setMaintenanceState(
 }
 
 
+/* Включение */
+
 function enableMaintenanceMode(
     reason = "Проводятся технические работы.",
     endAt = ""
 ) {
+
     return setMaintenanceState(
         true,
         reason,
@@ -397,7 +539,10 @@ function enableMaintenanceMode(
 }
 
 
+/* Выключение */
+
 function disableMaintenanceMode() {
+
     return setMaintenanceState(
         false,
         "",
@@ -406,10 +551,86 @@ function disableMaintenanceMode() {
 }
 
 
+/* Проверка */
+
 function isMaintenanceMode() {
-    const state = getMaintenanceState();
+
+    const state =
+        getMaintenanceState();
 
     return state.enabled === true;
+}
+
+
+/* =========================================================
+   14. ПРОВЕРКА ТЕХНИЧЕСКИХ РАБОТ
+   ========================================================= */
+
+function checkMaintenanceAccess() {
+
+    const currentPage =
+        getCurrentPage();
+
+    /*
+       Страница технических работ
+       должна открываться всегда.
+    */
+
+    if (
+        currentPage ===
+        "maintenance.html"
+    ) {
+        return true;
+    }
+
+    /*
+       Публичные страницы доступны.
+    */
+
+    if (
+        PUBLIC_PAGES.includes(
+            currentPage
+        )
+    ) {
+        return true;
+    }
+
+    const maintenance =
+        getMaintenanceState();
+
+    /*
+       Технические работы выключены.
+    */
+
+    if (!maintenance.enabled) {
+        return true;
+    }
+
+    const user =
+        getCurrentUser();
+
+    /*
+       Администратор имеет доступ
+       во время технических работ.
+    */
+
+    if (
+        user &&
+        user.role === "admin"
+    ) {
+        return true;
+    }
+
+    /*
+       Остальных отправляем
+       на maintenance.html.
+    */
+
+    redirectTo(
+        "maintenance.html"
+    );
+
+    return false;
 }
 
 
@@ -418,55 +639,45 @@ function isMaintenanceMode() {
    ========================================================= */
 
 function updateSystemStatus() {
+
     const statusElements =
-        document.querySelectorAll(".status-badge");
+        document.querySelectorAll(
+            ".status-badge"
+        );
 
     const maintenance =
         getMaintenanceState();
 
-    statusElements.forEach((element) => {
+    statusElements.forEach(
+        function (element) {
 
-        if (maintenance.enabled) {
+            if (
+                maintenance.enabled
+            ) {
 
-            element.innerHTML = `
-                <span class="status-dot maintenance"></span>
-                Технічні роботи
-            `;
+                element.innerHTML = `
+                    <span class="status-dot maintenance"></span>
+                    Технічні роботи
+                `;
 
-        } else {
+            } else {
 
-            element.innerHTML = `
-                <span class="status-dot"></span>
-                Система працює
-            `;
+                element.innerHTML = `
+                    <span class="status-dot"></span>
+                    Система працює
+                `;
+            }
         }
-    });
+    );
 }
 
 
 /* =========================================================
-   16. ЗАЩИТА ОТ ТЕХНИЧЕСКИХ РАБОТ
-   ========================================================= */
-
-/*
-   Пока отдельной maintenance.html нет,
-   поэтому мы НЕ блокируем страницы автоматически.
-
-   Режим уже сохраняется в localStorage,
-   а полноценная блокировка будет подключена
-   после создания maintenance.html.
-*/
-
-function checkMaintenanceAccess() {
-    return true;
-}
-
-
-/* =========================================================
-   17. АНИМАЦИИ ПРИ ПРОКРУТКЕ
+   16. АНИМАЦИИ
    ========================================================= */
 
 function setupScrollAnimation() {
+
     const cards =
         document.querySelectorAll(
             ".feature-card"
@@ -477,58 +688,75 @@ function setupScrollAnimation() {
     }
 
     /*
-       Если браузер не поддерживает
-       IntersectionObserver — просто показываем карточки.
+       Старые браузеры:
+       просто показываем карточки.
     */
 
-    if (!("IntersectionObserver" in window)) {
+    if (
+        !(
+            "IntersectionObserver"
+            in window
+        )
+    ) {
 
-        cards.forEach((card) => {
-            card.classList.add("visible");
-        });
+        cards.forEach(
+            function (card) {
+
+                card.classList.add(
+                    "visible"
+                );
+            }
+        );
 
         return;
     }
 
     const observer =
         new IntersectionObserver(
-            (entries) => {
+            function (entries) {
 
-                entries.forEach((entry) => {
+                entries.forEach(
+                    function (entry) {
 
-                    if (entry.isIntersecting) {
+                        if (
+                            entry.isIntersecting
+                        ) {
 
-                        entry.target.classList.add(
-                            "visible"
-                        );
+                            entry.target.classList.add(
+                                "visible"
+                            );
 
-                        observer.unobserve(
-                            entry.target
-                        );
+                            observer.unobserve(
+                                entry.target
+                            );
+                        }
                     }
-                });
+                );
             },
             {
                 threshold: 0.12
             }
         );
 
-    cards.forEach((card) => {
+    cards.forEach(
+        function (card) {
 
-        card.classList.add(
-            "scroll-hidden"
-        );
+            card.classList.add(
+                "scroll-hidden"
+            );
 
-        observer.observe(card);
-    });
+            observer.observe(card);
+        }
+    );
 }
 
 
 /* =========================================================
-   18. ТЕКУЩИЙ ГОД
+   17. ТЕКУЩИЙ ГОД
    ========================================================= */
 
 function updateCurrentYear() {
+
     const year =
         new Date().getFullYear();
 
@@ -536,85 +764,145 @@ function updateCurrentYear() {
         .querySelectorAll(
             "[data-current-year]"
         )
-        .forEach((element) => {
+        .forEach(
+            function (element) {
 
-            element.textContent = year;
-        });
+                element.textContent =
+                    year;
+            }
+        );
 }
 
 
 /* =========================================================
-   19. ЗАПОЛНЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
+   18. НАЗВАНИЕ РОЛИ
+   ========================================================= */
+
+function getRoleName(role) {
+
+    const roles = {
+
+        admin:
+            "Адміністратор",
+
+        teacher:
+            "Вчитель",
+
+        student:
+            "Учень",
+
+        parent:
+            "Батько / мати"
+    };
+
+    return (
+        roles[role] ||
+        "Користувач"
+    );
+}
+
+
+/* =========================================================
+   19. ДАННЫЕ ПОЛЬЗОВАТЕЛЯ НА СТРАНИЦЕ
    ========================================================= */
 
 function updateUserElements() {
-    const user = getCurrentUser();
+
+    const user =
+        getCurrentUser();
 
     if (!user) {
         return;
     }
 
-    /*
-       Можно использовать:
 
-       <span data-user-login></span>
-       <span data-user-role></span>
+    /*
+       Логин
     */
 
     document
         .querySelectorAll(
             "[data-user-login]"
         )
-        .forEach((element) => {
+        .forEach(
+            function (element) {
 
-            element.textContent =
-                user.login || "Пользователь";
-        });
+                element.textContent =
+                    user.login ||
+                    "Користувач";
+            }
+        );
+
+
+    /*
+       Роль
+    */
 
     document
         .querySelectorAll(
             "[data-user-role]"
         )
-        .forEach((element) => {
+        .forEach(
+            function (element) {
 
-            element.textContent =
-                getRoleName(user.role);
-        });
+                element.textContent =
+                    getRoleName(
+                        user.role
+                    );
+            }
+        );
 }
 
 
 /* =========================================================
-   20. НАЗВАНИЯ РОЛЕЙ
+   20. ФОРМАТ ДАТЫ
    ========================================================= */
 
-function getRoleName(role) {
+function formatDateTime(dateString) {
 
-    const roles = {
-        admin: "Адміністратор",
-        teacher: "Вчитель",
-        student: "Учень",
-        parent: "Батько / мати"
-    };
+    if (!dateString) {
+        return "";
+    }
 
-    return roles[role] || "Користувач";
+    const date =
+        new Date(dateString);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return "";
+    }
+
+    return date.toLocaleString(
+        "uk-UA",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
 }
 
 
 /* =========================================================
-   21. ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ
+   21. ИНИЦИАЛИЗАЦИЯ
    ========================================================= */
 
 function initializeApp() {
 
     /*
-       1. Статус
+       Сначала обновляем статус.
     */
 
     updateSystemStatus();
 
 
     /*
-       2. Согласие
+       Проверяем согласие.
     */
 
     if (!checkConsent()) {
@@ -623,7 +911,7 @@ function initializeApp() {
 
 
     /*
-       3. Авторизация
+       Проверяем авторизацию.
     */
 
     if (!checkAuthentication()) {
@@ -632,7 +920,7 @@ function initializeApp() {
 
 
     /*
-       4. Роли
+       Проверяем роль.
     */
 
     if (!checkRoleAccess()) {
@@ -641,7 +929,7 @@ function initializeApp() {
 
 
     /*
-       5. Технические работы
+       Проверяем технические работы.
     */
 
     if (!checkMaintenanceAccess()) {
@@ -650,7 +938,7 @@ function initializeApp() {
 
 
     /*
-       6. Остальные функции
+       Остальные функции.
     */
 
     setupScrollAnimation();
