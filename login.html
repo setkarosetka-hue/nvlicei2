@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
     <meta charset="UTF-8">
 
@@ -8,1329 +9,917 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Адміністратор — Ліцей №2</title>
+    <title>Вхід — Ліцей №2</title>
 
     <link rel="stylesheet" href="style.css">
 
     <style>
         body {
-            background: #f5f7fb;
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(79, 70, 229, 0.14),
+                    transparent 40%
+                ),
+                #f5f7fb;
         }
 
-        .admin-page {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 32px 20px 60px;
-        }
+        .login-page {
+            min-height: 100vh;
 
-        .admin-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 20px;
+            justify-content: center;
+
+            padding: 24px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .login-card {
+            background: white;
+
+            border: 1px solid var(--border);
+            border-radius: 28px;
+
+            padding: 34px;
+
+            box-shadow: var(--shadow);
+
+            animation: loginAppear 0.45s ease;
+        }
+
+        .login-logo {
+            text-align: center;
             margin-bottom: 28px;
         }
 
-        .admin-title h1 {
-            margin: 0 0 6px;
-            font-size: 32px;
-        }
+        .login-logo-mark {
+            width: 64px;
+            height: 64px;
 
-        .admin-title p {
-            margin: 0;
-            color: var(--muted);
-        }
+            margin: 0 auto 14px;
 
-        .admin-actions {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+            align-items: center;
+            justify-content: center;
 
-        .admin-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: white;
-            border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 22px;
-            box-shadow: var(--shadow);
-        }
 
-        .stat-icon {
-            width: 46px;
-            height: 46px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
-            background: rgba(79, 70, 229, 0.1);
+            background: var(--primary);
+            color: white;
+
             font-size: 22px;
-            margin-bottom: 16px;
-        }
-
-        .stat-value {
-            font-size: 30px;
             font-weight: 800;
-            color: var(--text);
+
+            box-shadow:
+                0 10px 25px
+                rgba(79, 70, 229, 0.25);
         }
 
-        .stat-label {
-            margin-top: 4px;
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .admin-layout {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 24px;
-        }
-
-        .admin-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 22px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-        }
-
-        .admin-card-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 22px;
-        }
-
-        .admin-card-header h2 {
+        .login-logo h1 {
             margin: 0 0 5px;
-            font-size: 21px;
+
+            font-size: 25px;
         }
 
-        .admin-card-header p {
+        .login-logo p {
             margin: 0;
+
             color: var(--muted);
             font-size: 14px;
         }
 
-        .system-status {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 18px;
-            border-radius: 16px;
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            margin-bottom: 20px;
-        }
+        .login-warning {
+            margin-bottom: 22px;
 
-        .system-status-icon {
-            width: 48px;
-            height: 48px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 14px 16px;
+
             border-radius: 14px;
-            background: rgba(79, 70, 229, 0.1);
-            font-size: 22px;
-        }
 
-        .system-status-text strong {
-            display: block;
-            margin-bottom: 4px;
-            font-size: 16px;
-        }
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
 
-        .system-status-text span {
-            color: var(--muted);
-            font-size: 13px;
-        }
+            color: #9a3412;
 
-        .maintenance-form {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 18px;
-            background: #fffaf0;
-            border: 1px solid #f5d08a;
-        }
-
-        .maintenance-form.visible {
-            display: block;
-        }
-
-        .maintenance-form h3 {
-            margin: 0 0 6px;
-            font-size: 17px;
-        }
-
-        .maintenance-form > p {
-            margin: 0 0 18px;
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 220px;
-            gap: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 7px;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .form-group textarea,
-        .form-group input {
-            width: 100%;
-            box-sizing: border-box;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 14px;
-            background: white;
-            color: var(--text);
-            font: inherit;
-            outline: none;
-        }
-
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .form-group textarea:focus,
-        .form-group input:focus {
-            border-color: var(--primary);
-        }
-
-        .button-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .user-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .user-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 14px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-        }
-
-        .user-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 0;
-        }
-
-        .user-avatar {
-            width: 42px;
-            height: 42px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(79, 70, 229, 0.1);
-            font-weight: 800;
-        }
-
-        .user-info {
-            min-width: 0;
-        }
-
-        .user-name {
-            font-weight: 700;
-        }
-
-        .user-login {
-            color: var(--muted);
-            font-size: 13px;
-            margin-top: 3px;
-        }
-
-        .role-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 9px;
-            border-radius: 999px;
-            background: #eef2ff;
-            color: #4338ca;
-            font-size: 12px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .quick-action {
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px;
-            background: white;
-            cursor: pointer;
-            text-align: left;
-            transition: 0.2s ease;
-        }
-
-        .quick-action:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary);
-        }
-
-        .quick-action-icon {
-            font-size: 23px;
-            margin-bottom: 9px;
-        }
-
-        .quick-action strong {
-            display: block;
-            margin-bottom: 3px;
-        }
-
-        .quick-action span {
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        .log-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .log-item {
-            display: flex;
-            gap: 12px;
-            padding: 12px;
-            border-radius: 12px;
-            background: #f8fafc;
-        }
-
-        .log-icon {
-            font-size: 18px;
-        }
-
-        .log-text {
             font-size: 13px;
             line-height: 1.5;
         }
 
-        .log-time {
-            color: var(--muted);
-            font-size: 11px;
-            margin-top: 3px;
-        }
-
-        .test-warning {
-            margin-bottom: 24px;
-            padding: 16px 18px;
-            border-radius: 16px;
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-            color: #9a3412;
-        }
-
-        .test-warning strong {
+        .login-warning strong {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
-        @media (max-width: 1050px) {
-            .admin-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .admin-layout {
-                grid-template-columns: 1fr;
-            }
+        .form-group {
+            margin-bottom: 18px;
         }
 
-        @media (max-width: 650px) {
-            .admin-page {
-                padding: 20px 14px 40px;
+        .form-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            box-sizing: border-box;
+
+            padding: 13px 46px 13px 14px;
+
+            border: 1px solid var(--border);
+            border-radius: 13px;
+
+            background: white;
+            color: var(--text);
+
+            font: inherit;
+
+            outline: none;
+
+            transition: 0.2s ease;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--primary);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(79, 70, 229, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+
+            right: 8px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            width: 34px;
+            height: 34px;
+
+            border: none;
+            background: transparent;
+
+            cursor: pointer;
+
+            border-radius: 9px;
+
+            font-size: 17px;
+        }
+
+        .password-toggle:hover {
+            background: #f1f5f9;
+        }
+
+        .role-title {
+            margin-bottom: 10px;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .roles {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 10px;
+
+            margin-bottom: 22px;
+        }
+
+        .role-option {
+            position: relative;
+        }
+
+        .role-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .role-label {
+            display: block;
+
+            padding: 13px;
+
+            border: 1px solid var(--border);
+            border-radius: 14px;
+
+            cursor: pointer;
+
+            text-align: center;
+
+            background: white;
+
+            transition: 0.2s ease;
+        }
+
+        .role-label:hover {
+            border-color: var(--primary);
+        }
+
+        .role-icon {
+            display: block;
+
+            font-size: 23px;
+
+            margin-bottom: 5px;
+        }
+
+        .role-name {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .role-option input:checked + .role-label {
+            border-color: var(--primary);
+
+            background:
+                rgba(79, 70, 229, 0.08);
+
+            box-shadow:
+                0 0 0 2px
+                rgba(79, 70, 229, 0.08);
+        }
+
+        .login-button {
+            width: 100%;
+
+            min-height: 48px;
+
+            border: none;
+
+            border-radius: 13px;
+
+            cursor: pointer;
+
+            font: inherit;
+            font-weight: 700;
+
+            background: var(--primary);
+            color: white;
+
+            transition: 0.2s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(79, 70, 229, 0.22);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-footer {
+            margin-top: 22px;
+
+            text-align: center;
+
+            font-size: 13px;
+
+            color: var(--muted);
+        }
+
+        .login-footer a {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .login-error {
+            display: none;
+
+            margin-bottom: 18px;
+
+            padding: 12px 14px;
+
+            border-radius: 12px;
+
+            background: #fef2f2;
+
+            border: 1px solid #fecaca;
+
+            color: #b91c1c;
+
+            font-size: 13px;
+        }
+
+        .login-error.visible {
+            display: block;
+        }
+
+        @keyframes loginAppear {
+
+            from {
+                opacity: 0;
+                transform: translateY(15px);
             }
 
-            .admin-header {
-                flex-direction: column;
-                align-items: flex-start;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
 
-            .admin-title h1 {
-                font-size: 27px;
+        }
+
+        @media (max-width: 520px) {
+
+            .login-page {
+                padding: 14px;
             }
 
-            .admin-grid {
-                grid-template-columns: 1fr;
+            .login-card {
+                padding: 25px 18px;
+
+                border-radius: 22px;
             }
 
-            .form-row {
-                grid-template-columns: 1fr;
+            .roles {
+                grid-template-columns: 1fr 1fr;
             }
 
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-
-            .user-item {
-                align-items: flex-start;
-            }
         }
     </style>
 </head>
 
+
 <body>
 
-    <header class="site-header">
+<main class="login-page">
 
-        <div class="header-container">
+    <div class="login-wrapper">
 
-            <a href="index.html" class="logo">
-                <span class="logo-mark">Л2</span>
-
-                <span>
-                    Ліцей №2
-                </span>
-            </a>
-
-            <nav class="navigation">
-
-                <a href="dashboard.html">
-                    Кабінет
-                </a>
-
-                <a href="schedule.html">
-                    Розклад
-                </a>
-
-                <a href="announcements.html">
-                    Оголошення
-                </a>
-
-                <a href="admin.html" class="active">
-                    Адмін
-                </a>
-
-            </nav>
-
-            <button
-                class="mobile-menu"
-                onclick="toggleMenu()"
-                aria-label="Меню"
-            >
-                ☰
-            </button>
-
-        </div>
-
-    </header>
+        <section class="login-card">
 
 
-    <main class="admin-page">
+            <!-- ЛОГО -->
 
-        <div class="admin-header">
+            <div class="login-logo">
 
-            <div class="admin-title">
+                <div class="login-logo-mark">
+                    Л2
+                </div>
 
                 <h1>
-                    Адміністративна панель
+                    Ліцей №2
                 </h1>
 
                 <p>
-                    Керування електронною системою
+                    Електронна система
                 </p>
 
             </div>
 
-            <div class="admin-actions">
 
-                <a
-                    href="dashboard.html"
-                    class="btn btn-secondary"
-                >
-                    ← Кабінет
-                </a>
+            <!-- ПРЕДУПРЕЖДЕНИЕ -->
 
-                <button
-                    class="btn btn-primary"
-                    onclick="logout()"
-                >
-                    Вийти
-                </button>
+            <div class="login-warning">
 
-            </div>
+                <strong>
+                    ⚠️ Тестовий режим
+                </strong>
 
-        </div>
-
-
-        <div class="test-warning">
-
-            <strong>
-                ⚠️ Тестовий режим
-            </strong>
-
-            Дані цієї адміністративної панелі
-            поки що зберігаються локально.
-            Після підключення Supabase вони будуть
-            перенесені в захищену базу даних.
-
-        </div>
-
-
-        <!-- СТАТИСТИКА -->
-
-        <section class="admin-grid">
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
-                    👥
-                </div>
-
-                <div class="stat-value">
-                    248
-                </div>
-
-                <div class="stat-label">
-                    Всього користувачів
-                </div>
+                Це демонстраційна версія системи.
+                Авторизація поки працює локально.
+                Після підключення Supabase буде
+                використано справжню систему акаунтів.
 
             </div>
 
 
-            <div class="stat-card">
+            <!-- ОШИБКА -->
 
-                <div class="stat-icon">
-                    👨‍🏫
-                </div>
-
-                <div class="stat-value">
-                    31
-                </div>
-
-                <div class="stat-label">
-                    Вчителів
-                </div>
-
-            </div>
+            <div
+                class="login-error"
+                id="loginError"
+            ></div>
 
 
-            <div class="stat-card">
+            <!-- ФОРМА -->
 
-                <div class="stat-icon">
-                    🎓
-                </div>
-
-                <div class="stat-value">
-                    198
-                </div>
-
-                <div class="stat-label">
-                    Учнів
-                </div>
-
-            </div>
+            <form id="loginForm">
 
 
-            <div class="stat-card">
+                <!-- ЛОГИН -->
 
-                <div class="stat-icon">
-                    🟢
-                </div>
+                <div class="form-group">
 
-                <div class="stat-value">
-                    241
-                </div>
+                    <label for="login">
+                        Логін
+                    </label>
 
-                <div class="stat-label">
-                    Активних
-                </div>
+                    <div class="input-wrapper">
 
-            </div>
-
-        </section>
-
-
-        <div class="admin-layout">
-
-            <div>
-
-
-                <!-- СТАТУС СИСТЕМЫ -->
-
-                <section class="admin-card">
-
-                    <div class="admin-card-header">
-
-                        <div>
-
-                            <h2>
-                                Статус системи
-                            </h2>
-
-                            <p>
-                                Керування режимом технічних робіт
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="system-status">
-
-                        <div
-                            class="system-status-icon"
-                            id="systemStatusIcon"
+                        <input
+                            type="text"
+                            id="login"
+                            name="login"
+                            placeholder="Введіть логін"
+                            autocomplete="username"
+                            required
                         >
-                            🟢
-                        </div>
-
-                        <div class="system-status-text">
-
-                            <strong
-                                id="systemStatusTitle"
-                            >
-                                Система працює
-                            </strong>
-
-                            <span
-                                id="systemStatusDescription"
-                            >
-                                Користувачі можуть
-                                користуватися системою.
-                            </span>
-
-                        </div>
 
                     </div>
 
-
-                    <div
-                        class="maintenance-form"
-                        id="maintenanceForm"
-                    >
-
-                        <h3>
-                            Увімкнення технічних робіт
-                        </h3>
-
-                        <p>
-                            Після активації звичайні
-                            користувачі не зможуть
-                            користуватися системою.
-                            Адміністратори матимуть доступ.
-                        </p>
+                </div>
 
 
-                        <div class="form-row">
+                <!-- ПАРОЛЬ -->
 
-                            <div class="form-group">
+                <div class="form-group">
 
-                                <label for="maintenanceReason">
-                                    Причина
-                                </label>
+                    <label for="password">
+                        Пароль
+                    </label>
 
-                                <textarea
-                                    id="maintenanceReason"
-                                    placeholder="Наприклад: оновлення електронного журналу..."
-                                ></textarea>
+                    <div class="input-wrapper">
 
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <label for="maintenanceEnd">
-                                    Завершення
-                                </label>
-
-                                <input
-                                    type="datetime-local"
-                                    id="maintenanceEnd"
-                                >
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="button-row">
-
-                            <button
-                                class="btn btn-primary"
-                                onclick="activateMaintenance()"
-                            >
-                                🔧 Увімкнути
-                            </button>
-
-                            <button
-                                class="btn btn-secondary"
-                                onclick="hideMaintenanceForm()"
-                            >
-                                Скасувати
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="button-row"
-                        id="maintenanceButtons"
-                    >
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Введіть пароль"
+                            autocomplete="current-password"
+                            required
+                        >
 
                         <button
-                            class="btn btn-primary"
-                            onclick="showMaintenanceForm()"
+                            type="button"
+                            class="password-toggle"
+                            id="passwordToggle"
+                            aria-label="Показати пароль"
                         >
-                            🔧 Технічні роботи
+                            👁️
                         </button>
 
                     </div>
 
-                </section>
+                </div>
 
 
-                <!-- ПОЛЬЗОВАТЕЛИ -->
+                <!-- РОЛЬ -->
 
-                <section class="admin-card">
-
-                    <div class="admin-card-header">
-
-                        <div>
-
-                            <h2>
-                                Користувачі
-                            </h2>
-
-                            <p>
-                                Тестовий список користувачів
-                            </p>
-
-                        </div>
-
-                    </div>
+                <div class="role-title">
+                    Тип акаунта
+                </div>
 
 
-                    <div class="user-list">
+                <div class="roles">
 
-                        <div class="user-item">
 
-                            <div class="user-left">
+                    <!-- УЧЕНИК -->
 
-                                <div class="user-avatar">
-                                    А
-                                </div>
+                    <div class="role-option">
 
-                                <div class="user-info">
+                        <input
+                            type="radio"
+                            id="roleStudent"
+                            name="role"
+                            value="student"
+                            checked
+                        >
 
-                                    <div class="user-name">
-                                        Адміністратор
-                                    </div>
+                        <label
+                            for="roleStudent"
+                            class="role-label"
+                        >
 
-                                    <div class="user-login">
-                                        admin
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <span class="role-badge">
-                                Адміністратор
+                            <span class="role-icon">
+                                🎓
                             </span>
 
-                        </div>
-
-
-                        <div class="user-item">
-
-                            <div class="user-left">
-
-                                <div class="user-avatar">
-                                    О
-                                </div>
-
-                                <div class="user-info">
-
-                                    <div class="user-name">
-                                        Олена Коваленко
-                                    </div>
-
-                                    <div class="user-login">
-                                        teacher_01
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <span class="role-badge">
-                                Вчитель
-                            </span>
-
-                        </div>
-
-
-                        <div class="user-item">
-
-                            <div class="user-left">
-
-                                <div class="user-avatar">
-                                    С
-                                </div>
-
-                                <div class="user-info">
-
-                                    <div class="user-name">
-                                        Самуїл Шапошников
-                                    </div>
-
-                                    <div class="user-login">
-                                        student_01
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <span class="role-badge">
+                            <span class="role-name">
                                 Учень
                             </span>
 
-                        </div>
-
-
-                        <div class="user-item">
-
-                            <div class="user-left">
-
-                                <div class="user-avatar">
-                                    Б
-                                </div>
-
-                                <div class="user-info">
-
-                                    <div class="user-name">
-                                        Батько учня
-                                    </div>
-
-                                    <div class="user-login">
-                                        parent_01
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <span class="role-badge">
-                                Батько / мати
-                            </span>
-
-                        </div>
+                        </label>
 
                     </div>
 
-                </section>
+
+                    <!-- УЧИТЕЛЬ -->
+
+                    <div class="role-option">
+
+                        <input
+                            type="radio"
+                            id="roleTeacher"
+                            name="role"
+                            value="teacher"
+                        >
+
+                        <label
+                            for="roleTeacher"
+                            class="role-label"
+                        >
+
+                            <span class="role-icon">
+                                👨‍🏫
+                            </span>
+
+                            <span class="role-name">
+                                Вчитель
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- РОДИТЕЛЬ -->
+
+                    <div class="role-option">
+
+                        <input
+                            type="radio"
+                            id="roleParent"
+                            name="role"
+                            value="parent"
+                        >
+
+                        <label
+                            for="roleParent"
+                            class="role-label"
+                        >
+
+                            <span class="role-icon">
+                                👨‍👩‍👦
+                            </span>
+
+                            <span class="role-name">
+                                Батьки
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- АДМИН -->
+
+                    <div class="role-option">
+
+                        <input
+                            type="radio"
+                            id="roleAdmin"
+                            name="role"
+                            value="admin"
+                        >
+
+                        <label
+                            for="roleAdmin"
+                            class="role-label"
+                        >
+
+                            <span class="role-icon">
+                                🛠️
+                            </span>
+
+                            <span class="role-name">
+                                Адмін
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- КНОПКА -->
+
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+                    Увійти
+                </button>
+
+            </form>
+
+
+            <div class="login-footer">
+
+                <a href="index.html">
+                    ← Повернутися на головну
+                </a>
 
             </div>
 
 
-            <div>
+        </section>
 
+    </div>
 
-                <!-- БЫСТРЫЕ ДЕЙСТВИЯ -->
+</main>
 
-                <section class="admin-card">
 
-                    <div class="admin-card-header">
+<script src="app.js"></script>
 
-                        <div>
 
-                            <h2>
-                                Швидкі дії
-                            </h2>
+<script>
 
-                            <p>
-                                Керування системою
-                            </p>
+"use strict";
 
-                        </div>
 
-                    </div>
+/* =========================================================
+   ПЕРЕХОД ПО РОЛИ
+   ========================================================= */
 
+function getRolePage(role) {
 
-                    <div class="quick-actions">
+    const pages = {
 
-                        <button
-                            class="quick-action"
-                            onclick="adminAction('users')"
-                        >
+        admin:
+            "admin.html",
 
-                            <div class="quick-action-icon">
-                                👤
-                            </div>
+        teacher:
+            "teacher.html",
 
-                            <strong>
-                                Додати користувача
-                            </strong>
+        student:
+            "student.html",
 
-                            <span>
-                                Створення нового облікового запису
-                            </span>
+        parent:
+            "parent.html"
+    };
 
-                        </button>
+    return (
+        pages[role] ||
+        "dashboard.html"
+    );
+}
 
 
-                        <button
-                            class="quick-action"
-                            onclick="adminAction('announcement')"
-                        >
+/* =========================================================
+   ПОКАЗ / СКРЫТИЕ ПАРОЛЯ
+   ========================================================= */
 
-                            <div class="quick-action-icon">
-                                📢
-                            </div>
+const passwordInput =
+    document.getElementById(
+        "password"
+    );
 
-                            <strong>
-                                Оголошення
-                            </strong>
+const passwordToggle =
+    document.getElementById(
+        "passwordToggle"
+    );
 
-                            <span>
-                                Створити нове оголошення
-                            </span>
 
-                        </button>
+passwordToggle.addEventListener(
+    "click",
+    function () {
 
+        if (
+            passwordInput.type ===
+            "password"
+        ) {
 
-                        <button
-                            class="quick-action"
-                            onclick="adminAction('schedule')"
-                        >
+            passwordInput.type =
+                "text";
 
-                            <div class="quick-action-icon">
-                                📅
-                            </div>
+            passwordToggle.textContent =
+                "🙈";
 
-                            <strong>
-                                Розклад
-                            </strong>
+            passwordToggle.setAttribute(
+                "aria-label",
+                "Сховати пароль"
+            );
 
-                            <span>
-                                Керування розкладом
-                            </span>
+        } else {
 
-                        </button>
+            passwordInput.type =
+                "password";
 
+            passwordToggle.textContent =
+                "👁️";
 
-                        <button
-                            class="quick-action"
-                            onclick="adminAction('journal')"
-                        >
-
-                            <div class="quick-action-icon">
-                                📚
-                            </div>
-
-                            <strong>
-                                Журнал
-                            </strong>
-
-                            <span>
-                                Оцінки та відвідування
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </section>
-
-
-                <!-- ЛОГ -->
-
-                <section class="admin-card">
-
-                    <div class="admin-card-header">
-
-                        <div>
-
-                            <h2>
-                                Журнал системи
-                            </h2>
-
-                            <p>
-                                Останні дії
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="log-list">
-
-                        <div class="log-item">
-
-                            <div class="log-icon">
-                                🔐
-                            </div>
-
-                            <div class="log-text">
-
-                                Вхід адміністратора
-
-                                <div class="log-time">
-                                    Сьогодні, 15:20
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="log-item">
-
-                            <div class="log-icon">
-                                📢
-                            </div>
-
-                            <div class="log-text">
-
-                                Оновлено оголошення
-
-                                <div class="log-time">
-                                    Сьогодні, 14:45
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="log-item">
-
-                            <div class="log-icon">
-                                👤
-                            </div>
-
-                            <div class="log-text">
-
-                                Перевірено користувачів
-
-                                <div class="log-time">
-                                    Сьогодні, 13:10
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-            </div>
-
-        </div>
-
-    </main>
-
-
-    <script src="app.js"></script>
-
-
-    <script>
-        "use strict";
-
-
-        /* =====================================================
-           ТЕКУЩЕЕ СОСТОЯНИЕ
-           ===================================================== */
-
-        function updateMaintenancePanel() {
-
-            const state =
-                getMaintenanceState();
-
-
-            const title =
-                document.getElementById(
-                    "systemStatusTitle"
-                );
-
-            const description =
-                document.getElementById(
-                    "systemStatusDescription"
-                );
-
-            const icon =
-                document.getElementById(
-                    "systemStatusIcon"
-                );
-
-            const buttons =
-                document.getElementById(
-                    "maintenanceButtons"
-                );
-
-            const form =
-                document.getElementById(
-                    "maintenanceForm"
-                );
-
-
-            if (state.enabled) {
-
-                icon.textContent = "🔧";
-
-                title.textContent =
-                    "Технічні роботи активні";
-
-                description.textContent =
-                    state.reason ||
-                    "Система тимчасово недоступна для звичайних користувачів.";
-
-                buttons.innerHTML = `
-                    <button
-                        class="btn btn-primary"
-                        onclick="disableMaintenance()"
-                    >
-                        ✅ Завершити технічні роботи
-                    </button>
-
-                    <a
-                        href="maintenance.html"
-                        class="btn btn-secondary"
-                    >
-                        Переглянути сторінку
-                    </a>
-                `;
-
-                form.classList.remove(
-                    "visible"
-                );
-
-            } else {
-
-                icon.textContent = "🟢";
-
-                title.textContent =
-                    "Система працює";
-
-                description.textContent =
-                    "Користувачі можуть користуватися системою.";
-
-                buttons.innerHTML = `
-                    <button
-                        class="btn btn-primary"
-                        onclick="showMaintenanceForm()"
-                    >
-                        🔧 Технічні роботи
-                    </button>
-                `;
-            }
+            passwordToggle.setAttribute(
+                "aria-label",
+                "Показати пароль"
+            );
         }
+    }
+);
 
 
-        /* =====================================================
-           ПОКАЗАТЬ ФОРМУ
-           ===================================================== */
+/* =========================================================
+   ОШИБКА
+   ========================================================= */
 
-        function showMaintenanceForm() {
+function showLoginError(message) {
 
-            const form =
-                document.getElementById(
-                    "maintenanceForm"
+    const error =
+        document.getElementById(
+            "loginError"
+        );
+
+    error.textContent =
+        message;
+
+    error.classList.add(
+        "visible"
+    );
+}
+
+
+function hideLoginError() {
+
+    const error =
+        document.getElementById(
+            "loginError"
+        );
+
+    error.classList.remove(
+        "visible"
+    );
+
+    error.textContent = "";
+}
+
+
+/* =========================================================
+   АВТОРИЗАЦИЯ
+   ========================================================= */
+
+document
+    .getElementById("loginForm")
+    .addEventListener(
+        "submit",
+        function (event) {
+
+            event.preventDefault();
+
+            hideLoginError();
+
+
+            const login =
+                document
+                    .getElementById("login")
+                    .value
+                    .trim();
+
+            const password =
+                document
+                    .getElementById("password")
+                    .value;
+
+            const role =
+                document.querySelector(
+                    'input[name="role"]:checked'
+                )?.value;
+
+
+            /* Проверка */
+
+            if (!login) {
+
+                showLoginError(
+                    "Введіть логін."
                 );
 
-            const reason =
-                document.getElementById(
-                    "maintenanceReason"
-                );
-
-            if (form) {
-                form.classList.add(
-                    "visible"
-                );
-            }
-
-            if (reason) {
-                reason.focus();
-            }
-        }
-
-
-        /* =====================================================
-           СКРЫТЬ ФОРМУ
-           ===================================================== */
-
-        function hideMaintenanceForm() {
-
-            const form =
-                document.getElementById(
-                    "maintenanceForm"
-                );
-
-            if (form) {
-                form.classList.remove(
-                    "visible"
-                );
-            }
-        }
-
-
-        /* =====================================================
-           ВКЛЮЧИТЬ ТЕХНИЧЕСКИЕ РАБОТЫ
-           ===================================================== */
-
-        function activateMaintenance() {
-
-            const reason =
-                document.getElementById(
-                    "maintenanceReason"
-                ).value.trim();
-
-            const endAt =
-                document.getElementById(
-                    "maintenanceEnd"
-                ).value;
-
-
-            const finalReason =
-                reason ||
-                "Проводяться планові технічні роботи.";
-
-
-            const confirmed =
-                confirm(
-                    "Увімкнути режим технічних робіт?\n\n" +
-                    "Звичайні користувачі будуть направлені " +
-                    "на сторінку технічних робіт."
-                );
-
-
-            if (!confirmed) {
                 return;
             }
 
 
-            enableMaintenanceMode(
-                finalReason,
-                endAt
-            );
+            if (!password) {
 
-
-            hideMaintenanceForm();
-
-            updateMaintenancePanel();
-
-
-            alert(
-                "Режим технічних робіт увімкнено."
-            );
-        }
-
-
-        /* =====================================================
-           ВЫКЛЮЧИТЬ ТЕХНИЧЕСКИЕ РАБОТЫ
-           ===================================================== */
-
-        function disableMaintenance() {
-
-            const confirmed =
-                confirm(
-                    "Завершити технічні роботи?\n\n" +
-                    "Система знову стане доступною користувачам."
+                showLoginError(
+                    "Введіть пароль."
                 );
 
-
-            if (!confirmed) {
                 return;
             }
 
 
-            disableMaintenanceMode();
+            if (!role) {
 
-            updateMaintenancePanel();
+                showLoginError(
+                    "Оберіть тип акаунта."
+                );
+
+                return;
+            }
 
 
-            alert(
-                "Технічні роботи завершено."
-            );
-        }
+            /*
+               ВАЖНО:
+               Это пока тестовая авторизация.
+
+               Пароль пока не проверяется
+               через базу данных.
+
+               После подключения Supabase
+               здесь будет настоящая авторизация.
+            */
 
 
-        /* =====================================================
-           БЫСТРЫЕ ДЕЙСТВИЯ
-           ===================================================== */
+            const user = {
 
-        function adminAction(action) {
+                login:
+                    login,
 
-            const messages = {
+                role:
+                    role,
 
-                users:
-                    "Модуль керування користувачами буде підключено на наступному етапі.",
+                loggedIn:
+                    true,
 
-                announcement:
-                    "Модуль оголошень буде підключено на наступному етапі.",
-
-                schedule:
-                    "Модуль керування розкладом буде підключено на наступному етапі.",
-
-                journal:
-                    "Електронний журнал буде підключено на наступному етапі."
+                loginAt:
+                    new Date().toISOString()
             };
 
 
-            alert(
-                messages[action] ||
-                "Ця функція ще розробляється."
+            localStorage.setItem(
+                "lyceum2_user",
+                JSON.stringify(user)
             );
+
+
+            /* Технические работы */
+
+            const maintenance =
+                getMaintenanceState();
+
+
+            /*
+               Администратор может войти
+               даже во время технических работ.
+            */
+
+            if (
+                maintenance.enabled &&
+                role !== "admin"
+            ) {
+
+                window.location.href =
+                    "maintenance.html";
+
+                return;
+            }
+
+
+            /*
+               Переход в нужный кабинет.
+            */
+
+            const targetPage =
+                getRolePage(role);
+
+
+            window.location.href =
+                targetPage;
+        }
+    );
+
+
+/* =========================================================
+   ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ВОШЁЛ
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const user =
+            getCurrentUser();
+
+        if (
+            !user ||
+            user.loggedIn !== true
+        ) {
+            return;
         }
 
 
-        /* =====================================================
-           ЗАПУСК
-           ===================================================== */
+        /*
+           Не перенаправляем автоматически
+           с login.html.
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
+           Пользователь может захотеть
+           войти под другим тестовым аккаунтом.
+        */
+    }
+);
 
-                updateMaintenancePanel();
-            }
-        );
-    </script>
+</script>
 
 </body>
 </html>
