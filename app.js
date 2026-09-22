@@ -1,35 +1,12 @@
-"use strict";
-
-/* =========================================================
-   ЛІЦЕЙ №2 — ОСНОВНОЙ JAVASCRIPT
-   Версия 0.3.0
-   ========================================================= */
-
-
-/* =========================================================
-   1. НАСТРОЙКИ
-   ========================================================= */
-
 const SYSTEM_CONFIG = {
-    version: "0.3.0",
+    version: "1.0.0",
     officiallyApproved: false,
     rulesVersion: "1.0",
-    testMode: true
+    testMode: false
 };
 
-
-/* =========================================================
-   2. КЛЮЧИ LOCAL STORAGE
-   ========================================================= */
-
-const USER_STORAGE_KEY = "lyceum2_user";
 const CONSENT_STORAGE_KEY = "lyceum2_consent";
 const MAINTENANCE_STORAGE_KEY = "lyceum2_maintenance";
-
-
-/* =========================================================
-   3. СТРАНИЦЫ
-   ========================================================= */
 
 const PUBLIC_PAGES = [
     "",
@@ -39,919 +16,461 @@ const PUBLIC_PAGES = [
     "maintenance.html"
 ];
 
-
-/* Какие роли могут открывать страницы */
-
 const PAGE_ROLES = {
     "admin.html": ["admin"],
-
-    "teacher.html": [
-        "teacher",
-        "admin"
-    ],
-
-    "student.html": [
-        "student",
-        "admin"
-    ],
-
-    "parent.html": [
-        "parent",
-        "admin"
-    ]
+    "teacher.html": ["teacher", "admin"],
+    "student.html": ["student", "admin"],
+    "parent.html": ["parent", "admin"]
 };
 
 
-/* =========================================================
-   4. МОБИЛЬНОЕ МЕНЮ
-   ========================================================= */
-
-function toggleMenu() {
-
-    const navigation =
-        document.querySelector(".navigation");
-
-    if (!navigation) {
-        return;
-    }
-
-    navigation.classList.toggle(
-        "mobile-open"
-    );
-}
-
-
-/* Закрытие меню после перехода */
-
-document.addEventListener("click", function (event) {
-
-    const navigation =
-        document.querySelector(".navigation");
-
-    if (!navigation) {
-        return;
-    }
-
-    const link =
-        event.target.closest("a");
-
-    if (
-        link &&
-        navigation.classList.contains(
-            "mobile-open"
-        )
-    ) {
-        navigation.classList.remove(
-            "mobile-open"
-        );
-    }
-});
-
-
-/* =========================================================
-   5. ОПРЕДЕЛЕНИЕ ТЕКУЩЕЙ СТРАНИЦЫ
-   ========================================================= */
-
 function getCurrentPage() {
-
-    let page =
-        window.location.pathname
-            .split("/")
-            .pop();
-
-    if (!page) {
-        page = "index.html";
-    }
-
-    return page.toLowerCase();
+    const path = window.location.pathname;
+    return path.substring(path.lastIndexOf("/") + 1) || "index.html";
 }
 
 
-/* =========================================================
-   6. ПОЛЬЗОВАТЕЛЬ
-   ========================================================= */
-
-function getCurrentUser() {
-
-    try {
-
-        const savedUser =
-            localStorage.getItem(
-                USER_STORAGE_KEY
-            );
-
-        if (!savedUser) {
-            return null;
-        }
-
-        const user =
-            JSON.parse(savedUser);
-
-        if (
-            !user ||
-            typeof user !== "object"
-        ) {
-            return null;
-        }
-
-        return user;
-
-    } catch (error) {
-
-        console.error(
-            "Ошибка чтения пользователя:",
-            error
-        );
-
-        localStorage.removeItem(
-            USER_STORAGE_KEY
-        );
-
+async function getCurrentUser() {
+    if (
+        typeof supabaseClient === "undefined" ||
+        !supabaseClient ||
+        !supabaseClient.auth
+    ) {
         return null;
     }
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    return user || null;
 }
 
 
-/* Проверка входа */
+async function getCurrentProfile() {
+    const user = await getCurrentUser();
 
-function isLoggedIn() {
+    if (!user) {
+        return null;
+    }
 
-    const user =
-        getCurrentUser();
+    const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("id, email, full_name, role")
+        .eq("id", user.id)
+        .single();
 
-    return !!(
-        user &&
-        user.loggedIn === true &&
-        user.role
-    );
+    if (error) {
+        console.error("Profile error:", error);
+        return null;
+    }
+
+    return data;
 }
 
 
-/* =========================================================
-   7. СОГЛАСИЕ
-   ========================================================= */
+async function isLoggedIn() {
+    const user = await getCurrentUser();
+    return !!user;
+}
+
 
 function getConsent() {
-
     try {
-
-        const savedConsent =
-            localStorage.getItem(
-                CONSENT_STORAGE_KEY
-            );
-
-        if (!savedConsent) {
-            return null;
-        }
-
         return JSON.parse(
-            savedConsent
+            localStorage.getItem(CONSENT_STORAGE_KEY)
         );
-
-    } catch (error) {
-
-        console.error(
-            "Ошибка чтения согласия:",
-            error
-        );
-
-        localStorage.removeItem(
-            CONSENT_STORAGE_KEY
-        );
-
+    } catch {
         return null;
     }
 }
 
 
 function hasValidConsent() {
-
-    const consent =
-        getConsent();
-
-    if (!consent) {
-        return false;
-    }
+    const consent = getConsent();
 
     return (
-        consent.rulesVersion ===
-        SYSTEM_CONFIG.rulesVersion
+        consent &&
+        consent.version === SYSTEM_CONFIG.rulesVersion &&
+        consent.accepted === true
     );
 }
 
 
-/* Сохранение согласия */
-
-function saveConsent(settings = {}) {
-
-    const consentData = {
-
-        rulesVersion:
-            SYSTEM_CONFIG.rulesVersion,
-
-        acceptedAt:
-            new Date().toISOString(),
-
-        settings: {
-            required: true,
-            ...settings
-        }
-    };
-
+function saveConsent(type = "all") {
     localStorage.setItem(
         CONSENT_STORAGE_KEY,
-        JSON.stringify(consentData)
+        JSON.stringify({
+            accepted: true,
+            type: type,
+            version: SYSTEM_CONFIG.rulesVersion,
+            acceptedAt: new Date().toISOString()
+        })
     );
-
-    return consentData;
 }
 
 
-/* =========================================================
-   8. ПЕРЕХОД НА СТРАНИЦУ
-   ========================================================= */
-
 function redirectTo(page) {
-
-    if (!page) {
-        return;
-    }
-
     window.location.href = page;
 }
 
 
-/* =========================================================
-   9. ПРОВЕРКА СОГЛАСИЯ
-   ========================================================= */
-
-function checkConsent() {
-
-    const currentPage =
-        getCurrentPage();
-
-    /*
-       Публичные страницы можно открывать
-       без предварительного согласия.
-    */
-
-    if (
-        PUBLIC_PAGES.includes(
-            currentPage
-        )
-    ) {
-        return true;
+async function logout() {
+    try {
+        if (
+            typeof supabaseClient !== "undefined" &&
+            supabaseClient?.auth
+        ) {
+            await supabaseClient.auth.signOut();
+        }
+    } catch (error) {
+        console.error("Logout error:", error);
     }
 
-    /*
-       Если согласие отсутствует —
-       отправляем пользователя на правила.
-    */
+    localStorage.removeItem("lyceum2_user");
 
-    if (!hasValidConsent()) {
-
-        redirectTo(
-            "consent.html"
-        );
-
-        return false;
-    }
-
-    return true;
+    window.location.href = "login.html";
 }
 
-
-/* =========================================================
-   10. ПРОВЕРКА АВТОРИЗАЦИИ
-   ========================================================= */
-
-function checkAuthentication() {
-
-    const currentPage =
-        getCurrentPage();
-
-    /*
-       Публичные страницы
-    */
-
-    if (
-        PUBLIC_PAGES.includes(
-            currentPage
-        )
-    ) {
-        return true;
-    }
-
-    /*
-       Пользователь должен быть авторизован.
-    */
-
-    if (!isLoggedIn()) {
-
-        redirectTo(
-            "login.html"
-        );
-
-        return false;
-    }
-
-    return true;
-}
-
-
-/* =========================================================
-   11. ПРОВЕРКА РОЛИ
-   ========================================================= */
-
-function checkRoleAccess() {
-
-    const currentPage =
-        getCurrentPage();
-
-    /*
-       Если страница не имеет
-       специального ограничения,
-       её могут открыть все авторизованные.
-    */
-
-    if (!PAGE_ROLES[currentPage]) {
-        return true;
-    }
-
-    const user =
-        getCurrentUser();
-
-    if (
-        !user ||
-        !user.role
-    ) {
-
-        redirectTo(
-            "login.html"
-        );
-
-        return false;
-    }
-
-    const allowedRoles =
-        PAGE_ROLES[currentPage];
-
-    if (
-        !allowedRoles.includes(
-            user.role
-        )
-    ) {
-
-        alert(
-            "Ця сторінка недоступна для вашої ролі."
-        );
-
-        redirectTo(
-            "dashboard.html"
-        );
-
-        return false;
-    }
-
-    return true;
-}
-
-
-/* =========================================================
-   12. ВЫХОД
-   ========================================================= */
-
-function logout() {
-
-    localStorage.removeItem(
-        USER_STORAGE_KEY
-    );
-
-    window.location.href =
-        "login.html";
-}
-
-
-/* =========================================================
-   13. ТЕХНИЧЕСКИЕ РАБОТЫ
-   ========================================================= */
 
 function getMaintenanceState() {
-
     try {
-
-        const saved =
-            localStorage.getItem(
-                MAINTENANCE_STORAGE_KEY
-            );
-
-        if (!saved) {
-
-            return {
-                enabled: false,
-                reason: "",
-                endAt: "",
-                updatedAt: null
-            };
-        }
-
-        const state =
-            JSON.parse(saved);
-
-        return {
-
-            enabled:
-                state.enabled === true,
-
-            reason:
-                state.reason || "",
-
-            endAt:
-                state.endAt || "",
-
-            updatedAt:
-                state.updatedAt || null
-        };
-
-    } catch (error) {
-
-        console.error(
-            "Ошибка чтения технических работ:",
-            error
+        return JSON.parse(
+            localStorage.getItem(MAINTENANCE_STORAGE_KEY)
         );
-
-        return {
-            enabled: false,
-            reason: "",
-            endAt: "",
-            updatedAt: null
-        };
+    } catch {
+        return null;
     }
 }
 
 
-/* Сохранение режима */
+function isMaintenanceEnabled() {
+    const maintenance = getMaintenanceState();
 
-function setMaintenanceState(
-    enabled,
-    reason = "",
-    endAt = ""
-) {
+    return !!(
+        maintenance &&
+        maintenance.enabled === true
+    );
+}
 
-    const state = {
 
-        enabled:
-            enabled === true,
-
-        reason:
-            String(reason || ""),
-
-        endAt:
-            String(endAt || ""),
-
-        updatedAt:
-            new Date().toISOString()
-    };
-
+function setMaintenanceState(enabled, reason = "", endTime = "") {
     localStorage.setItem(
         MAINTENANCE_STORAGE_KEY,
-        JSON.stringify(state)
-    );
-
-    updateSystemStatus();
-
-    return state;
-}
-
-
-/* Включение */
-
-function enableMaintenanceMode(
-    reason = "Проводятся технические работы.",
-    endAt = ""
-) {
-
-    return setMaintenanceState(
-        true,
-        reason,
-        endAt
+        JSON.stringify({
+            enabled: enabled,
+            reason: reason,
+            endTime: endTime,
+            updatedAt: new Date().toISOString()
+        })
     );
 }
 
 
-/* Выключение */
+async function checkMaintenance() {
+    if (!isMaintenanceEnabled()) {
+        return false;
+    }
 
-function disableMaintenanceMode() {
+    const page = getCurrentPage();
 
-    return setMaintenanceState(
-        false,
-        "",
-        ""
-    );
-}
-
-
-/* Проверка */
-
-function isMaintenanceMode() {
-
-    const state =
-        getMaintenanceState();
-
-    return state.enabled === true;
-}
-
-
-/* =========================================================
-   14. ПРОВЕРКА ТЕХНИЧЕСКИХ РАБОТ
-   ========================================================= */
-
-function checkMaintenanceAccess() {
-
-    const currentPage =
-        getCurrentPage();
-
-    /*
-       Страница технических работ
-       должна открываться всегда.
-    */
-
-    if (
-        currentPage ===
-        "maintenance.html"
-    ) {
+    if (page === "maintenance.html") {
         return true;
     }
 
-    /*
-       Публичные страницы доступны.
-    */
+    const profile = await getCurrentProfile();
 
-    if (
-        PUBLIC_PAGES.includes(
-            currentPage
-        )
-    ) {
+    if (profile?.role === "admin") {
+        return false;
+    }
+
+    if (!PUBLIC_PAGES.includes(page)) {
+        window.location.href = "maintenance.html";
         return true;
     }
 
-    const maintenance =
-        getMaintenanceState();
-
-    /*
-       Технические работы выключены.
-    */
-
-    if (!maintenance.enabled) {
-        return true;
-    }
-
-    const user =
-        getCurrentUser();
-
-    /*
-       Администратор имеет доступ
-       во время технических работ.
-    */
-
-    if (
-        user &&
-        user.role === "admin"
-    ) {
-        return true;
-    }
-
-    /*
-       Остальных отправляем
-       на maintenance.html.
-    */
-
-    redirectTo(
-        "maintenance.html"
-    );
-
-    return false;
+    return true;
 }
 
 
-/* =========================================================
-   15. СТАТУС СИСТЕМЫ
-   ========================================================= */
+async function checkAuthentication() {
+    const page = getCurrentPage();
 
-function updateSystemStatus() {
+    if (PUBLIC_PAGES.includes(page)) {
+        return true;
+    }
 
-    const statusElements =
-        document.querySelectorAll(
-            ".status-badge"
-        );
+    const loggedIn = await isLoggedIn();
 
-    const maintenance =
-        getMaintenanceState();
+    if (!loggedIn) {
+        window.location.href = "login.html";
+        return false;
+    }
 
-    statusElements.forEach(
-        function (element) {
-
-            if (
-                maintenance.enabled
-            ) {
-
-                element.innerHTML = `
-                    <span class="status-dot maintenance"></span>
-                    Технічні роботи
-                `;
-
-            } else {
-
-                element.innerHTML = `
-                    <span class="status-dot"></span>
-                    Система працює
-                `;
-            }
-        }
-    );
+    return true;
 }
 
 
-/* =========================================================
-   16. АНИМАЦИИ
-   ========================================================= */
+async function checkRoleAccess() {
+    const page = getCurrentPage();
 
-function setupScrollAnimation() {
+    if (!PAGE_ROLES[page]) {
+        return true;
+    }
 
-    const cards =
-        document.querySelectorAll(
-            ".feature-card"
-        );
+    const profile = await getCurrentProfile();
 
-    if (!cards.length) {
+    if (!profile) {
+        window.location.href = "login.html";
+        return false;
+    }
+
+    const allowedRoles = PAGE_ROLES[page];
+
+    if (!allowedRoles.includes(profile.role)) {
+        const rolePages = {
+            admin: "admin.html",
+            teacher: "teacher.html",
+            student: "student.html",
+            parent: "parent.html"
+        };
+
+        const destination =
+            rolePages[profile.role] || "dashboard.html";
+
+        window.location.href = destination;
+
+        return false;
+    }
+
+    return true;
+}
+
+
+function toggleMenu() {
+    const nav = document.querySelector(".main-nav");
+
+    if (!nav) {
         return;
     }
 
-    /*
-       Старые браузеры:
-       просто показываем карточки.
-    */
+    nav.classList.toggle("active");
+}
 
-    if (
-        !(
-            "IntersectionObserver"
-            in window
-        )
-    ) {
 
-        cards.forEach(
-            function (card) {
+function setupMobileMenu() {
+    const menuButton = document.querySelector(
+        ".menu-toggle"
+    );
 
-                card.classList.add(
-                    "visible"
-                );
-            }
+    if (menuButton) {
+        menuButton.addEventListener(
+            "click",
+            toggleMenu
         );
+    }
+}
+
+
+function setupScrollAnimations() {
+    const elements = document.querySelectorAll(
+        ".card, .feature-card, .stat-card, .section"
+    );
+
+    if (!("IntersectionObserver" in window)) {
+        elements.forEach(element => {
+            element.classList.add("visible");
+        });
 
         return;
     }
 
-    const observer =
-        new IntersectionObserver(
-            function (entries) {
-
-                entries.forEach(
-                    function (entry) {
-
-                        if (
-                            entry.isIntersecting
-                        ) {
-
-                            entry.target.classList.add(
-                                "visible"
-                            );
-
-                            observer.unobserve(
-                                entry.target
-                            );
-                        }
-                    }
-                );
-            },
-            {
-                threshold: 0.12
-            }
-        );
-
-    cards.forEach(
-        function (card) {
-
-            card.classList.add(
-                "scroll-hidden"
-            );
-
-            observer.observe(card);
+    const observer = new IntersectionObserver(
+        entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        {
+            threshold: 0.1
         }
     );
+
+    elements.forEach(element => {
+        observer.observe(element);
+    });
 }
 
 
-/* =========================================================
-   17. ТЕКУЩИЙ ГОД
-   ========================================================= */
-
-function updateCurrentYear() {
-
-    const year =
-        new Date().getFullYear();
-
+function updateYear() {
     document
-        .querySelectorAll(
-            "[data-current-year]"
-        )
-        .forEach(
-            function (element) {
-
-                element.textContent =
-                    year;
-            }
-        );
+        .querySelectorAll("[data-year], #currentYear")
+        .forEach(element => {
+            element.textContent =
+                new Date().getFullYear();
+        });
 }
 
 
-/* =========================================================
-   18. НАЗВАНИЕ РОЛИ
-   ========================================================= */
+function formatDateTime(value) {
+    if (!value) {
+        return "—";
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "—";
+    }
+
+    return date.toLocaleString("uk-UA", {
+        dateStyle: "short",
+        timeStyle: "short"
+    });
+}
+
 
 function getRoleName(role) {
-
     const roles = {
-
-        admin:
-            "Адміністратор",
-
-        teacher:
-            "Вчитель",
-
-        student:
-            "Учень",
-
-        parent:
-            "Батько / мати"
+        admin: "Адміністратор",
+        teacher: "Вчитель",
+        student: "Учень",
+        parent: "Батько / мати"
     };
 
-    return (
-        roles[role] ||
-        "Користувач"
-    );
+    return roles[role] || "Користувач";
 }
 
 
-/* =========================================================
-   19. ДАННЫЕ ПОЛЬЗОВАТЕЛЯ НА СТРАНИЦЕ
-   ========================================================= */
-
-function updateUserElements() {
-
-    const user =
-        getCurrentUser();
-
-    if (!user) {
-        return;
-    }
-
-
-    /*
-       Логин
-    */
+async function updateUserElements() {
+    const profile = await getCurrentProfile();
 
     document
-        .querySelectorAll(
-            "[data-user-login]"
-        )
-        .forEach(
-            function (element) {
-
-                element.textContent =
-                    user.login ||
-                    "Користувач";
-            }
-        );
-
-
-    /*
-       Роль
-    */
+        .querySelectorAll("[data-user-name]")
+        .forEach(element => {
+            element.textContent =
+                profile?.full_name ||
+                profile?.email ||
+                "Користувач";
+        });
 
     document
-        .querySelectorAll(
-            "[data-user-role]"
-        )
-        .forEach(
-            function (element) {
+        .querySelectorAll("[data-user-email]")
+        .forEach(element => {
+            element.textContent =
+                profile?.email || "";
+        });
 
-                element.textContent =
-                    getRoleName(
-                        user.role
-                    );
-            }
-        );
+    document
+        .querySelectorAll("[data-user-role]")
+        .forEach(element => {
+            element.textContent =
+                getRoleName(profile?.role);
+        });
 }
 
 
-/* =========================================================
-   20. ФОРМАТ ДАТЫ
-   ========================================================= */
+function setupLogoutButtons() {
+    document
+        .querySelectorAll("[data-logout], .logout-button")
+        .forEach(button => {
+            button.addEventListener(
+                "click",
+                async event => {
+                    event.preventDefault();
+                    await logout();
+                }
+            );
+        });
+}
 
-function formatDateTime(dateString) {
 
-    if (!dateString) {
-        return "";
+function setupConsentButtons() {
+    const allButton =
+        document.getElementById("acceptAllRules");
+
+    const requiredButton =
+        document.getElementById("acceptRequiredRules");
+
+    const customButton =
+        document.getElementById("acceptCustomRules");
+
+    if (allButton) {
+        allButton.addEventListener("click", () => {
+            saveConsent("all");
+            window.location.href = "login.html";
+        });
     }
 
-    const date =
-        new Date(dateString);
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
-        return "";
+    if (requiredButton) {
+        requiredButton.addEventListener("click", () => {
+            saveConsent("required");
+            window.location.href = "login.html";
+        });
     }
 
-    return date.toLocaleString(
-        "uk-UA",
-        {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
+    if (customButton) {
+        customButton.addEventListener("click", () => {
+            saveConsent("custom");
+            window.location.href = "login.html";
+        });
+    }
+}
+
+
+function updateSystemStatus() {
+    const elements =
+        document.querySelectorAll("[data-system-status]");
+
+    elements.forEach(element => {
+
+        if (SYSTEM_CONFIG.officiallyApproved) {
+            element.textContent =
+                "Офіційно підтверджено";
+        } else {
+            element.textContent =
+                "У розробці";
         }
-    );
+
+    });
 }
 
 
-/* =========================================================
-   21. ИНИЦИАЛИЗАЦИЯ
-   ========================================================= */
+async function initializeApp() {
 
-function initializeApp() {
-
-    /*
-       Сначала обновляем статус.
-    */
-
+    setupMobileMenu();
+    setupScrollAnimations();
+    updateYear();
+    setupLogoutButtons();
+    setupConsentButtons();
     updateSystemStatus();
 
+    const page = getCurrentPage();
 
-    /*
-       Проверяем согласие.
-    */
+    if (page !== "login.html") {
+        await checkMaintenance();
+    }
 
-    if (!checkConsent()) {
+    const authenticated =
+        await checkAuthentication();
+
+    if (!authenticated) {
         return;
     }
 
+    const roleAccess =
+        await checkRoleAccess();
 
-    /*
-       Проверяем авторизацию.
-    */
-
-    if (!checkAuthentication()) {
+    if (!roleAccess) {
         return;
     }
 
-
-    /*
-       Проверяем роль.
-    */
-
-    if (!checkRoleAccess()) {
-        return;
-    }
-
-
-    /*
-       Проверяем технические работы.
-    */
-
-    if (!checkMaintenanceAccess()) {
-        return;
-    }
-
-
-    /*
-       Остальные функции.
-    */
-
-    setupScrollAnimation();
-
-    updateCurrentYear();
-
-    updateUserElements();
+    await updateUserElements();
 }
 
-
-/* =========================================================
-   22. ЗАПУСК
-   ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
