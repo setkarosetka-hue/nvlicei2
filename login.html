@@ -1,923 +1,349 @@
 <!DOCTYPE html>
 <html lang="uk">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Вхід — Ліцей №2</title>
 
     <link rel="stylesheet" href="style.css">
 
-    <style>
-        body {
-            min-height: 100vh;
-            background:
-                radial-gradient(
-                    circle at top left,
-                    rgba(79, 70, 229, 0.14),
-                    transparent 40%
-                ),
-                #f5f7fb;
-        }
-
-        .login-page {
-            min-height: 100vh;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: 24px;
-        }
-
-        .login-wrapper {
-            width: 100%;
-            max-width: 460px;
-        }
-
-        .login-card {
-            background: white;
-
-            border: 1px solid var(--border);
-            border-radius: 28px;
-
-            padding: 34px;
-
-            box-shadow: var(--shadow);
-
-            animation: loginAppear 0.45s ease;
-        }
-
-        .login-logo {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .login-logo-mark {
-            width: 64px;
-            height: 64px;
-
-            margin: 0 auto 14px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 20px;
-
-            background: var(--primary);
-            color: white;
-
-            font-size: 22px;
-            font-weight: 800;
-
-            box-shadow:
-                0 10px 25px
-                rgba(79, 70, 229, 0.25);
-        }
-
-        .login-logo h1 {
-            margin: 0 0 5px;
-
-            font-size: 25px;
-        }
-
-        .login-logo p {
-            margin: 0;
-
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .login-warning {
-            margin-bottom: 22px;
-
-            padding: 14px 16px;
-
-            border-radius: 14px;
-
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-
-            color: #9a3412;
-
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .login-warning strong {
-            display: block;
-            margin-bottom: 3px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
-
-            margin-bottom: 7px;
-
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-wrapper input {
-            width: 100%;
-            box-sizing: border-box;
-
-            padding: 13px 46px 13px 14px;
-
-            border: 1px solid var(--border);
-            border-radius: 13px;
-
-            background: white;
-            color: var(--text);
-
-            font: inherit;
-
-            outline: none;
-
-            transition: 0.2s ease;
-        }
-
-        .input-wrapper input:focus {
-            border-color: var(--primary);
-
-            box-shadow:
-                0 0 0 3px
-                rgba(79, 70, 229, 0.1);
-        }
-
-        .password-toggle {
-            position: absolute;
-
-            right: 8px;
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            width: 34px;
-            height: 34px;
-
-            border: none;
-            background: transparent;
-
-            cursor: pointer;
-
-            border-radius: 9px;
-
-            font-size: 17px;
-        }
-
-        .password-toggle:hover {
-            background: #f1f5f9;
-        }
-
-        .role-title {
-            margin-bottom: 10px;
-
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .roles {
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, 1fr);
-
-            gap: 10px;
-
-            margin-bottom: 22px;
-        }
-
-        .role-option {
-            position: relative;
-        }
-
-        .role-option input {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .role-label {
-            display: block;
-
-            padding: 13px;
-
-            border: 1px solid var(--border);
-            border-radius: 14px;
-
-            cursor: pointer;
-
-            text-align: center;
-
-            background: white;
-
-            transition: 0.2s ease;
-        }
-
-        .role-label:hover {
-            border-color: var(--primary);
-        }
-
-        .role-icon {
-            display: block;
-
-            font-size: 23px;
-
-            margin-bottom: 5px;
-        }
-
-        .role-name {
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .role-option input:checked + .role-label {
-            border-color: var(--primary);
-
-            background:
-                rgba(79, 70, 229, 0.08);
-
-            box-shadow:
-                0 0 0 2px
-                rgba(79, 70, 229, 0.08);
-        }
-
-        .login-button {
-            width: 100%;
-
-            min-height: 48px;
-
-            border: none;
-
-            border-radius: 13px;
-
-            cursor: pointer;
-
-            font: inherit;
-            font-weight: 700;
-
-            background: var(--primary);
-            color: white;
-
-            transition: 0.2s ease;
-        }
-
-        .login-button:hover {
-            transform: translateY(-1px);
-
-            box-shadow:
-                0 8px 20px
-                rgba(79, 70, 229, 0.22);
-        }
-
-        .login-button:active {
-            transform: translateY(0);
-        }
-
-        .login-footer {
-            margin-top: 22px;
-
-            text-align: center;
-
-            font-size: 13px;
-
-            color: var(--muted);
-        }
-
-        .login-footer a {
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        .login-error {
-            display: none;
-
-            margin-bottom: 18px;
-
-            padding: 12px 14px;
-
-            border-radius: 12px;
-
-            background: #fef2f2;
-
-            border: 1px solid #fecaca;
-
-            color: #b91c1c;
-
-            font-size: 13px;
-        }
-
-        .login-error.visible {
-            display: block;
-        }
-
-        @keyframes loginAppear {
-
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-        }
-
-        @media (max-width: 520px) {
-
-            .login-page {
-                padding: 14px;
-            }
-
-            .login-card {
-                padding: 25px 18px;
-
-                border-radius: 22px;
-            }
-
-            .roles {
-                grid-template-columns: 1fr 1fr;
-            }
-
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
 </head>
-
 
 <body>
 
-<main class="login-page">
+<header class="site-header">
+    <div class="container nav-container">
 
-    <div class="login-wrapper">
+        <a href="index.html" class="logo">
+            <span class="logo-icon">Л2</span>
+            <span>Ліцей №2</span>
+        </a>
 
-        <section class="login-card">
+        <nav class="main-nav">
+            <a href="index.html">Головна</a>
+            <a href="consent.html">Правила</a>
+        </nav>
 
+    </div>
+</header>
 
-            <!-- ЛОГО -->
 
-            <div class="login-logo">
+<main class="auth-page">
 
-                <div class="login-logo-mark">
-                    Л2
-                </div>
+    <div class="auth-card">
 
-                <h1>
-                    Ліцей №2
-                </h1>
+        <div class="auth-header">
+            <div class="auth-icon">🔐</div>
 
-                <p>
-                    Електронна система
-                </p>
+            <h1>Вхід до системи</h1>
 
-            </div>
+            <p>
+                Увійдіть до особистого кабінету
+                Ліцею №2
+            </p>
+        </div>
 
 
-            <!-- ПРЕДУПРЕЖДЕНИЕ -->
+        <div id="message" class="notice hidden"></div>
 
-            <div class="login-warning">
 
-                <strong>
-                    ⚠️ Тестовий режим
-                </strong>
+        <form id="loginForm">
 
-                Це демонстраційна версія системи.
-                Авторизація поки працює локально.
-                Після підключення Supabase буде
-                використано справжню систему акаунтів.
+            <div class="form-group">
+                <label for="email">
+                    Електронна пошта
+                </label>
 
-            </div>
-
-
-            <!-- ОШИБКА -->
-
-            <div
-                class="login-error"
-                id="loginError"
-            ></div>
-
-
-            <!-- ФОРМА -->
-
-            <form id="loginForm">
-
-
-                <!-- ЛОГИН -->
-
-                <div class="form-group">
-
-                    <label for="login">
-                        Логін
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <input
-                            type="text"
-                            id="login"
-                            name="login"
-                            placeholder="Введіть логін"
-                            autocomplete="username"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- ПАРОЛЬ -->
-
-                <div class="form-group">
-
-                    <label for="password">
-                        Пароль
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Введіть пароль"
-                            autocomplete="current-password"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            class="password-toggle"
-                            id="passwordToggle"
-                            aria-label="Показати пароль"
-                        >
-                            👁️
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- РОЛЬ -->
-
-                <div class="role-title">
-                    Тип акаунта
-                </div>
-
-
-                <div class="roles">
-
-
-                    <!-- УЧЕНИК -->
-
-                    <div class="role-option">
-
-                        <input
-                            type="radio"
-                            id="roleStudent"
-                            name="role"
-                            value="student"
-                            checked
-                        >
-
-                        <label
-                            for="roleStudent"
-                            class="role-label"
-                        >
-
-                            <span class="role-icon">
-                                🎓
-                            </span>
-
-                            <span class="role-name">
-                                Учень
-                            </span>
-
-                        </label>
-
-                    </div>
-
-
-                    <!-- УЧИТЕЛЬ -->
-
-                    <div class="role-option">
-
-                        <input
-                            type="radio"
-                            id="roleTeacher"
-                            name="role"
-                            value="teacher"
-                        >
-
-                        <label
-                            for="roleTeacher"
-                            class="role-label"
-                        >
-
-                            <span class="role-icon">
-                                👨‍🏫
-                            </span>
-
-                            <span class="role-name">
-                                Вчитель
-                            </span>
-
-                        </label>
-
-                    </div>
-
-
-                    <!-- РОДИТЕЛЬ -->
-
-                    <div class="role-option">
-
-                        <input
-                            type="radio"
-                            id="roleParent"
-                            name="role"
-                            value="parent"
-                        >
-
-                        <label
-                            for="roleParent"
-                            class="role-label"
-                        >
-
-                            <span class="role-icon">
-                                👨‍👩‍👦
-                            </span>
-
-                            <span class="role-name">
-                                Батьки
-                            </span>
-
-                        </label>
-
-                    </div>
-
-
-                    <!-- АДМИН -->
-
-                    <div class="role-option">
-
-                        <input
-                            type="radio"
-                            id="roleAdmin"
-                            name="role"
-                            value="admin"
-                        >
-
-                        <label
-                            for="roleAdmin"
-                            class="role-label"
-                        >
-
-                            <span class="role-icon">
-                                🛠️
-                            </span>
-
-                            <span class="role-name">
-                                Адмін
-                            </span>
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-
-                <!-- КНОПКА -->
-
-                <button
-                    type="submit"
-                    class="login-button"
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="example@email.com"
+                    autocomplete="email"
+                    required
                 >
-                    Увійти
-                </button>
-
-            </form>
+            </div>
 
 
-            <div class="login-footer">
+            <div class="form-group">
 
-                <a href="index.html">
-                    ← Повернутися на головну
-                </a>
+                <label for="password">
+                    Пароль
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Введіть пароль"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        id="togglePassword"
+                        class="password-toggle"
+                        aria-label="Показати пароль"
+                    >
+                        👁️
+                    </button>
+
+                </div>
 
             </div>
 
 
-        </section>
+            <button
+                type="submit"
+                id="loginButton"
+                class="btn btn-primary btn-large"
+            >
+                Увійти
+            </button>
+
+        </form>
+
+
+        <div class="auth-divider">
+            <span>або</span>
+        </div>
+
+
+        <div class="auth-links">
+
+            <a href="index.html" class="btn btn-secondary">
+                ← На головну
+            </a>
+
+            <a href="consent.html" class="auth-link">
+                Правила та згода
+            </a>
+
+        </div>
+
+
+        <div class="auth-info">
+            <strong>ℹ️ Важливо</strong>
+
+            <p>
+                Для входу використовується обліковий
+                запис Supabase.
+            </p>
+
+            <p>
+                Якщо електронна пошта ще не підтверджена,
+                спочатку підтвердьте її через лист.
+            </p>
+        </div>
 
     </div>
 
 </main>
 
 
-<script src="app.js"></script>
+<footer class="site-footer">
+
+    <div class="container">
+
+        <p>
+            © <span id="currentYear"></span> Ліцей №2
+        </p>
+
+        <p class="footer-warning">
+            Система перебуває у розробці та
+            не є офіційною системою ліцею.
+        </p>
+
+    </div>
+
+</footer>
 
 
 <script>
 
-"use strict";
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("loginForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginButton = document.getElementById("loginButton");
+    const message = document.getElementById("message");
+    const togglePassword = document.getElementById("togglePassword");
+    const currentYear = document.getElementById("currentYear");
 
 
-/* =========================================================
-   ПЕРЕХОД ПО РОЛИ
-   ========================================================= */
-
-function getRolePage(role) {
-
-    const pages = {
-
-        admin:
-            "admin.html",
-
-        teacher:
-            "teacher.html",
-
-        student:
-            "student.html",
-
-        parent:
-            "parent.html"
-    };
-
-    return (
-        pages[role] ||
-        "dashboard.html"
-    );
-}
+    currentYear.textContent = new Date().getFullYear();
 
 
-/* =========================================================
-   ПОКАЗ / СКРЫТИЕ ПАРОЛЯ
-   ========================================================= */
+    function showMessage(text, type = "error") {
 
-const passwordInput =
-    document.getElementById(
-        "password"
-    );
+        message.textContent = text;
 
-const passwordToggle =
-    document.getElementById(
-        "passwordToggle"
-    );
+        message.className = "notice";
+
+        if (type === "success") {
+            message.classList.add("notice-success");
+        } else {
+            message.classList.add("notice-error");
+        }
+
+        message.classList.remove("hidden");
+    }
 
 
-passwordToggle.addEventListener(
-    "click",
-    function () {
+    togglePassword.addEventListener("click", function () {
 
-        if (
-            passwordInput.type ===
-            "password"
-        ) {
+        if (passwordInput.type === "password") {
 
-            passwordInput.type =
-                "text";
-
-            passwordToggle.textContent =
-                "🙈";
-
-            passwordToggle.setAttribute(
-                "aria-label",
-                "Сховати пароль"
-            );
+            passwordInput.type = "text";
+            togglePassword.textContent = "🙈";
 
         } else {
 
-            passwordInput.type =
-                "password";
+            passwordInput.type = "password";
+            togglePassword.textContent = "👁️";
 
-            passwordToggle.textContent =
-                "👁️";
-
-            passwordToggle.setAttribute(
-                "aria-label",
-                "Показати пароль"
-            );
         }
-    }
-);
+
+    });
 
 
-/* =========================================================
-   ОШИБКА
-   ========================================================= */
+    form.addEventListener("submit", async function (event) {
 
-function showLoginError(message) {
-
-    const error =
-        document.getElementById(
-            "loginError"
-        );
-
-    error.textContent =
-        message;
-
-    error.classList.add(
-        "visible"
-    );
-}
+        event.preventDefault();
 
 
-function hideLoginError() {
-
-    const error =
-        document.getElementById(
-            "loginError"
-        );
-
-    error.classList.remove(
-        "visible"
-    );
-
-    error.textContent = "";
-}
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
 
 
-/* =========================================================
-   АВТОРИЗАЦИЯ
-   ========================================================= */
+        if (!email || !password) {
 
-document
-    .getElementById("loginForm")
-    .addEventListener(
-        "submit",
-        function (event) {
+            showMessage("Введіть електронну пошту та пароль.");
 
-            event.preventDefault();
-
-            hideLoginError();
-
-
-            const login =
-                document
-                    .getElementById("login")
-                    .value
-                    .trim();
-
-            const password =
-                document
-                    .getElementById("password")
-                    .value;
-
-            const role =
-                document.querySelector(
-                    'input[name="role"]:checked'
-                )?.value;
-
-
-            /* Проверка */
-
-            if (!login) {
-
-                showLoginError(
-                    "Введіть логін."
-                );
-
-                return;
-            }
-
-
-            if (!password) {
-
-                showLoginError(
-                    "Введіть пароль."
-                );
-
-                return;
-            }
-
-
-            if (!role) {
-
-                showLoginError(
-                    "Оберіть тип акаунта."
-                );
-
-                return;
-            }
-
-
-            /*
-               ВАЖНО:
-               Это пока тестовая авторизация.
-
-               Пароль пока не проверяется
-               через базу данных.
-
-               После подключения Supabase
-               здесь будет настоящая авторизация.
-            */
-
-
-            const user = {
-
-                login:
-                    login,
-
-                role:
-                    role,
-
-                loggedIn:
-                    true,
-
-                loginAt:
-                    new Date().toISOString()
-            };
-
-
-            localStorage.setItem(
-                "lyceum2_user",
-                JSON.stringify(user)
-            );
-
-
-            /* Технические работы */
-
-            const maintenance =
-                getMaintenanceState();
-
-
-            /*
-               Администратор может войти
-               даже во время технических работ.
-            */
-
-            if (
-                maintenance.enabled &&
-                role !== "admin"
-            ) {
-
-                window.location.href =
-                    "maintenance.html";
-
-                return;
-            }
-
-
-            /*
-               Переход в нужный кабинет.
-            */
-
-            const targetPage =
-                getRolePage(role);
-
-
-            window.location.href =
-                targetPage;
-        }
-    );
-
-
-/* =========================================================
-   ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ВОШЁЛ
-   ========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        const user =
-            getCurrentUser();
-
-        if (
-            !user ||
-            user.loggedIn !== true
-        ) {
             return;
         }
 
 
-        /*
-           Не перенаправляем автоматически
-           с login.html.
+        loginButton.disabled = true;
+        loginButton.textContent = "Вхід...";
 
-           Пользователь может захотеть
-           войти под другим тестовым аккаунтом.
-        */
-    }
-);
+
+        try {
+
+            const { data, error } =
+                await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            if (!data.user) {
+                throw new Error("Користувача не знайдено.");
+            }
+
+
+            const userId = data.user.id;
+
+
+            const { data: profile, error: profileError } =
+                await supabaseClient
+                    .from("profiles")
+                    .select("id, role, full_name, email")
+                    .eq("id", userId)
+                    .single();
+
+
+            if (profileError) {
+                throw profileError;
+            }
+
+
+            if (!profile) {
+                throw new Error("Профіль користувача не знайдено.");
+            }
+
+
+            const role = profile.role;
+
+
+            if (role === "admin") {
+
+                window.location.href = "admin.html";
+
+            } else if (role === "teacher") {
+
+                window.location.href = "teacher.html";
+
+            } else if (role === "student") {
+
+                window.location.href = "student.html";
+
+            } else if (role === "parent") {
+
+                window.location.href = "parent.html";
+
+            } else {
+
+                await supabaseClient.auth.signOut();
+
+                throw new Error(
+                    "Для цього користувача не визначена роль."
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error("Login error:", error);
+
+            let text = "Не вдалося виконати вхід.";
+
+            if (error.message) {
+
+                if (
+                    error.message.includes("Invalid login credentials")
+                ) {
+                    text = "Неправильна електронна пошта або пароль.";
+                }
+
+                else if (
+                    error.message.includes("Email not confirmed")
+                ) {
+                    text =
+                        "Електронна пошта ще не підтверджена. " +
+                        "Перевірте свою пошту та відкрийте лист від Supabase.";
+                }
+
+                else {
+                    text = error.message;
+                }
+            }
+
+
+            showMessage(text);
+
+        } finally {
+
+            loginButton.disabled = false;
+            loginButton.textContent = "Увійти";
+
+        }
+
+    });
+
+});
 
 </script>
 
