@@ -1,828 +1,614 @@
-<!DOCTYPE html>
-<html lang="uk">
+<!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Домашні завдання — Ліцей №2</title>
 
-    <title>Домашні завдання — Ліцей №2</title>
+<link rel="stylesheet" href="style.css">
 
-    <link rel="stylesheet" href="style.css">
+<style>
+    .page {
+        min-height: 100vh;
+        background: var(--background);
+    }
 
-    <style>
-        .page {
-            min-height: 100vh;
-            background: var(--background);
-        }
+    .page-header {
+        padding: 30px 20px 20px;
+    }
 
-        .page-header {
-            padding: 30px 20px 20px;
-        }
+    .page-container {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
 
-        .page-container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 14px;
+    }
 
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
+    .page-title {
+        margin-bottom: 25px;
+    }
 
-            color: var(--primary);
-            text-decoration: none;
+    .page-title h1 {
+        font-size: clamp(28px, 5vw, 38px);
+        margin-bottom: 6px;
+    }
 
-            font-size: 13px;
-            font-weight: 700;
+    .page-title p {
+        color: var(--text-light);
+        font-size: 13px;
+    }
 
-            margin-bottom: 14px;
-        }
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 13px;
+        margin-bottom: 22px;
+    }
 
-        .back-link:hover {
-            text-decoration: underline;
-        }
+    .summary-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 17px;
+    }
 
-        .page-title {
-            margin-bottom: 25px;
-        }
+    .summary-card span {
+        display: block;
+        color: var(--text-muted);
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
 
-        .page-title h1 {
-            font-size: clamp(28px, 5vw, 38px);
-            margin-bottom: 6px;
-        }
+    .summary-card strong {
+        font-size: 22px;
+    }
 
-        .page-title p {
-            color: var(--text-light);
-            font-size: 13px;
-        }
+    .filter-bar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+    }
 
+    .filter-button {
+        border: 1px solid var(--border);
+        background: white;
+        color: var(--text);
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .filter-button:hover {
+        border-color: var(--primary);
+    }
+
+    .filter-button.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .homework-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .homework-card {
+        display: grid;
+        grid-template-columns: 55px 1fr auto;
+        align-items: center;
+        gap: 17px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        padding: 18px;
+        box-shadow: var(--shadow-sm);
+        transition: .2s ease;
+    }
+
+    .homework-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .subject-icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-soft);
+        border-radius: 12px;
+        font-size: 21px;
+    }
+
+    .homework-info h3 {
+        font-size: 15px;
+        margin-bottom: 5px;
+    }
+
+    .homework-task {
+        color: var(--text-light);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .homework-meta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+        color: var(--text-muted);
+        font-size: 10px;
+    }
+
+    .status-block {
+        text-align: right;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 6px 9px;
+        border-radius: 8px;
+        font-size: 9px;
+        font-weight: 800;
+    }
+
+    .status-new {
+        background: #fff4df;
+        color: #a96d08;
+    }
+
+    .deadline {
+        margin-top: 7px;
+        color: var(--text-muted);
+        font-size: 10px;
+    }
+
+    .empty-state,
+    .loading-state,
+    .error-state {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 50px 20px;
+        text-align: center;
+        color: var(--text-muted);
+    }
+
+    .loading-state {
+        display: block;
+    }
+
+    .empty-state,
+    .error-state {
+        display: none;
+    }
+
+    .state-icon {
+        font-size: 35px;
+        margin-bottom: 10px;
+    }
+
+    .error-state {
+        color: #b42318;
+    }
+
+    .homework-footer {
+        margin-top: 25px;
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        color: var(--text-muted);
+        font-size: 11px;
+    }
+
+    @media (max-width: 800px) {
         .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 13px;
-            margin-bottom: 25px;
-        }
-
-        .summary-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 17px;
-        }
-
-        .summary-card span {
-            display: block;
-            color: var(--text-muted);
-            font-size: 11px;
-            margin-bottom: 6px;
-        }
-
-        .summary-card strong {
-            font-size: 22px;
-        }
-
-        .filter-bar {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 18px;
-        }
-
-        .filter-button {
-            border: 1px solid var(--border);
-            background: white;
-            color: var(--text);
-
-            padding: 10px 15px;
-            border-radius: 10px;
-
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 700;
-
-            cursor: pointer;
-
-            transition: .2s ease;
-        }
-
-        .filter-button:hover {
-            border-color: var(--primary);
-        }
-
-        .filter-button.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .homework-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            grid-template-columns: repeat(3, 1fr);
         }
 
         .homework-card {
-            display: grid;
-            grid-template-columns: 55px 1fr auto;
-
-            align-items: center;
-            gap: 17px;
-
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 17px;
-
-            padding: 18px;
-
-            box-shadow: var(--shadow-sm);
-
-            transition: .2s ease;
-        }
-
-        .homework-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .subject-icon {
-            width: 45px;
-            height: 45px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background: var(--primary-soft);
-            border-radius: 12px;
-
-            font-size: 21px;
-        }
-
-        .homework-info h3 {
-            font-size: 15px;
-            margin-bottom: 5px;
-        }
-
-        .homework-task {
-            color: var(--text-light);
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        .homework-meta {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-
-            margin-top: 8px;
-
-            color: var(--text-muted);
-            font-size: 10px;
-        }
-
-        .homework-meta span {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+            grid-template-columns: 50px 1fr;
         }
 
         .status-block {
-            text-align: right;
+            grid-column: 2;
+            text-align: left;
+        }
+    }
+
+    @media (max-width: 550px) {
+        .page-header {
+            padding: 20px 12px;
         }
 
-        .status {
-            display: inline-block;
+        .summary-grid {
+            gap: 8px;
+        }
 
-            padding: 6px 9px;
-            border-radius: 8px;
+        .summary-card {
+            padding: 13px 10px;
+        }
 
+        .summary-card strong {
+            font-size: 18px;
+        }
+
+        .summary-card span {
             font-size: 9px;
-            font-weight: 800;
         }
 
-        .status-new {
-            background: #fff4df;
-            color: #a96d08;
+        .homework-card {
+            padding: 15px;
+            gap: 12px;
         }
 
-        .status-progress {
-            background: #e9e7ff;
-            color: var(--primary);
-        }
-
-        .status-done {
-            background: #e6f8ed;
-            color: #26834b;
-        }
-
-        .deadline {
-            margin-top: 7px;
-            color: var(--text-muted);
-            font-size: 10px;
-        }
-
-        .empty-state {
-            display: none;
-
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-
-            padding: 50px 20px;
-
-            text-align: center;
-            color: var(--text-muted);
-        }
-
-        .empty-state-icon {
-            font-size: 35px;
-            margin-bottom: 10px;
-        }
-
-        .homework-footer {
-            margin-top: 25px;
-
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-
-            color: var(--text-muted);
+        .homework-task {
             font-size: 11px;
         }
 
-        @media (max-width: 800px) {
-            .summary-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .homework-card {
-                grid-template-columns: 50px 1fr;
-            }
-
-            .status-block {
-                grid-column: 2;
-                text-align: left;
-            }
+        .homework-footer {
+            flex-direction: column;
         }
+    }
+</style>
 
-        @media (max-width: 550px) {
-            .page-header {
-                padding: 20px 12px;
-            }
+</head><body><div class="page"><header class="page-header">
 
-            .summary-grid {
-                gap: 8px;
-            }
+    <div class="page-container">
 
-            .summary-card {
-                padding: 14px;
-            }
+        <a href="dashboard.html" class="back-link">
+            ← Особистий кабінет
+        </a>
 
-            .summary-card strong {
-                font-size: 18px;
-            }
+        <div class="page-title">
+            <h1>Домашні завдання</h1>
+            <p>Актуальні завдання та терміни виконання</p>
+        </div>
 
-            .homework-card {
-                padding: 15px;
-                gap: 12px;
-            }
+        <div class="summary-grid">
 
-            .homework-task {
-                font-size: 11px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="page">
-
-    <header class="page-header">
-
-        <div class="page-container">
-
-            <a
-                href="dashboard.html"
-                class="back-link"
-            >
-                ← Особистий кабінет
-            </a>
-
-
-            <div class="page-title">
-
-                <h1>
-                    Домашні завдання
-                </h1>
-
-                <p>
-                    Актуальні завдання та терміни виконання
-                </p>
-
+            <div class="summary-card">
+                <span>Усього</span>
+                <strong id="totalCount">0</strong>
             </div>
 
-
-            <div class="summary-grid">
-
-                <div class="summary-card">
-
-                    <span>
-                        Усього
-                    </span>
-
-                    <strong>
-                        6
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-card">
-
-                    <span>
-                        Нові
-                    </span>
-
-                    <strong>
-                        3
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-card">
-
-                    <span>
-                        Виконуються
-                    </span>
-
-                    <strong>
-                        2
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-card">
-
-                    <span>
-                        Виконано
-                    </span>
-
-                    <strong>
-                        1
-                    </strong>
-
-                </div>
-
+            <div class="summary-card">
+                <span>Актуальні</span>
+                <strong id="activeCount">0</strong>
             </div>
 
-
-            <div class="filter-bar">
-
-                <button
-                    class="filter-button active"
-                    onclick="filterHomework('all', this)"
-                >
-                    Усі
-                </button>
-
-                <button
-                    class="filter-button"
-                    onclick="filterHomework('new', this)"
-                >
-                    Нові
-                </button>
-
-                <button
-                    class="filter-button"
-                    onclick="filterHomework('progress', this)"
-                >
-                    Виконуються
-                </button>
-
-                <button
-                    class="filter-button"
-                    onclick="filterHomework('done', this)"
-                >
-                    Виконані
-                </button>
-
-            </div>
-
-
-            <div
-                class="homework-list"
-                id="homeworkList"
-            >
-
-                <article
-                    class="homework-card"
-                    data-status="new"
-                >
-
-                    <div class="subject-icon">
-                        📐
-                    </div>
-
-                    <div class="homework-info">
-
-                        <h3>
-                            Математика
-                        </h3>
-
-                        <div class="homework-task">
-                            Розв'язати вправи №125–130
-                            у робочому зошиті.
-                        </div>
-
-                        <div class="homework-meta">
-
-                            <span>
-                                👨‍🏫 Вчитель математики
-                            </span>
-
-                            <span>
-                                📅 До 22 вересня
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="status-block">
-
-                        <span class="status status-new">
-                            НОВЕ
-                        </span>
-
-                        <div class="deadline">
-                            Здати завтра
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <article
-                    class="homework-card"
-                    data-status="progress"
-                >
-
-                    <div class="subject-icon">
-                        📖
-                    </div>
-
-                    <div class="homework-info">
-
-                        <h3>
-                            Українська мова
-                        </h3>
-
-                        <div class="homework-task">
-                            Написати твір на тему
-                            «Мій улюблений день».
-                        </div>
-
-                        <div class="homework-meta">
-
-                            <span>
-                                👨‍🏫 Вчитель української мови
-                            </span>
-
-                            <span>
-                                📅 До 23 вересня
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="status-block">
-
-                        <span class="status status-progress">
-                            ВИКОНУЄТЬСЯ
-                        </span>
-
-                        <div class="deadline">
-                            2 дні
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <article
-                    class="homework-card"
-                    data-status="new"
-                >
-
-                    <div class="subject-icon">
-                        🌍
-                    </div>
-
-                    <div class="homework-info">
-
-                        <h3>
-                            Географія
-                        </h3>
-
-                        <div class="homework-task">
-                            Вивчити країни Європи
-                            та їхні столиці.
-                        </div>
-
-                        <div class="homework-meta">
-
-                            <span>
-                                👨‍🏫 Вчитель географії
-                            </span>
-
-                            <span>
-                                📅 До 24 вересня
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="status-block">
-
-                        <span class="status status-new">
-                            НОВЕ
-                        </span>
-
-                        <div class="deadline">
-                            3 дні
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <article
-                    class="homework-card"
-                    data-status="done"
-                >
-
-                    <div class="subject-icon">
-                        🧬
-                    </div>
-
-                    <div class="homework-info">
-
-                        <h3>
-                            Біологія
-                        </h3>
-
-                        <div class="homework-task">
-                            Повторити тему «Клітина»
-                            та підготуватися до опитування.
-                        </div>
-
-                        <div class="homework-meta">
-
-                            <span>
-                                👨‍🏫 Вчитель біології
-                            </span>
-
-                            <span>
-                                📅 До 20 вересня
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="status-block">
-
-                        <span class="status status-done">
-                            ВИКОНАНО
-                        </span>
-
-                        <div class="deadline">
-                            Здано
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <article
-                    class="homework-card"
-                    data-status="progress"
-                >
-
-                    <div class="subject-icon">
-                        🇬🇧
-                    </div>
-
-                    <div class="homework-info">
-
-                        <h3>
-                            Англійська мова
-                        </h3>
-
-                        <div class="homework-task">
-                            Вивчити нові слова з Unit 3
-                            та виконати вправу 4.
-                        </div>
-
-                        <div class="homework-meta">
-
-                            <span>
-                                👨‍🏫 Вчитель англійської
-                            </span>
-
-                            <span>
-                                📅 До 25 вересня
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="status-block">
-
-                        <span class="status status-progress">
-                            ВИКОНУЄТЬСЯ
-                        </span>
-
-                        <div class="deadline">
-                            4 дні
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <article
-                    class="homework-card"
-                    data-status="new"
-                >
-
-                    <div class="subject-icon">
-                        🏃
-                    </div>
-
-                    <div class="homework-info">
-
-                        <h3>
-                            Фізична культура
-                        </h3>
-
-                        <div class="homework-task">
-                            Підготувати спортивну форму
-                            для наступного заняття.
-                        </div>
-
-                        <div class="homework-meta">
-
-                            <span>
-                                👨‍🏫 Вчитель фізкультури
-                            </span>
-
-                            <span>
-                                📅 До 26 вересня
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="status-block">
-
-                        <span class="status status-new">
-                            НОВЕ
-                        </span>
-
-                        <div class="deadline">
-                            5 днів
-                        </div>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-
-            <div
-                class="empty-state"
-                id="emptyState"
-            >
-
-                <div class="empty-state-icon">
-                    📭
-                </div>
-
-                <strong>
-                    Завдань не знайдено
-                </strong>
-
-                <p>
-                    У цій категорії поки немає домашніх завдань.
-                </p>
-
-            </div>
-
-
-            <div class="homework-footer">
-
-                <span>
-                    Дані поки що тестові.
-                </span>
-
-                <span>
-                    Версія системи 0.1.0
-                </span>
-
+            <div class="summary-card">
+                <span>Прострочені</span>
+                <strong id="overdueCount">0</strong>
             </div>
 
         </div>
 
-    </header>
+        <div class="filter-bar">
 
-</div>
+            <button
+                class="filter-button active"
+                data-filter="all"
+                onclick="filterHomework('all', this)"
+            >
+                Усі
+            </button>
 
+            <button
+                class="filter-button"
+                data-filter="active"
+                onclick="filterHomework('active', this)"
+            >
+                Актуальні
+            </button>
 
-<script src="app.js"></script>
+            <button
+                class="filter-button"
+                data-filter="overdue"
+                onclick="filterHomework('overdue', this)"
+            >
+                Прострочені
+            </button>
 
-<script>
+        </div>
 
-    function filterHomework(status, button) {
+        <div
+            class="loading-state"
+            id="loadingState"
+        >
+            <div class="state-icon">⏳</div>
+            <strong>Завантаження домашніх завдань...</strong>
+        </div>
 
-        document
-            .querySelectorAll(".filter-button")
-            .forEach((item) => {
+        <div
+            class="homework-list"
+            id="homeworkList"
+        ></div>
 
-                item.classList.remove("active");
+        <div
+            class="empty-state"
+            id="emptyState"
+        >
+            <div class="state-icon">📭</div>
+            <strong>Домашніх завдань немає</strong>
+            <p>Наразі для цього розділу немає доступних завдань.</p>
+        </div>
 
-            });
+        <div
+            class="error-state"
+            id="errorState"
+        >
+            <div class="state-icon">⚠️</div>
+            <strong>Не вдалося завантажити домашні завдання</strong>
+            <p id="errorText">Перевірте підключення до Supabase.</p>
+        </div>
 
+        <div class="homework-footer">
 
-        button.classList.add("active");
+            <span>
+                Дані завантажуються з системи ліцею.
+            </span>
 
+            <span>
+                Версія системи 0.1.0
+            </span>
 
-        const cards =
-            document.querySelectorAll(
-                ".homework-card"
-            );
+        </div>
 
+    </div>
 
-        let visibleCount = 0;
+</header>
 
+</div><script src="supabase.js"></script><script src="app.js"></script><script>
 
-        cards.forEach((card) => {
+let homeworkData = [];
+let currentFilter = "all";
 
-            const cardStatus =
-                card.dataset.status;
+const subjectIcons = {
+    "Математика": "📐",
+    "Українська мова": "📖",
+    "Українська література": "📚",
+    "Географія": "🌍",
+    "Біологія": "🧬",
+    "Англійська мова": "🇬🇧",
+    "Німецька мова": "🇩🇪",
+    "Історія": "🏛️",
+    "Фізична культура": "🏃",
+    "Інформатика": "💻",
+    "Фізика": "⚡",
+    "Хімія": "🧪",
+    "Мистецтво": "🎨",
+    "Технології": "🛠️"
+};
 
+function getSubjectIcon(subject) {
+    return subjectIcons[subject] || "📘";
+}
 
-            if (
-                status === "all" ||
-                cardStatus === status
-            ) {
+function escapeHtml(value) {
+    if (value === null || value === undefined) return "";
 
-                card.style.display = "grid";
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
-                visibleCount++;
+function formatDate(dateValue) {
+    if (!dateValue) return "Без терміну";
 
-            } else {
+    const date = new Date(dateValue + "T00:00:00");
 
-                card.style.display = "none";
-
-            }
-
-        });
-
-
-        const emptyState =
-            document.getElementById(
-                "emptyState"
-            );
-
-
-        if (visibleCount === 0) {
-
-            emptyState.style.display =
-                "block";
-
-        } else {
-
-            emptyState.style.display =
-                "none";
-
-        }
-
+    if (Number.isNaN(date.getTime())) {
+        return dateValue;
     }
 
-</script>
+    return date.toLocaleDateString("uk-UA", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+}
 
-</body>
+function isOverdue(item) {
+    if (!item.due_date) return false;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const due = new Date(item.due_date + "T00:00:00");
+
+    return due < today;
+}
+
+function getVisibleHomework() {
+
+    if (currentFilter === "overdue") {
+        return homeworkData.filter(isOverdue);
+    }
+
+    if (currentFilter === "active") {
+        return homeworkData.filter(item => !isOverdue(item));
+    }
+
+    return homeworkData;
+}
+
+function renderHomework() {
+
+    const list = document.getElementById("homeworkList");
+    const emptyState = document.getElementById("emptyState");
+
+    const visibleHomework = getVisibleHomework();
+
+    list.innerHTML = "";
+
+    if (visibleHomework.length === 0) {
+        list.style.display = "none";
+        emptyState.style.display = "block";
+        return;
+    }
+
+    list.style.display = "flex";
+    emptyState.style.display = "none";
+
+    visibleHomework.forEach(item => {
+
+        const overdue = isOverdue(item);
+
+        const card = document.createElement("article");
+
+        card.className = "homework-card";
+
+        card.innerHTML = `
+            <div class="subject-icon">
+                ${getSubjectIcon(item.subject)}
+            </div>
+
+            <div class="homework-info">
+
+                <h3>
+                    ${escapeHtml(item.subject)}
+                </h3>
+
+                <div class="homework-task">
+                    <strong>${escapeHtml(item.title)}</strong>
+                    ${item.description
+                        ? `<br>${escapeHtml(item.description)}`
+                        : ""}
+                </div>
+
+                <div class="homework-meta">
+
+                    ${item.teacher_id
+                        ? `<span>👨‍🏫 Вчитель</span>`
+                        : ""}
+
+                    ${item.class_name
+                        ? `<span>🏫 ${escapeHtml(item.class_name)}</span>`
+                        : ""}
+
+                    <span>
+                        📅 ${formatDate(item.due_date)}
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="status-block">
+
+                <span class="status ${overdue ? "" : "status-new"}"
+                      style="${overdue ? "background:#ffe8e8;color:#b42318;" : ""}">
+                    ${overdue ? "ПРОСТРОЧЕНО" : "АКТУАЛЬНЕ"}
+                </span>
+
+                <div class="deadline">
+                    ${overdue ? "Термін минув" : "Термін виконання"}
+                </div>
+
+            </div>
+        `;
+
+        list.appendChild(card);
+    });
+}
+
+function updateSummary() {
+
+    const total = homeworkData.length;
+
+    const overdue = homeworkData.filter(isOverdue).length;
+
+    const active = total - overdue;
+
+    document.getElementById("totalCount").textContent = total;
+    document.getElementById("activeCount").textContent = active;
+    document.getElementById("overdueCount").textContent = overdue;
+}
+
+function filterHomework(filter, button) {
+
+    currentFilter = filter;
+
+    document
+        .querySelectorAll(".filter-button")
+        .forEach(item => item.classList.remove("active"));
+
+    button.classList.add("active");
+
+    renderHomework();
+}
+
+async function loadHomework() {
+
+    const loadingState =
+        document.getElementById("loadingState");
+
+    const errorState =
+        document.getElementById("errorState");
+
+    const errorText =
+        document.getElementById("errorText");
+
+    try {
+
+        if (
+            typeof supabaseClient === "undefined" ||
+            !supabaseClient
+        ) {
+            throw new Error("Supabase не підключено.");
+        }
+
+        const { data, error } = await supabaseClient
+            .from("homework")
+            .select("*")
+            .order("due_date", { ascending: true })
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            throw error;
+        }
+
+        homeworkData = data || [];
+
+        loadingState.style.display = "none";
+        errorState.style.display = "none";
+
+        updateSummary();
+        renderHomework();
+
+    } catch (error) {
+
+        console.error("Homework loading error:", error);
+
+        loadingState.style.display = "none";
+        errorState.style.display = "block";
+
+        errorText.textContent =
+            error.message ||
+            "Невідома помилка під час завантаження.";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadHomework);
+
+</script></body>
 </html>
