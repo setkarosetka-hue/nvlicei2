@@ -1,295 +1,380 @@
 <!DOCTYPE html><html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Повідомлення — Ліцей №2</title>
-<link rel="stylesheet" href="style.css"><style>
-body{
-    margin:0;
-    min-height:100vh;
-    background:
-        radial-gradient(circle at top left,rgba(37,99,235,.25),transparent 35%),
-        radial-gradient(circle at bottom right,rgba(14,165,233,.18),transparent 35%),
-        #07111f;
-    color:#fff;
-    font-family:Arial,sans-serif;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Повідомлення — Ліцей №2</title>
 
-.page{
-    width:min(1000px,calc(100% - 24px));
-    margin:auto;
-    padding:20px 0 50px;
-}
+<link rel="stylesheet" href="style.css">
+<script src="supabase.js"></script>
+<script src="app.js" defer></script>
 
-.top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
-    padding:20px;
-    margin-bottom:18px;
-    border-radius:22px;
-    background:rgba(10,24,42,.85);
-    border:1px solid rgba(255,255,255,.1);
-}
-
-.top h1{
-    margin:0 0 5px;
-}
-
-.top p{
-    margin:0;
-    color:#8fa2b8;
-}
-
-.back{
-    color:white;
-    text-decoration:none;
-    padding:10px 14px;
-    border-radius:12px;
-    background:rgba(255,255,255,.07);
-}
-
-.messages{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-}
-
-.message{
-    padding:20px;
-    border-radius:20px;
-    background:rgba(10,24,42,.8);
-    border:1px solid rgba(255,255,255,.09);
-    transition:.2s;
-}
-
-.message.unread{
-    border-color:rgba(37,99,235,.55);
-    background:rgba(19,43,75,.82);
-}
-
-.message:hover{
-    transform:translateY(-2px);
-}
-
-.message-head{
-    display:flex;
-    justify-content:space-between;
-    gap:12px;
-}
-
-.subject{
-    font-size:18px;
-    font-weight:700;
-}
-
-.date{
-    color:#7f92a8;
-    font-size:12px;
-    white-space:nowrap;
-}
-
-.text{
-    margin-top:12px;
-    color:#c9d7e7;
-    line-height:1.55;
-    white-space:pre-wrap;
-}
-
-.status{
-    display:inline-block;
-    margin-top:14px;
-    padding:5px 9px;
-    border-radius:999px;
-    font-size:12px;
-    background:rgba(255,255,255,.07);
-    color:#91a4ba;
-}
-
-.unread .status{
-    background:rgba(37,99,235,.18);
-    color:#8bb7ff;
-}
-
-.empty{
-    text-align:center;
-    padding:50px 20px;
-    border-radius:20px;
-    background:rgba(10,24,42,.7);
-    color:#8194aa;
-}
-
-.loading{
-    text-align:center;
-    color:#8194aa;
-    padding:40px;
-}
-
-@media(max-width:600px){
-    .top{
-        flex-direction:column;
-        align-items:flex-start;
+<style>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        background:
+            radial-gradient(circle at 15% 10%, rgba(80,120,255,.18), transparent 30%),
+            radial-gradient(circle at 85% 20%, rgba(0,220,255,.12), transparent 28%),
+            #070b14;
+        color: #fff;
     }
 
-    .message-head{
-        flex-direction:column;
+    .messages-page {
+        width: min(1100px, calc(100% - 28px));
+        margin: auto;
+        padding: 24px 0 50px;
     }
 
-    .date{
-        white-space:normal;
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 22px;
     }
-}
-</style></head><body><div class="page"><header class="top"><div>
-<h1>💬 Повідомлення</h1>
-<p>Ваші особисті повідомлення</p>
-</div><a href="dashboard.html" class="back">
-← Назад
-</a></header><main><div id="messages" class="messages"><div class="loading">
-Завантаження повідомлень...
-</div></div></main></div><script src="supabase.js"></script><script src="app.js"></script><script>
 
-document.addEventListener("DOMContentLoaded",async()=>{
+    .back-button {
+        color: #fff;
+        text-decoration: none;
+        padding: 11px 16px;
+        border-radius: 14px;
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.1);
+    }
 
-const container=document.getElementById("messages");
+    .hero {
+        padding: 28px;
+        border-radius: 28px;
+        background: linear-gradient(
+            135deg,
+            rgba(45,105,255,.2),
+            rgba(0,220,255,.08)
+        );
+        border: 1px solid rgba(255,255,255,.1);
+        margin-bottom: 22px;
+    }
 
-const {
-data:{user},
-error:authError
-}=await supabaseClient.auth.getUser();
+    .hero h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 6vw, 44px);
+    }
 
-if(authError || !user){
+    .hero p {
+        margin: 0;
+        color: #aebbd1;
+        line-height: 1.5;
+    }
 
-location.href="login.html";
+    .messages-list {
+        display: grid;
+        gap: 15px;
+    }
 
-return;
+    .message-card {
+        padding: 21px;
+        border-radius: 22px;
+        background: rgba(255,255,255,.055);
+        border: 1px solid rgba(255,255,255,.09);
+        box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    }
 
-}
+    .message-card.unread {
+        border-color: rgba(39,119,255,.5);
+        background: rgba(39,119,255,.08);
+    }
 
+    .message-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+    }
 
-function escape(value){
+    .message-subject {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
 
-return String(value??"")
-.replaceAll("&","&amp;")
-.replaceAll("<","&lt;")
-.replaceAll(">","&gt;")
-.replaceAll('"',"&quot;")
-.replaceAll("'","&#039;");
+    .message-date {
+        color: #8f9caf;
+        font-size: 13px;
+        white-space: nowrap;
+    }
 
-}
+    .message-text {
+        margin-top: 14px;
+        color: #c0cad9;
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
 
+    .message-status {
+        display: inline-flex;
+        margin-top: 15px;
+        padding: 7px 10px;
+        border-radius: 9px;
+        font-size: 12px;
+        background: rgba(255,255,255,.06);
+        color: #aebbd1;
+    }
 
-function formatDate(value){
+    .message-card.unread .message-status {
+        background: rgba(39,119,255,.15);
+        color: #72b9ff;
+    }
 
-if(!value)return "";
+    .empty,
+    .loading,
+    .error {
+        padding: 35px 20px;
+        text-align: center;
+        border-radius: 22px;
+        background: rgba(255,255,255,.045);
+        border: 1px solid rgba(255,255,255,.08);
+        color: #aeb9ca;
+    }
 
-const date=new Date(value);
+    .error {
+        color: #ff9e9e;
+    }
 
-return date.toLocaleString("uk-UA",{
-day:"2-digit",
-month:"2-digit",
-year:"numeric",
-hour:"2-digit",
-minute:"2-digit"
-});
+    @media (max-width: 650px) {
+        .messages-page {
+            width: calc(100% - 18px);
+            padding-top: 14px;
+        }
 
-}
+        .page-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
 
+        .hero {
+            padding: 22px;
+            border-radius: 22px;
+        }
 
-async function loadMessages(){
+        .message-top {
+            flex-direction: column;
+            gap: 7px;
+        }
 
-const {data,error}=await supabaseClient
-.from("messages")
-.select("*")
-.eq("recipient_id",user.id)
-.order("created_at",{ascending:false});
+        .message-date {
+            white-space: normal;
+        }
+    }
+</style>
 
+</head><body><main class="messages-page"><div class="page-header">
+    <a class="back-button" href="dashboard.html">
+        ← Назад
+    </a>
 
-if(error){
-
-console.error(error);
-
-container.innerHTML=`
-<div class="empty">
-Не вдалося завантажити повідомлення.
-</div>`;
-
-return;
-
-}
-
-
-if(!data || !data.length){
-
-container.innerHTML=`
-<div class="empty">
-📭<br><br>
-У вас поки немає повідомлень.
-</div>`;
-
-return;
-
-}
-
-
-container.innerHTML=data.map(message=>`
-
-<article
-class="message ${message.is_read ? "" : "unread"}"
-data-id="${message.id}"
->
-
-<div class="message-head">
-
-<div class="subject">
-${escape(message.subject)}
+    <div data-user-name>
+        Користувач
+    </div>
 </div>
 
-<div class="date">
-${formatDate(message.created_at)}
-</div>
+<section class="hero">
+    <h1>💬 Повідомлення</h1>
+    <p>
+        Тут відображаються твої особисті повідомлення
+        від адміністрації та інших користувачів ліцею.
+    </p>
+</section>
 
-</div>
+<section id="messagesList" class="messages-list">
+    <div class="loading">
+        Завантаження повідомлень...
+    </div>
+</section>
 
-<div class="text">
-${escape(message.message)}
-</div>
+</main><script>
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
 
-<div class="status">
+    function formatDate(value) {
+        if (!value) {
+            return 'Дата не вказана';
+        }
 
-${message.is_read ? "Прочитано" : "Нове повідомлення"}
+        const date = new Date(value);
 
-</div>
+        if (Number.isNaN(date.getTime())) {
+            return value;
+        }
 
-</article>
+        return date.toLocaleString('uk-UA', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
 
-`).join("");
+    async function loadMessages() {
+        const container =
+            document.getElementById('messagesList');
 
+        try {
 
-const unread=data
-.filter(message=>!message.is_read)
-.map(message=>message.id);
+            if (typeof supabaseClient === 'undefined') {
+                throw new Error(
+                    'Supabase не підключено.'
+                );
+            }
 
+            const user =
+                await getCurrentUser();
 
-if(unread.length){
+            if (!user) {
+                location.href = 'login.html';
+                return;
+            }
 
-const {error:updateError}=await supabaseClient
-.from("messages")
-.update({is_read:true})
-.in("id",unread);
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from('messages')
+                .select('*')
+                .eq('recipient_id', user.id)
+                .order('created_at', {
+                    ascending: false
+                });
 
-if(updateError){
-console.error(updateError);
-}
+            if (error) {
+                throw error;
+            }
 
-}
+            const messages = data || [];
 
-}
+            if (!messages.length) {
 
+                container.innerHTML = `
+                    <div class="empty">
+                        <div style="font-size:38px;margin-bottom:10px;">
+                            📭
+                        </div>
 
-await loadMessages();
+                        <div>
+                            Повідомлень поки немає.
+                        </div>
+                    </div>
+                `;
 
-});
+                return;
+            }
 
+            container.innerHTML =
+                messages.map(message => {
+
+                    const unread =
+                        !message.is_read;
+
+                    return `
+                        <article
+                            class="message-card ${
+                                unread ? 'unread' : ''
+                            }"
+                        >
+
+                            <div class="message-top">
+
+                                <div>
+                                    <div class="message-subject">
+                                        ${escapeHtml(
+                                            message.subject ||
+                                            'Без теми'
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div class="message-date">
+                                    ${escapeHtml(
+                                        formatDate(
+                                            message.created_at
+                                        )
+                                    )}
+                                </div>
+
+                            </div>
+
+                            <div class="message-text">
+                                ${escapeHtml(
+                                    message.message
+                                )}
+                            </div>
+
+                            <div class="message-status">
+                                ${
+                                    unread
+                                        ? '🔵 Нове повідомлення'
+                                        : '✓ Прочитано'
+                                }
+                            </div>
+
+                        </article>
+                    `;
+                }).join('');
+
+            const unreadMessages =
+                messages.filter(
+                    message => !message.is_read
+                );
+
+            if (unreadMessages.length) {
+
+                const ids =
+                    unreadMessages.map(
+                        message => message.id
+                    );
+
+                const {
+                    error: updateError
+                } = await supabaseClient
+                    .from('messages')
+                    .update({
+                        is_read: true
+                    })
+                    .in('id', ids);
+
+                if (updateError) {
+                    console.warn(
+                        'Не вдалося позначити повідомлення як прочитані:',
+                        updateError
+                    );
+                }
+            }
+
+        } catch (error) {
+
+            console.error(
+                'Messages loading error:',
+                error
+            );
+
+            container.innerHTML = `
+                <div class="error">
+                    Не вдалося завантажити повідомлення.<br>
+                    Перевір таблицю messages та RLS-політики
+                    у Supabase.
+                </div>
+            `;
+        }
+    }
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        loadMessages
+    );
 </script></body>
 </html>
