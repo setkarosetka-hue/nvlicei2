@@ -1,537 +1,598 @@
-<!DOCTYPE html>
-<html lang="uk">
+<!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вхід — Ліцей №2</title>
+    <title>Вхід — Ліцей №2</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, Arial, sans-serif;
+        color: #fff;
+        background:
+            radial-gradient(circle at 20% 20%, rgba(0, 180, 255, .18), transparent 30%),
+            radial-gradient(circle at 80% 80%, rgba(120, 70, 255, .20), transparent 35%),
+            linear-gradient(135deg, #07111f, #0a1630 50%, #10132d);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-x: hidden;
+    }
+
+    .background {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(2px);
+        opacity: .35;
+        animation: float 8s ease-in-out infinite;
+    }
+
+    .orb.one {
+        width: 180px;
+        height: 180px;
+        background: #00bfff;
+        top: -60px;
+        left: -50px;
+    }
+
+    .orb.two {
+        width: 230px;
+        height: 230px;
+        background: #744cff;
+        right: -90px;
+        bottom: -70px;
+        animation-delay: -3s;
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
         }
 
+        50% {
+            transform: translateY(-18px);
+        }
+    }
+
+    .container {
+        width: 100%;
+        max-width: 480px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .logo {
+        text-align: center;
+        margin-bottom: 22px;
+    }
+
+    .logo-icon {
+        width: 66px;
+        height: 66px;
+        margin: 0 auto 12px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #00bfff, #695cff);
+        box-shadow: 0 12px 40px rgba(0, 180, 255, .25);
+    }
+
+    .logo h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: -.5px;
+    }
+
+    .logo p {
+        margin: 7px 0 0;
+        color: #9eabc1;
+        font-size: 14px;
+    }
+
+    .card {
+        background: rgba(13, 25, 45, .78);
+        border: 1px solid rgba(255, 255, 255, .10);
+        border-radius: 28px;
+        padding: 28px;
+        box-shadow:
+            0 25px 70px rgba(0, 0, 0, .35),
+            inset 0 1px 0 rgba(255, 255, 255, .05);
+        backdrop-filter: blur(22px);
+    }
+
+    .tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+        padding: 5px;
+        background: rgba(255,255,255,.05);
+        border-radius: 15px;
+        margin-bottom: 25px;
+    }
+
+    .tab {
+        border: 0;
+        border-radius: 11px;
+        padding: 12px;
+        background: transparent;
+        color: #8f9bb0;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .tab.active {
+        color: #fff;
+        background: rgba(255,255,255,.10);
+        box-shadow: 0 4px 15px rgba(0,0,0,.12);
+    }
+
+    .form {
+        display: none;
+    }
+
+    .form.active {
+        display: block;
+        animation: appear .25s ease;
+    }
+
+    @keyframes appear {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .title {
+        margin: 0 0 7px;
+        font-size: 23px;
+    }
+
+    .subtitle {
+        margin: 0 0 22px;
+        color: #94a2b9;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .field {
+        margin-bottom: 16px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 7px;
+        color: #c9d2e2;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    input,
+    select {
+        width: 100%;
+        border: 1px solid rgba(255,255,255,.10);
+        outline: none;
+        border-radius: 14px;
+        padding: 14px 15px;
+        color: #fff;
+        background: rgba(255,255,255,.055);
+        font-size: 15px;
+        transition: .2s;
+    }
+
+    input::placeholder {
+        color: #66748b;
+    }
+
+    input:focus,
+    select:focus {
+        border-color: rgba(0,191,255,.7);
+        background: rgba(255,255,255,.075);
+        box-shadow: 0 0 0 4px rgba(0,191,255,.08);
+    }
+
+    select {
+        cursor: pointer;
+    }
+
+    select option {
+        background: #101c31;
+        color: #fff;
+    }
+
+    .password-wrap {
+        position: relative;
+    }
+
+    .password-wrap input {
+        padding-right: 50px;
+    }
+
+    .show-password {
+        position: absolute;
+        right: 7px;
+        top: 7px;
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 11px;
+        background: transparent;
+        color: #8d9bb1;
+        cursor: pointer;
+        font-size: 17px;
+    }
+
+    .forgot {
+        display: block;
+        margin: -4px 0 18px;
+        text-align: right;
+        color: #55cfff;
+        font-size: 13px;
+        text-decoration: none;
+        cursor: pointer;
+        background: none;
+        border: 0;
+        width: 100%;
+    }
+
+    .forgot:hover {
+        color: #8de0ff;
+    }
+
+    .main-button {
+        width: 100%;
+        border: 0;
+        border-radius: 15px;
+        padding: 15px;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 800;
+        cursor: pointer;
+        background: linear-gradient(135deg, #00aeea, #6658ef);
+        box-shadow: 0 10px 28px rgba(0, 174, 234, .18);
+        transition: .2s;
+    }
+
+    .main-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 32px rgba(0, 174, 234, .25);
+    }
+
+    .main-button:disabled {
+        opacity: .6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .message {
+        display: none;
+        margin-bottom: 18px;
+        padding: 12px 14px;
+        border-radius: 13px;
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.success {
+        color: #a9ffd0;
+        background: rgba(35, 190, 110, .10);
+        border: 1px solid rgba(35, 190, 110, .22);
+    }
+
+    .message.error {
+        color: #ffb4b4;
+        background: rgba(255, 70, 70, .09);
+        border: 1px solid rgba(255, 70, 70, .20);
+    }
+
+    .message.warning {
+        color: #ffe4a3;
+        background: rgba(255, 180, 40, .09);
+        border: 1px solid rgba(255, 180, 40, .20);
+    }
+
+    .back {
+        display: none;
+        margin-bottom: 20px;
+        border: 0;
+        background: transparent;
+        color: #79d8ff;
+        padding: 0;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    .back.show {
+        display: block;
+    }
+
+    .role-info {
+        margin: -5px 0 18px;
+        padding: 12px 14px;
+        border-radius: 13px;
+        color: #91a2ba;
+        background: rgba(0, 191, 255, .055);
+        border: 1px solid rgba(0, 191, 255, .10);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .info {
+        margin-top: 20px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(255,255,255,.07);
+        text-align: center;
+        color: #69788f;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .footer {
+        margin-top: 18px;
+        text-align: center;
+        color: #66748a;
+        font-size: 11px;
+    }
+
+    @media (max-width: 480px) {
         body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Inter, Arial, sans-serif;
-            color: #fff;
-            background:
-                radial-gradient(circle at 20% 20%, rgba(0, 180, 255, .18), transparent 30%),
-                radial-gradient(circle at 80% 80%, rgba(120, 70, 255, .20), transparent 35%),
-                linear-gradient(135deg, #07111f, #0a1630 50%, #10132d);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow-x: hidden;
-        }
-
-        .background {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(2px);
-            opacity: .35;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .orb.one {
-            width: 180px;
-            height: 180px;
-            background: #00bfff;
-            top: -60px;
-            left: -50px;
-        }
-
-        .orb.two {
-            width: 230px;
-            height: 230px;
-            background: #744cff;
-            right: -90px;
-            bottom: -70px;
-            animation-delay: -3s;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-18px);
-            }
-        }
-
-        .container {
-            width: 100%;
-            max-width: 460px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 22px;
-        }
-
-        .logo-icon {
-            width: 66px;
-            height: 66px;
-            margin: 0 auto 12px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #00bfff, #695cff);
-            box-shadow: 0 12px 40px rgba(0, 180, 255, .25);
-        }
-
-        .logo h1 {
-            margin: 0;
-            font-size: 28px;
-            letter-spacing: -.5px;
-        }
-
-        .logo p {
-            margin: 7px 0 0;
-            color: #9eabc1;
-            font-size: 14px;
+            padding: 14px;
         }
 
         .card {
-            background: rgba(13, 25, 45, .78);
-            border: 1px solid rgba(255, 255, 255, .10);
-            border-radius: 28px;
-            padding: 28px;
-            box-shadow:
-                0 25px 70px rgba(0, 0, 0, .35),
-                inset 0 1px 0 rgba(255, 255, 255, .05);
-            backdrop-filter: blur(22px);
+            padding: 22px 18px;
+            border-radius: 23px;
         }
 
-        .tabs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            padding: 5px;
-            background: rgba(255,255,255,.05);
-            border-radius: 15px;
-            margin-bottom: 25px;
+        .logo h1 {
+            font-size: 25px;
         }
+    }
+</style>
 
-        .tab {
-            border: 0;
-            border-radius: 11px;
-            padding: 12px;
-            background: transparent;
-            color: #8f9bb0;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: .2s;
-        }
-
-        .tab.active {
-            color: #fff;
-            background: rgba(255,255,255,.10);
-            box-shadow: 0 4px 15px rgba(0,0,0,.12);
-        }
-
-        .form {
-            display: none;
-        }
-
-        .form.active {
-            display: block;
-            animation: appear .25s ease;
-        }
-
-        @keyframes appear {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .title {
-            margin: 0 0 7px;
-            font-size: 23px;
-        }
-
-        .subtitle {
-            margin: 0 0 22px;
-            color: #94a2b9;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .field {
-            margin-bottom: 16px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 7px;
-            color: #c9d2e2;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        input {
-            width: 100%;
-            border: 1px solid rgba(255,255,255,.10);
-            outline: none;
-            border-radius: 14px;
-            padding: 14px 15px;
-            color: #fff;
-            background: rgba(255,255,255,.055);
-            font-size: 15px;
-            transition: .2s;
-        }
-
-        input::placeholder {
-            color: #66748b;
-        }
-
-        input:focus {
-            border-color: rgba(0,191,255,.7);
-            background: rgba(255,255,255,.075);
-            box-shadow: 0 0 0 4px rgba(0,191,255,.08);
-        }
-
-        .password-wrap {
-            position: relative;
-        }
-
-        .password-wrap input {
-            padding-right: 50px;
-        }
-
-        .show-password {
-            position: absolute;
-            right: 7px;
-            top: 7px;
-            width: 40px;
-            height: 40px;
-            border: 0;
-            border-radius: 11px;
-            background: transparent;
-            color: #8d9bb1;
-            cursor: pointer;
-            font-size: 17px;
-        }
-
-        .forgot {
-            display: block;
-            margin: -4px 0 18px;
-            text-align: right;
-            color: #55cfff;
-            font-size: 13px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .forgot:hover {
-            color: #8de0ff;
-        }
-
-        .main-button {
-            width: 100%;
-            border: 0;
-            border-radius: 15px;
-            padding: 15px;
-            color: #fff;
-            font-size: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            background: linear-gradient(135deg, #00aeea, #6658ef);
-            box-shadow: 0 10px 28px rgba(0, 174, 234, .18);
-            transition: .2s;
-        }
-
-        .main-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 14px 32px rgba(0, 174, 234, .25);
-        }
-
-        .main-button:disabled {
-            opacity: .6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .message {
-            display: none;
-            margin-bottom: 18px;
-            padding: 12px 14px;
-            border-radius: 13px;
-            font-size: 13px;
-            line-height: 1.45;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        .message.success {
-            color: #a9ffd0;
-            background: rgba(35, 190, 110, .10);
-            border: 1px solid rgba(35, 190, 110, .22);
-        }
-
-        .message.error {
-            color: #ffb4b4;
-            background: rgba(255, 70, 70, .09);
-            border: 1px solid rgba(255, 70, 70, .20);
-        }
-
-        .back {
-            display: none;
-            margin-bottom: 20px;
-            border: 0;
-            background: transparent;
-            color: #79d8ff;
-            padding: 0;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .back.show {
-            display: block;
-        }
-
-        .info {
-            margin-top: 20px;
-            padding-top: 18px;
-            border-top: 1px solid rgba(255,255,255,.07);
-            text-align: center;
-            color: #69788f;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        .footer {
-            margin-top: 18px;
-            text-align: center;
-            color: #66748a;
-            font-size: 11px;
-        }
-
-        @media (max-width: 480px) {
-            body {
-                padding: 14px;
-            }
-
-            .card {
-                padding: 22px 18px;
-                border-radius: 23px;
-            }
-
-            .logo h1 {
-                font-size: 25px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="background">
+</head><body><div class="background">
     <div class="orb one"></div>
     <div class="orb two"></div>
+</div><div class="container"><div class="logo">
+    <div class="logo-icon">Л2</div>
+    <h1>Ліцей №2</h1>
+    <p>Єдина система ліцею</p>
 </div>
 
-<div class="container">
+<div class="card">
 
-    <div class="logo">
-        <div class="logo-icon">Л2</div>
-        <h1>Ліцей №2</h1>
-        <p>Єдина система ліцею</p>
+    <div class="tabs">
+        <button class="tab active" id="loginTab" type="button">
+            Вхід
+        </button>
+
+        <button class="tab" id="registerTab" type="button">
+            Реєстрація
+        </button>
     </div>
 
-    <div class="card">
+    <div id="message" class="message"></div>
 
-        <div class="tabs">
-            <button class="tab active" id="loginTab">Вхід</button>
-            <button class="tab" id="registerTab">Реєстрація</button>
-        </div>
+    <!-- ВХІД -->
+    <form id="loginForm" class="form active">
 
-        <div id="message" class="message"></div>
+        <h2 class="title">Вітаємо 👋</h2>
 
-        <!-- ВХОД -->
-        <form id="loginForm" class="form active">
+        <p class="subtitle">
+            Увійдіть до особистого кабінету Ліцею №2.
+        </p>
 
-            <h2 class="title">Вітаємо 👋</h2>
-            <p class="subtitle">
-                Увійдіть до особистого кабінету Ліцею №2.
-            </p>
+        <div class="field">
+            <label for="loginEmail">Email</label>
 
-            <div class="field">
-                <label for="loginEmail">Email</label>
-                <input
-                    id="loginEmail"
-                    type="email"
-                    placeholder="name@example.com"
-                    autocomplete="email"
-                    required
-                >
-            </div>
-
-            <div class="field">
-                <label for="loginPassword">Пароль</label>
-
-                <div class="password-wrap">
-                    <input
-                        id="loginPassword"
-                        type="password"
-                        placeholder="Введіть пароль"
-                        autocomplete="current-password"
-                        required
-                    >
-
-                    <button
-                        type="button"
-                        class="show-password"
-                        data-target="loginPassword"
-                        aria-label="Показати пароль"
-                    >◉</button>
-                </div>
-            </div>
-
-            <button type="button" class="forgot" id="forgotButton">
-                Забули пароль?
-            </button>
-
-            <button type="submit" class="main-button" id="loginButton">
-                Увійти
-            </button>
-
-        </form>
-
-        <!-- РЕЄСТРАЦІЯ -->
-        <form id="registerForm" class="form">
-
-            <h2 class="title">Створити акаунт</h2>
-            <p class="subtitle">
-                Зареєструйтеся, щоб отримати доступ до системи.
-            </p>
-
-            <div class="field">
-                <label for="registerName">Ім'я та прізвище</label>
-                <input
-                    id="registerName"
-                    type="text"
-                    placeholder="Наприклад: Іван Петренко"
-                    autocomplete="name"
-                    required
-                >
-            </div>
-
-            <div class="field">
-                <label for="registerEmail">Email</label>
-                <input
-                    id="registerEmail"
-                    type="email"
-                    placeholder="name@example.com"
-                    autocomplete="email"
-                    required
-                >
-            </div>
-
-            <div class="field">
-                <label for="registerPassword">Пароль</label>
-
-                <div class="password-wrap">
-                    <input
-                        id="registerPassword"
-                        type="password"
-                        placeholder="Мінімум 6 символів"
-                        autocomplete="new-password"
-                        minlength="6"
-                        required
-                    >
-
-                    <button
-                        type="button"
-                        class="show-password"
-                        data-target="registerPassword"
-                        aria-label="Показати пароль"
-                    >◉</button>
-                </div>
-            </div>
-
-            <button type="submit" class="main-button" id="registerButton">
-                Зареєструватися
-            </button>
-
-        </form>
-
-        <!-- ВОССТАНОВЛЕНИЕ -->
-        <div id="forgotForm" class="form">
-
-            <button type="button" class="back" id="backButton">
-                ← Повернутися до входу
-            </button>
-
-            <h2 class="title">Відновлення пароля</h2>
-
-            <p class="subtitle">
-                Введіть Email, який використовували під час реєстрації.
-                Ми надішлемо на нього посилання для створення нового пароля.
-            </p>
-
-            <div class="field">
-                <label for="resetEmail">Email</label>
-
-                <input
-                    id="resetEmail"
-                    type="email"
-                    placeholder="name@example.com"
-                    autocomplete="email"
-                    required
-                >
-            </div>
-
-            <button
-                type="button"
-                class="main-button"
-                id="resetButton"
+            <input
+                id="loginEmail"
+                type="email"
+                placeholder="name@example.com"
+                autocomplete="email"
+                required
             >
-                Надіслати посилання
-            </button>
-
         </div>
 
-        <div class="info">
-            Після реєстрації перевірте свою електронну пошту
-            та підтвердьте адресу Email.
+        <div class="field">
+            <label for="loginPassword">Пароль</label>
+
+            <div class="password-wrap">
+                <input
+                    id="loginPassword"
+                    type="password"
+                    placeholder="Введіть пароль"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="show-password"
+                    data-target="loginPassword"
+                    aria-label="Показати пароль"
+                >◉</button>
+            </div>
         </div>
+
+        <button
+            type="button"
+            class="forgot"
+            id="forgotButton"
+        >
+            Забули пароль?
+        </button>
+
+        <button
+            type="submit"
+            class="main-button"
+            id="loginButton"
+        >
+            Увійти
+        </button>
+
+    </form>
+
+    <!-- РЕЄСТРАЦІЯ -->
+    <form id="registerForm" class="form">
+
+        <h2 class="title">Створити акаунт</h2>
+
+        <p class="subtitle">
+            Створіть акаунт і подайте заявку на потрібну роль.
+        </p>
+
+        <div class="field">
+            <label for="registerName">Ім'я та прізвище</label>
+
+            <input
+                id="registerName"
+                type="text"
+                placeholder="Наприклад: Іван Петренко"
+                autocomplete="name"
+                required
+            >
+        </div>
+
+        <div class="field">
+            <label for="registerEmail">Email</label>
+
+            <input
+                id="registerEmail"
+                type="email"
+                placeholder="name@example.com"
+                autocomplete="email"
+                required
+            >
+        </div>
+
+        <div class="field">
+            <label for="registerRole">Ким ви є?</label>
+
+            <select id="registerRole" required>
+                <option value="">Оберіть роль</option>
+                <option value="student">🎓 Учень</option>
+                <option value="parent">👨‍👩‍👦 Батьки</option>
+                <option value="teacher">👨‍🏫 Вчитель</option>
+            </select>
+        </div>
+
+        <div class="role-info">
+            Після реєстрації вашу заявку перевірить адміністратор.
+            Доступ до кабінету буде відкрито після підтвердження.
+        </div>
+
+        <div class="field">
+            <label for="registerPassword">Пароль</label>
+
+            <div class="password-wrap">
+                <input
+                    id="registerPassword"
+                    type="password"
+                    placeholder="Мінімум 6 символів"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="show-password"
+                    data-target="registerPassword"
+                    aria-label="Показати пароль"
+                >◉</button>
+            </div>
+        </div>
+
+        <button
+            type="submit"
+            class="main-button"
+            id="registerButton"
+        >
+            Подати заявку
+        </button>
+
+    </form>
+
+    <!-- ВІДНОВЛЕННЯ ПАРОЛЯ -->
+    <div id="forgotForm" class="form">
+
+        <button
+            type="button"
+            class="back"
+            id="backButton"
+        >
+            ← Повернутися до входу
+        </button>
+
+        <h2 class="title">Відновлення пароля</h2>
+
+        <p class="subtitle">
+            Введіть Email, який використовували під час реєстрації.
+            Ми надішлемо на нього посилання для створення нового пароля.
+        </p>
+
+        <div class="field">
+            <label for="resetEmail">Email</label>
+
+            <input
+                id="resetEmail"
+                type="email"
+                placeholder="name@example.com"
+                autocomplete="email"
+                required
+            >
+        </div>
+
+        <button
+            type="button"
+            class="main-button"
+            id="resetButton"
+        >
+            Надіслати посилання
+        </button>
 
     </div>
 
-    <div class="footer">
-        © Ліцей №2 · Система дистанційної взаємодії
+    <div class="info">
+        Для реєстрації потрібне підтвердження Email.
+        Роль користувача активується адміністратором.
     </div>
 
 </div>
 
-<script>
+<div class="footer">
+    © Ліцей №2 · Система дистанційної взаємодії
+</div>
+
+</div><script>
     const loginTab = document.getElementById("loginTab");
     const registerTab = document.getElementById("registerTab");
 
@@ -568,11 +629,34 @@
         form.classList.add("active");
     }
 
+    function getRoleName(role) {
+        const roles = {
+            student: "Учень",
+            parent: "Батьки",
+            teacher: "Вчитель",
+            admin: "Адміністратор"
+        };
+
+        return roles[role] || "Користувач";
+    }
+
+    function getRolePage(role) {
+        const pages = {
+            student: "student.html",
+            parent: "parent.html",
+            teacher: "teacher.html",
+            admin: "admin.html"
+        };
+
+        return pages[role] || "login.html";
+    }
+
     loginTab.addEventListener("click", () => {
         loginTab.classList.add("active");
         registerTab.classList.remove("active");
 
         showForm(loginForm);
+        backButton.classList.remove("show");
         hideMessage();
     });
 
@@ -581,6 +665,7 @@
         loginTab.classList.remove("active");
 
         showForm(registerForm);
+        backButton.classList.remove("show");
         hideMessage();
     });
 
@@ -627,14 +712,20 @@
         });
     });
 
-    // ВХОД
+    // =========================
+    // ВХІД
+    // =========================
+
     loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         hideMessage();
 
-        const email = document.getElementById("loginEmail").value.trim();
-        const password = document.getElementById("loginPassword").value;
+        const email =
+            document.getElementById("loginEmail").value.trim();
+
+        const password =
+            document.getElementById("loginPassword").value;
 
         if (!email || !password) {
             showMessage("Заповніть Email та пароль.");
@@ -655,126 +746,283 @@
                 throw error;
             }
 
-            if (!data.user) {
+            if (!data?.user) {
                 throw new Error("Користувача не знайдено.");
             }
 
-            const { data: profile, error: profileError } =
-                await supabaseClient
-                    .from("profiles")
-                    .select("id, role, full_name")
-                    .eq("id", data.user.id)
-                    .single();
+            /*
+             * Перевіряємо, чи підтверджений Email.
+             */
+            if (!data.user.email_confirmed_at) {
+                await supabaseClient.auth.signOut();
+
+                showMessage(
+                    "Спочатку підтвердьте свій Email. Перевірте пошту.",
+                    "warning"
+                );
+
+                return;
+            }
+
+            /*
+             * Отримуємо профіль.
+             */
+            const {
+                data: profile,
+                error: profileError
+            } = await supabaseClient
+                .from("profiles")
+                .select(
+                    "id, email, full_name, role, requested_role, approval_status"
+                )
+                .eq("id", data.user.id)
+                .maybeSingle();
 
             if (profileError) {
                 throw profileError;
             }
 
-            const role = profile?.role || "student";
+            /*
+             * Якщо профіль ще не створився.
+             */
+            if (!profile) {
+                await supabaseClient.auth.signOut();
 
-            if (role === "admin") {
-                window.location.href = "admin.html";
-            } else if (role === "teacher") {
-                window.location.href = "teacher.html";
-            } else if (role === "parent") {
-                window.location.href = "parent.html";
-            } else {
-                window.location.href = "student.html";
+                showMessage(
+                    "Профіль ще створюється. Спробуйте увійти через кілька секунд.",
+                    "warning"
+                );
+
+                return;
             }
 
-        } catch (error) {
-            console.error(error);
+            /*
+             * Заявка ще очікує підтвердження.
+             */
+            if (
+                profile.approval_status === "pending" ||
+                profile.role === "pending"
+            ) {
+                await supabaseClient.auth.signOut();
+
+                const requestedRole =
+                    getRoleName(profile.requested_role);
+
+                showMessage(
+                    "Ваша заявка на роль «" +
+                    requestedRole +
+                    "» ще очікує підтвердження адміністратора.",
+                    "warning"
+                );
+
+                return;
+            }
+
+            /*
+             * Заявку відхилено.
+             */
+            if (profile.approval_status === "rejected") {
+                await supabaseClient.auth.signOut();
+
+                showMessage(
+                    "Вашу заявку не було підтверджено адміністратором.",
+                    "error"
+                );
+
+                return;
+            }
+
+            /*
+             * Профіль підтверджено.
+             */
+            const role = profile.role;
+
+            if (!["admin", "teacher", "student", "parent"].includes(role)) {
+                await supabaseClient.auth.signOut();
+
+                showMessage(
+                    "Для вашого акаунта ще не призначено роль.",
+                    "warning"
+                );
+
+                return;
+            }
+
+            /*
+             * Зберігаємо мінімальну інформацію локально.
+             */
+            localStorage.setItem(
+                "lyceum2_user",
+                JSON.stringify({
+                    id: data.user.id,
+                    email: data.user.email,
+                    full_name: profile.full_name,
+                    role: role
+                })
+            );
 
             showMessage(
-                error.message === "Invalid login credentials"
-                    ? "Неправильний Email або пароль."
-                    : error.message || "Не вдалося виконати вхід."
+                "Вхід виконано. Відкриваємо кабінет...",
+                "success"
             );
+
+            setTimeout(() => {
+                window.location.href = getRolePage(role);
+            }, 500);
+
+        } catch (error) {
+            console.error("Login error:", error);
+
+            let errorText =
+                error?.message ||
+                "Не вдалося виконати вхід.";
+
+            if (
+                errorText.toLowerCase().includes(
+                    "invalid login credentials"
+                )
+            ) {
+                errorText = "Неправильний Email або пароль.";
+            }
+
+            showMessage(errorText);
+
         } finally {
             loginButton.disabled = false;
             loginButton.textContent = "Увійти";
         }
     });
 
+    // =========================
     // РЕЄСТРАЦІЯ
+    // =========================
+
     registerForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         hideMessage();
 
-        const name = document.getElementById("registerName").value.trim();
-        const email = document.getElementById("registerEmail").value.trim();
+        const name =
+            document.getElementById("registerName").value.trim();
+
+        const email =
+            document.getElementById("registerEmail").value.trim();
+
+        const role =
+            document.getElementById("registerRole").value;
+
         const password =
             document.getElementById("registerPassword").value;
 
-        if (!name || !email || !password) {
+        if (!name || !email || !role || !password) {
             showMessage("Заповніть усі поля.");
             return;
         }
 
+        if (!["student", "parent", "teacher"].includes(role)) {
+            showMessage("Оберіть правильну роль.");
+            return;
+        }
+
         if (password.length < 6) {
-            showMessage("Пароль має містити щонайменше 6 символів.");
+            showMessage(
+                "Пароль має містити щонайменше 6 символів."
+            );
             return;
         }
 
         registerButton.disabled = true;
-        registerButton.textContent = "Реєстрація...";
+        registerButton.textContent = "Створення заявки...";
 
         try {
-            const { data, error } =
-                await supabaseClient.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        emailRedirectTo:
-                            REDIRECT_BASE + "/verify-email.html",
+            const {
+                data,
+                error
+            } = await supabaseClient.auth.signUp({
+                email,
+                password,
+                options: {
+                    emailRedirectTo:
+                        REDIRECT_BASE + "/verify-email.html",
 
-                        data: {
-                            full_name: name
-                        }
+                    data: {
+                        full_name: name,
+                        requested_role: role
                     }
-                });
+                }
+            });
 
             if (error) {
                 throw error;
             }
 
-            if (data.user && data.session) {
+            /*
+             * Якщо Supabase повернув session,
+             * користувача можна одразу вважати
+             * зареєстрованим, але роль все одно
+             * залишається pending.
+             */
+            if (data?.user) {
+
+                /*
+                 * Якщо підтвердження Email не потрібне,
+                 * все одно виходимо з акаунта,
+                 * тому що адміністратор ще має
+                 * підтвердити роль.
+                 */
+                if (data.session) {
+                    await supabaseClient.auth.signOut();
+                }
+
                 showMessage(
-                    "Акаунт створено. Ви вже увійшли до системи.",
+                    "Заявку створено! Перевірте Email та підтвердьте адресу. Після цього дочекайтеся підтвердження адміністратора. Запитана роль: " +
+                    getRoleName(role) +
+                    ".",
                     "success"
                 );
 
-                setTimeout(() => {
-                    window.location.href = "student.html";
-                }, 1200);
+                document.getElementById("registerName").value = "";
+                document.getElementById("registerEmail").value = "";
+                document.getElementById("registerRole").value = "";
+                document.getElementById("registerPassword").value = "";
 
                 return;
             }
 
             showMessage(
-                "Акаунт створено! Перевірте Email та натисніть посилання для підтвердження.",
-                "success"
+                "Не вдалося створити акаунт.",
+                "error"
             );
 
         } catch (error) {
-            console.error(error);
+            console.error("Registration error:", error);
 
-            let text = error.message || "Не вдалося зареєструватися.";
+            let errorText =
+                error?.message ||
+                "Не вдалося зареєструватися.";
 
-            if (text.toLowerCase().includes("already registered")) {
-                text = "Цей Email уже зареєстрований.";
+            const lower = errorText.toLowerCase();
+
+            if (
+                lower.includes("already registered") ||
+                lower.includes("user already registered")
+            ) {
+                errorText =
+                    "Цей Email уже зареєстрований.";
             }
 
-            showMessage(text);
+            showMessage(errorText);
 
         } finally {
             registerButton.disabled = false;
-            registerButton.textContent = "Зареєструватися";
+            registerButton.textContent = "Подати заявку";
         }
     });
 
-    // ВОССТАНОВЛЕНИЕ ПАРОЛЯ
+    // =========================
+    // ВІДНОВЛЕННЯ ПАРОЛЯ
+    // =========================
+
     resetButton.addEventListener("click", async () => {
         hideMessage();
 
@@ -795,7 +1043,8 @@
                     email,
                     {
                         redirectTo:
-                            REDIRECT_BASE + "/reset-password.html"
+                            REDIRECT_BASE +
+                            "/reset-password.html"
                     }
                 );
 
@@ -804,15 +1053,16 @@
             }
 
             showMessage(
-                "Готово! Перевірте свою пошту. Відкрийте нове повідомлення та перейдіть за посиланням для зміни пароля.",
+                "Готово! Перевірте свою пошту та відкрийте посилання для зміни пароля.",
                 "success"
             );
 
         } catch (error) {
-            console.error(error);
+            console.error("Reset password error:", error);
 
             showMessage(
-                error.message || "Не вдалося надіслати лист для відновлення."
+                error?.message ||
+                "Не вдалося надіслати лист для відновлення."
             );
 
         } finally {
@@ -821,20 +1071,56 @@
         }
     });
 
-    // Если пользователь уже вошёл — не показываем страницу входа бесконечно
+    // =========================
+    // ПЕРЕВІРКА АКТИВНОЇ СЕСІЇ
+    // =========================
+
     (async () => {
         try {
-            const { data } =
-                await supabaseClient.auth.getSession();
+            const {
+                data: sessionData
+            } = await supabaseClient.auth.getSession();
 
-            if (data?.session?.user) {
-                console.log("Активна сесія:", data.session.user.email);
+            if (!sessionData?.session?.user) {
+                return;
             }
+
+            const user =
+                sessionData.session.user;
+
+            const {
+                data: profile
+            } = await supabaseClient
+                .from("profiles")
+                .select(
+                    "role, approval_status"
+                )
+                .eq("id", user.id)
+                .maybeSingle();
+
+            if (!profile) {
+                return;
+            }
+
+            /*
+             * Якщо користувач уже підтверджений,
+             * відразу відкриваємо його кабінет.
+             */
+            if (
+                profile.approval_status === "approved" &&
+                ["admin", "teacher", "student", "parent"]
+                    .includes(profile.role)
+            ) {
+                window.location.href =
+                    getRolePage(profile.role);
+            }
+
         } catch (error) {
-            console.error("Session check error:", error);
+            console.error(
+                "Session check error:",
+                error
+            );
         }
     })();
-</script>
-
-</body>
+</script></body>
 </html>
