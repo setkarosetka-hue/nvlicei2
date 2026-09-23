@@ -1,899 +1,804 @@
-<!DOCTYPE html>
-<html lang="uk">
+<!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Розклад — Ліцей №2</title>
 
-    <title>Розклад — Ліцей №2</title>
+<link rel="stylesheet" href="style.css">
 
-    <link rel="stylesheet" href="style.css">
+<style>
+    .page {
+        min-height: 100vh;
+        background: var(--background);
+    }
 
-    <style>
-        .page {
-            min-height: 100vh;
-            background: var(--background);
-        }
+    .page-header {
+        padding: 30px 20px 20px;
+    }
 
+    .page-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .top-bar {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .page-title h1 {
+        font-size: clamp(28px, 5vw, 38px);
+        margin-bottom: 6px;
+    }
+
+    .page-title p {
+        color: var(--text-light);
+        font-size: 13px;
+    }
+
+    .today-button {
+        border: 0;
+        background: var(--primary);
+        color: white;
+        padding: 11px 16px;
+        border-radius: 11px;
+        font-family: inherit;
+        font-weight: 700;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .class-select {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: white;
+        color: var(--text);
+        padding: 13px 14px;
+        border-radius: 12px;
+        font-family: inherit;
+        margin-bottom: 15px;
+        outline: none;
+    }
+
+    .week-selector {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        margin-bottom: 20px;
+    }
+
+    .day-button {
+        flex: 1;
+        min-width: 115px;
+        border: 1px solid var(--border);
+        background: white;
+        color: var(--text);
+        padding: 13px 12px;
+        border-radius: 13px;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .day-button.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    .day-name {
+        display: block;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .day-date {
+        display: block;
+        margin-top: 3px;
+        font-size: 10px;
+        opacity: .75;
+    }
+
+    .schedule-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .schedule-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 20px 22px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .schedule-card-header h2 {
+        font-size: 19px;
+    }
+
+    .lesson-count {
+        color: var(--text-muted);
+        font-size: 11px;
+    }
+
+    .lesson-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .lesson {
+        display: grid;
+        grid-template-columns: 55px 105px 1fr 130px;
+        align-items: center;
+        min-height: 76px;
+        padding: 10px 20px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .lesson:last-child {
+        border-bottom: 0;
+    }
+
+    .lesson-number {
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: #f0f1f7;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .lesson-time {
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .lesson-time small {
+        display: block;
+        margin-top: 3px;
+        color: var(--text-muted);
+        font-size: 9px;
+        font-weight: 500;
+    }
+
+    .lesson-subject {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .subject-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 11px;
+        background: var(--primary-soft);
+        font-size: 18px;
+    }
+
+    .subject-name {
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .teacher-name {
+        margin-top: 3px;
+        color: var(--text-muted);
+        font-size: 10px;
+    }
+
+    .room {
+        color: var(--text-light);
+        font-size: 11px;
+    }
+
+    .loading-message,
+    .empty-message,
+    .error-message {
+        padding: 50px 20px;
+        text-align: center;
+        color: var(--text-muted);
+    }
+
+    .error-message {
+        display: none;
+        color: #b42318;
+    }
+
+    .schedule-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 20px;
+        color: var(--text-muted);
+        font-size: 11px;
+    }
+
+    @media (max-width: 700px) {
         .page-header {
-            padding: 30px 20px 20px;
-        }
-
-        .page-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 20px 12px;
         }
 
         .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-
-            color: var(--primary);
-            text-decoration: none;
-
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        .page-title h1 {
-            font-size: clamp(28px, 5vw, 38px);
-            margin-bottom: 6px;
-        }
-
-        .page-title p {
-            color: var(--text-light);
-            font-size: 13px;
-        }
-
-        .today-button {
-            border: 0;
-            background: var(--primary);
-            color: white;
-
-            padding: 11px 16px;
-            border-radius: 11px;
-
-            font-family: inherit;
-            font-weight: 700;
-            font-size: 12px;
-
-            cursor: pointer;
-
-            transition: .2s ease;
-        }
-
-        .today-button:hover {
-            transform: translateY(-2px);
-            background: var(--primary-dark);
-        }
-
-        .week-selector {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-
-            padding-bottom: 5px;
-            margin-bottom: 20px;
-        }
-
-        .day-button {
-            flex: 1;
-            min-width: 115px;
-
-            border: 1px solid var(--border);
-            background: white;
-            color: var(--text);
-
-            padding: 13px 12px;
-            border-radius: 13px;
-
-            cursor: pointer;
-            font-family: inherit;
-
-            transition: .2s ease;
-        }
-
-        .day-button:hover {
-            border-color: var(--primary);
-        }
-
-        .day-button.active {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-            box-shadow: 0 8px 20px rgba(99, 91, 255, .18);
-        }
-
-        .day-name {
-            display: block;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .day-date {
-            display: block;
-            margin-top: 3px;
-            font-size: 10px;
-            opacity: .75;
-        }
-
-        .schedule-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .schedule-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-
-            padding: 20px 22px;
-
-            border-bottom: 1px solid var(--border);
-        }
-
-        .schedule-card-header h2 {
-            font-size: 19px;
-        }
-
-        .lesson-count {
-            color: var(--text-muted);
-            font-size: 11px;
-        }
-
-        .lesson-list {
-            display: flex;
-            flex-direction: column;
+            align-items: flex-start;
         }
 
         .lesson {
-            display: grid;
-
-            grid-template-columns: 65px 105px 1fr 130px 110px;
-
-            align-items: center;
-
-            min-height: 76px;
-
-            padding: 10px 20px;
-
-            border-bottom: 1px solid var(--border);
-
-            transition: .2s ease;
-        }
-
-        .lesson:last-child {
-            border-bottom: 0;
-        }
-
-        .lesson:hover {
-            background: #fafaff;
-        }
-
-        .lesson.current {
-            background: var(--primary-soft);
-        }
-
-        .lesson-number {
-            width: 34px;
-            height: 34px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 10px;
-
-            background: #f0f1f7;
-            color: var(--text);
-
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-        .lesson.current .lesson-number {
-            background: var(--primary);
-            color: white;
-        }
-
-        .lesson-time {
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .lesson-time small {
-            display: block;
-
-            margin-top: 3px;
-
-            color: var(--text-muted);
-            font-size: 9px;
-            font-weight: 500;
-        }
-
-        .lesson-subject {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .subject-icon {
-            width: 40px;
-            height: 40px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 11px;
-
-            background: var(--primary-soft);
-
-            font-size: 18px;
-        }
-
-        .subject-name {
-            font-size: 14px;
-            font-weight: 800;
-        }
-
-        .teacher-name {
-            margin-top: 3px;
-
-            color: var(--text-muted);
-            font-size: 10px;
+            grid-template-columns: 38px 65px 1fr;
+            padding: 10px 13px;
+            min-height: 70px;
         }
 
         .room {
-            color: var(--text-light);
-            font-size: 11px;
-        }
-
-        .lesson-status {
-            justify-self: end;
-
-            padding: 6px 9px;
-
-            border-radius: 8px;
-
-            background: #f1f3f7;
-            color: var(--text-muted);
-
-            font-size: 9px;
-            font-weight: 700;
-        }
-
-        .lesson.current .lesson-status {
-            background: #e7e4ff;
-            color: var(--primary);
-        }
-
-        .schedule-footer {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-
-            margin-top: 20px;
-
-            color: var(--text-muted);
-            font-size: 11px;
-        }
-
-        .empty-message {
             display: none;
-            padding: 50px 20px;
-
-            text-align: center;
-            color: var(--text-muted);
         }
 
-        @media (max-width: 850px) {
-            .lesson {
-                grid-template-columns: 45px 80px 1fr 70px;
-            }
-
-            .room {
-                display: none;
-            }
+        .subject-icon {
+            width: 34px;
+            height: 34px;
         }
 
-        @media (max-width: 600px) {
-            .page-header {
-                padding: 20px 12px;
-            }
-
-            .top-bar {
-                align-items: flex-start;
-            }
-
-            .today-button {
-                padding: 9px 11px;
-            }
-
-            .schedule-card {
-                border-radius: 17px;
-            }
-
-            .schedule-card-header {
-                padding: 17px;
-            }
-
-            .lesson {
-                grid-template-columns: 38px 65px 1fr;
-                padding: 10px 13px;
-                min-height: 70px;
-            }
-
-            .lesson-status {
-                display: none;
-            }
-
-            .subject-icon {
-                width: 34px;
-                height: 34px;
-            }
-
-            .subject-name {
-                font-size: 12px;
-            }
-
-            .teacher-name {
-                font-size: 9px;
-            }
-
-            .lesson-time {
-                font-size: 10px;
-            }
-
-            .week-selector {
-                margin-left: -12px;
-                margin-right: -12px;
-                padding-left: 12px;
-                padding-right: 12px;
-            }
-
-            .day-button {
-                min-width: 95px;
-            }
+        .subject-name {
+            font-size: 12px;
         }
-    </style>
-</head>
 
-<body>
+        .teacher-name {
+            font-size: 9px;
+        }
 
-<div class="page">
+        .lesson-time {
+            font-size: 10px;
+        }
 
-    <header class="page-header">
+        .week-selector {
+            margin-left: -12px;
+            margin-right: -12px;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
 
-        <div class="page-container">
+        .day-button {
+            min-width: 95px;
+        }
+    }
+</style>
 
-            <div class="top-bar">
+</head><body><div class="page"><header class="page-header">
 
-                <div class="page-title">
+    <div class="page-container">
 
-                    <a
-                        href="dashboard.html"
-                        class="back-link"
-                    >
-                        ← Особистий кабінет
-                    </a>
+        <div class="top-bar">
 
-                    <h1>
-                        Розклад
-                    </h1>
+            <div class="page-title">
 
-                    <p>
-                        Розклад уроків на поточний тиждень
-                    </p>
+                <a href="dashboard.html" class="back-link">
+                    ← Особистий кабінет
+                </a>
 
-                </div>
+                <h1>Розклад</h1>
 
-                <button
-                    class="today-button"
-                    onclick="showToday()"
-                >
-                    📅 Сьогодні
-                </button>
+                <p>
+                    Розклад уроків із системи ліцею
+                </p>
 
             </div>
 
-
-            <div class="week-selector">
-
-                <button
-                    class="day-button active"
-                    data-day="monday"
-                    onclick="selectDay('monday', this)"
-                >
-                    <span class="day-name">
-                        Понеділок
-                    </span>
-                    <span class="day-date">
-                        21 вересня
-                    </span>
-                </button>
-
-                <button
-                    class="day-button"
-                    data-day="tuesday"
-                    onclick="selectDay('tuesday', this)"
-                >
-                    <span class="day-name">
-                        Вівторок
-                    </span>
-                    <span class="day-date">
-                        22 вересня
-                    </span>
-                </button>
-
-                <button
-                    class="day-button"
-                    data-day="wednesday"
-                    onclick="selectDay('wednesday', this)"
-                >
-                    <span class="day-name">
-                        Середа
-                    </span>
-                    <span class="day-date">
-                        23 вересня
-                    </span>
-                </button>
-
-                <button
-                    class="day-button"
-                    data-day="thursday"
-                    onclick="selectDay('thursday', this)"
-                >
-                    <span class="day-name">
-                        Четвер
-                    </span>
-                    <span class="day-date">
-                        24 вересня
-                    </span>
-                </button>
-
-                <button
-                    class="day-button"
-                    data-day="friday"
-                    onclick="selectDay('friday', this)"
-                >
-                    <span class="day-name">
-                        П'ятниця
-                    </span>
-                    <span class="day-date">
-                        25 вересня
-                    </span>
-                </button>
-
-            </div>
-
-
-            <section class="schedule-card">
-
-                <div class="schedule-card-header">
-
-                    <h2 id="selectedDayTitle">
-                        Понеділок
-                    </h2>
-
-                    <span
-                        class="lesson-count"
-                        id="lessonCount"
-                    >
-                        6 уроків
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="lesson-list"
-                    id="lessonList"
-                >
-
-                    <div class="lesson current">
-
-                        <div class="lesson-number">
-                            1
-                        </div>
-
-                        <div class="lesson-time">
-                            08:00
-                            <small>08:45</small>
-                        </div>
-
-                        <div class="lesson-subject">
-
-                            <div class="subject-icon">
-                                📐
-                            </div>
-
-                            <div>
-                                <div class="subject-name">
-                                    Математика
-                                </div>
-
-                                <div class="teacher-name">
-                                    Вчитель математики
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="room">
-                            Каб. 12
-                        </div>
-
-                        <div class="lesson-status">
-                            Урок
-                        </div>
-
-                    </div>
-
-
-                    <div class="lesson">
-
-                        <div class="lesson-number">
-                            2
-                        </div>
-
-                        <div class="lesson-time">
-                            08:55
-                            <small>09:40</small>
-                        </div>
-
-                        <div class="lesson-subject">
-
-                            <div class="subject-icon">
-                                📖
-                            </div>
-
-                            <div>
-                                <div class="subject-name">
-                                    Українська мова
-                                </div>
-
-                                <div class="teacher-name">
-                                    Вчитель української мови
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="room">
-                            Каб. 24
-                        </div>
-
-                        <div class="lesson-status">
-                            Урок
-                        </div>
-
-                    </div>
-
-
-                    <div class="lesson">
-
-                        <div class="lesson-number">
-                            3
-                        </div>
-
-                        <div class="lesson-time">
-                            09:50
-                            <small>10:35</small>
-                        </div>
-
-                        <div class="lesson-subject">
-
-                            <div class="subject-icon">
-                                🌍
-                            </div>
-
-                            <div>
-                                <div class="subject-name">
-                                    Географія
-                                </div>
-
-                                <div class="teacher-name">
-                                    Вчитель географії
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="room">
-                            Каб. 18
-                        </div>
-
-                        <div class="lesson-status">
-                            Урок
-                        </div>
-
-                    </div>
-
-
-                    <div class="lesson">
-
-                        <div class="lesson-number">
-                            4
-                        </div>
-
-                        <div class="lesson-time">
-                            10:50
-                            <small>11:35</small>
-                        </div>
-
-                        <div class="lesson-subject">
-
-                            <div class="subject-icon">
-                                🧬
-                            </div>
-
-                            <div>
-                                <div class="subject-name">
-                                    Біологія
-                                </div>
-
-                                <div class="teacher-name">
-                                    Вчитель біології
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="room">
-                            Каб. 31
-                        </div>
-
-                        <div class="lesson-status">
-                            Урок
-                        </div>
-
-                    </div>
-
-
-                    <div class="lesson">
-
-                        <div class="lesson-number">
-                            5
-                        </div>
-
-                        <div class="lesson-time">
-                            11:45
-                            <small>12:30</small>
-                        </div>
-
-                        <div class="lesson-subject">
-
-                            <div class="subject-icon">
-                                🇬🇧
-                            </div>
-
-                            <div>
-                                <div class="subject-name">
-                                    Англійська мова
-                                </div>
-
-                                <div class="teacher-name">
-                                    Вчитель англійської
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="room">
-                            Каб. 17
-                        </div>
-
-                        <div class="lesson-status">
-                            Урок
-                        </div>
-
-                    </div>
-
-
-                    <div class="lesson">
-
-                        <div class="lesson-number">
-                            6
-                        </div>
-
-                        <div class="lesson-time">
-                            12:40
-                            <small>13:25</small>
-                        </div>
-
-                        <div class="lesson-subject">
-
-                            <div class="subject-icon">
-                                🏃
-                            </div>
-
-                            <div>
-                                <div class="subject-name">
-                                    Фізична культура
-                                </div>
-
-                                <div class="teacher-name">
-                                    Вчитель фізкультури
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="room">
-                            Спортзал
-                        </div>
-
-                        <div class="lesson-status">
-                            Урок
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="empty-message"
-                    id="emptyMessage"
-                >
-                    📭 На цей день уроків немає.
-                </div>
-
-            </section>
-
-
-            <div class="schedule-footer">
-
-                <span>
-                    🟢 Поточний урок позначено кольором.
-                </span>
-
-                <span>
-                    Версія розкладу: 0.1
-                </span>
-
-            </div>
+            <button
+                class="today-button"
+                onclick="showToday()"
+            >
+                📅 Сьогодні
+            </button>
 
         </div>
 
-    </header>
+        <select
+            id="classSelect"
+            class="class-select"
+            onchange="changeClass()"
+        >
+            <option value="">
+                Усі класи
+            </option>
+        </select>
 
-</div>
+        <div class="week-selector">
 
+            <button class="day-button active" data-day="monday" onclick="selectDay('monday', this)">
+                <span class="day-name">Понеділок</span>
+                <span class="day-date" id="date-monday"></span>
+            </button>
 
-<script src="app.js"></script>
+            <button class="day-button" data-day="tuesday" onclick="selectDay('tuesday', this)">
+                <span class="day-name">Вівторок</span>
+                <span class="day-date" id="date-tuesday"></span>
+            </button>
 
-<script>
+            <button class="day-button" data-day="wednesday" onclick="selectDay('wednesday', this)">
+                <span class="day-name">Середа</span>
+                <span class="day-date" id="date-wednesday"></span>
+            </button>
 
-    const schedules = {
+            <button class="day-button" data-day="thursday" onclick="selectDay('thursday', this)">
+                <span class="day-name">Четвер</span>
+                <span class="day-date" id="date-thursday"></span>
+            </button>
 
-        monday: {
-            title: "Понеділок",
-            count: "6 уроків"
-        },
+            <button class="day-button" data-day="friday" onclick="selectDay('friday', this)">
+                <span class="day-name">П'ятниця</span>
+                <span class="day-date" id="date-friday"></span>
+            </button>
 
-        tuesday: {
-            title: "Вівторок",
-            count: "6 уроків"
-        },
+        </div>
 
-        wednesday: {
-            title: "Середа",
-            count: "5 уроків"
-        },
+        <section class="schedule-card">
 
-        thursday: {
-            title: "Четвер",
-            count: "6 уроків"
-        },
+            <div class="schedule-card-header">
 
-        friday: {
-            title: "П'ятниця",
-            count: "5 уроків"
-        }
+                <h2 id="selectedDayTitle">
+                    Понеділок
+                </h2>
 
+                <span
+                    class="lesson-count"
+                    id="lessonCount"
+                >
+                    0 уроків
+                </span>
+
+            </div>
+
+            <div
+                class="loading-message"
+                id="loadingMessage"
+            >
+                ⏳ Завантаження розкладу...
+            </div>
+
+            <div
+                class="lesson-list"
+                id="lessonList"
+            ></div>
+
+            <div
+                class="empty-message"
+                id="emptyMessage"
+                style="display:none;"
+            >
+                📭 На цей день уроків немає.
+            </div>
+
+            <div
+                class="error-message"
+                id="errorMessage"
+            >
+                ⚠️ Не вдалося завантажити розклад.
+                <br>
+                <span id="errorText"></span>
+            </div>
+
+        </section>
+
+        <div class="schedule-footer">
+
+            <span>
+                Розклад завантажується із Supabase.
+            </span>
+
+            <span>
+                Версія 0.2
+            </span>
+
+        </div>
+
+    </div>
+
+</header>
+
+</div><script src="supabase.js"></script><script src="app.js"></script><script>
+
+let scheduleData = [];
+let selectedDay = "monday";
+let selectedClass = "";
+
+const dayNames = {
+    monday: "Понеділок",
+    tuesday: "Вівторок",
+    wednesday: "Середа",
+    thursday: "Четвер",
+    friday: "П'ятниця"
+};
+
+const subjectIcons = {
+    "Математика": "📐",
+    "Українська мова": "📖",
+    "Українська література": "📚",
+    "Географія": "🌍",
+    "Біологія": "🧬",
+    "Англійська мова": "🇬🇧",
+    "Німецька мова": "🇩🇪",
+    "Історія": "🏛️",
+    "Фізична культура": "🏃",
+    "Інформатика": "💻",
+    "Фізика": "⚡",
+    "Хімія": "🧪",
+    "Мистецтво": "🎨",
+    "Технології": "🛠️"
+};
+
+function getSubjectIcon(subject) {
+    return subjectIcons[subject] || "📘";
+}
+
+function escapeHtml(value) {
+    if (value === null || value === undefined) return "";
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function normalizeDay(day) {
+
+    if (!day) return "";
+
+    const value = String(day).toLowerCase().trim();
+
+    const map = {
+        "понеділок": "monday",
+        "понедельник": "monday",
+        "monday": "monday",
+
+        "вівторок": "tuesday",
+        "вторник": "tuesday",
+        "tuesday": "tuesday",
+
+        "середа": "wednesday",
+        "среда": "wednesday",
+        "wednesday": "wednesday",
+
+        "четвер": "thursday",
+        "thursday": "thursday",
+
+        "п'ятниця": "friday",
+        "пятниця": "friday",
+        "пятница": "friday",
+        "friday": "friday"
     };
 
+    return map[value] || value;
+}
 
-    function selectDay(day, button) {
+function populateClasses() {
 
-        document
-            .querySelectorAll(".day-button")
-            .forEach((item) => {
-                item.classList.remove("active");
-            });
+    const select = document.getElementById("classSelect");
 
-        button.classList.add("active");
+    const classes = [
+        ...new Set(
+            scheduleData
+                .map(item => item.class_name)
+                .filter(Boolean)
+        )
+    ].sort();
 
+    select.innerHTML =
+        `<option value="">Усі класи</option>`;
 
-        document
-            .getElementById("selectedDayTitle")
-            .textContent =
-            schedules[day].title;
+    classes.forEach(className => {
 
+        const option = document.createElement("option");
 
-        document
-            .getElementById("lessonCount")
-            .textContent =
-            schedules[day].count;
+        option.value = className;
+        option.textContent = className;
 
+        select.appendChild(option);
+    });
+}
 
-        /*
-         * Поки що для всіх днів показується
-         * тестове розкладення.
-         *
-         * Пізніше тут буде завантаження
-         * реального розкладу з Supabase.
-         */
+function changeClass() {
+
+    selectedClass =
+        document.getElementById("classSelect").value;
+
+    renderSchedule();
+}
+
+function getDayLessons() {
+
+    return scheduleData
+        .filter(item => {
+
+            const sameDay =
+                normalizeDay(item.day) === selectedDay;
+
+            const sameClass =
+                !selectedClass ||
+                item.class_name === selectedClass;
+
+            return sameDay && sameClass;
+        })
+        .sort((a, b) => {
+            return Number(a.lesson_number || 0) -
+                   Number(b.lesson_number || 0);
+        });
+}
+
+function renderSchedule() {
+
+    const list =
+        document.getElementById("lessonList");
+
+    const loading =
+        document.getElementById("loadingMessage");
+
+    const empty =
+        document.getElementById("emptyMessage");
+
+    const lessons =
+        getDayLessons();
+
+    loading.style.display = "none";
+    list.innerHTML = "";
+
+    document.getElementById("selectedDayTitle").textContent =
+        dayNames[selectedDay] || selectedDay;
+
+    document.getElementById("lessonCount").textContent =
+        `${lessons.length} ${getLessonWord(lessons.length)}`;
+
+    if (lessons.length === 0) {
+
+        empty.style.display = "block";
+
+        return;
     }
 
+    empty.style.display = "none";
 
-    function showToday() {
+    lessons.forEach(item => {
 
-        const today =
-            new Date().getDay();
+        const lesson = document.createElement("div");
 
-        const dayMap = {
+        lesson.className = "lesson";
 
-            1: "monday",
-            2: "tuesday",
-            3: "wednesday",
-            4: "thursday",
-            5: "friday"
+        lesson.innerHTML = `
 
-        };
+            <div class="lesson-number">
+                ${escapeHtml(item.lesson_number || "—")}
+            </div>
 
-        const todayName =
-            dayMap[today];
+            <div class="lesson-time">
+                ${escapeHtml(item.start_time || "—")}
+                <small>
+                    ${escapeHtml(item.end_time || "")}
+                </small>
+            </div>
 
+            <div class="lesson-subject">
 
-        if (!todayName) {
-            return;
-        }
+                <div class="subject-icon">
+                    ${getSubjectIcon(item.subject)}
+                </div>
 
+                <div>
 
-        const button =
-            document.querySelector(
-                `[data-day="${todayName}"]`
-            );
+                    <div class="subject-name">
+                        ${escapeHtml(item.subject)}
+                    </div>
 
+                    ${item.teacher
+                        ? `<div class="teacher-name">
+                            👨‍🏫 ${escapeHtml(item.teacher)}
+                           </div>`
+                        : ""}
 
-        if (button) {
+                    ${item.class_name
+                        ? `<div class="teacher-name">
+                            🏫 ${escapeHtml(item.class_name)}
+                           </div>`
+                        : ""}
 
-            selectDay(
-                todayName,
-                button
-            );
+                </div>
 
-            button.scrollIntoView({
-                behavior: "smooth",
-                block: "nearest",
-                inline: "center"
+            </div>
+
+            <div class="room">
+                ${item.room
+                    ? "📍 " + escapeHtml(item.room)
+                    : ""}
+            </div>
+        `;
+
+        list.appendChild(lesson);
+    });
+}
+
+function getLessonWord(number) {
+
+    if (number === 1) return "урок";
+    if (number >= 2 && number <= 4) return "уроки";
+
+    return "уроків";
+}
+
+function selectDay(day, button) {
+
+    selectedDay = day;
+
+    document
+        .querySelectorAll(".day-button")
+        .forEach(item => item.classList.remove("active"));
+
+    button.classList.add("active");
+
+    renderSchedule();
+}
+
+function getMonday(date) {
+
+    const result = new Date(date);
+
+    const day = result.getDay();
+
+    const difference =
+        day === 0 ? -6 : 1 - day;
+
+    result.setDate(result.getDate() + difference);
+
+    return result;
+}
+
+function updateWeekDates() {
+
+    const monday = getMonday(new Date());
+
+    const days = [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday"
+    ];
+
+    days.forEach((day, index) => {
+
+        const date = new Date(monday);
+
+        date.setDate(
+            monday.getDate() + index
+        );
+
+        document.getElementById(
+            `date-${day}`
+        ).textContent =
+            date.toLocaleDateString("uk-UA", {
+                day: "numeric",
+                month: "long"
             });
+    });
+}
 
+function showToday() {
+
+    const dayNumber =
+        new Date().getDay();
+
+    const map = {
+        1: "monday",
+        2: "tuesday",
+        3: "wednesday",
+        4: "thursday",
+        5: "friday"
+    };
+
+    const today = map[dayNumber];
+
+    if (!today) return;
+
+    const button =
+        document.querySelector(
+            `[data-day="${today}"]`
+        );
+
+    if (button) {
+        selectDay(today, button);
+
+        button.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center"
+        });
+    }
+}
+
+async function loadSchedule() {
+
+    try {
+
+        if (
+            typeof supabaseClient === "undefined" ||
+            !supabaseClient
+        ) {
+            throw new Error(
+                "Supabase не підключено."
+            );
         }
+
+        const { data, error } =
+            await supabaseClient
+                .from("schedule")
+                .select("*")
+                .order("lesson_number", {
+                    ascending: true
+                });
+
+        if (error) {
+            throw error;
+        }
+
+        scheduleData = data || [];
+
+        populateClasses();
+
+        renderSchedule();
+
+    } catch (error) {
+
+        console.error(
+            "Schedule loading error:",
+            error
+        );
+
+        document.getElementById(
+            "loadingMessage"
+        ).style.display = "none";
+
+        document.getElementById(
+            "errorMessage"
+        ).style.display = "block";
+
+        document.getElementById(
+            "errorText"
+        ).textContent =
+            error.message || "Невідома помилка.";
+    }
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        updateWeekDates();
+
+        loadSchedule();
 
     }
+);
 
-</script>
-
-</body>
+</script></body>
 </html>
