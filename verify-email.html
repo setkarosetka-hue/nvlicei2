@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Підтвердження пошти — Ліцей №2</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg2: #0d1b2e;
+      --card: rgba(17, 31, 52, .84);
+      --border: rgba(255,255,255,.1);
+      --text: #f5f8ff;
+      --muted: #9eacc2;
+      --primary: #4f8cff;
+      --primary2: #7c5cff;
+      --success: #31d69b;
+      --danger: #ff667d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(79,140,255,.25), transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(124,92,255,.2), transparent 35%),
+        linear-gradient(145deg, var(--bg), var(--bg2));
+    }
+
+    .container {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      font-size: 25px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      box-shadow: 0 15px 40px rgba(79,140,255,.3);
+    }
+
+    .card {
+      padding: 32px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: var(--card);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 25px 70px rgba(0,0,0,.35);
+      text-align: center;
+    }
+
+    .icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 30px;
+      background: rgba(49,214,155,.12);
+      border: 1px solid rgba(49,214,155,.25);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .status {
+      margin-top: 24px;
+      padding: 15px;
+      border-radius: 15px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .success {
+      color: #caffeb;
+      background: rgba(49,214,155,.1);
+      border: 1px solid rgba(49,214,155,.25);
+    }
+
+    .error {
+      color: #ffdce1;
+      background: rgba(255,102,125,.1);
+      border: 1px solid rgba(255,102,125,.25);
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 16px;
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      box-shadow: 0 12px 30px rgba(79,140,255,.22);
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 14px;
+      }
+
+      .card {
+        padding: 25px 20px;
+        border-radius: 23px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <div class="logo">Л2</div>
+
+    <section class="card">
+
+      <div class="icon" id="icon">✉</div>
+
+      <h1 id="title">Перевіряємо пошту…</h1>
+
+      <p id="description">
+        Зачекайте, ми підтверджуємо ваш обліковий запис.
+      </p>
+
+      <div id="status" class="status" style="display:none;"></div>
+
+      <a
+        id="loginButton"
+        class="button"
+        href="login.html"
+        style="display:none;"
+      >
+        Перейти до входу
+      </a>
+
+    </section>
+
+  </main>
+
+  <script>
+    async function verifyEmail() {
+      const title = document.getElementById("title");
+      const description = document.getElementById("description");
+      const status = document.getElementById("status");
+      const icon = document.getElementById("icon");
+      const loginButton = document.getElementById("loginButton");
+
+      try {
+        const hash = window.location.hash;
+
+        const params = new URLSearchParams(
+          hash.startsWith("#") ? hash.substring(1) : hash
+        );
+
+        const accessToken = params.get("access_token");
+        const refreshToken = params.get("refresh_token");
+        const error = params.get("error");
+        const errorDescription = params.get("error_description");
+
+        if (error) {
+          throw new Error(
+            errorDescription
+              ? decodeURIComponent(errorDescription.replace(/\+/g, " "))
+              : error
+          );
+        }
+
+        if (accessToken && refreshToken) {
+          const { error: sessionError } =
+            await supabaseClient.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken
+            });
+
+          if (sessionError) {
+            throw sessionError;
+          }
+        }
+
+        const { data, error: userError } =
+          await supabaseClient.auth.getUser();
+
+        if (userError || !data.user) {
+          throw new Error(
+            "Не вдалося підтвердити обліковий запис."
+          );
+        }
+
+        icon.textContent = "✓";
+
+        title.textContent = "Пошту підтверджено!";
+
+        description.textContent =
+          "Ваш обліковий запис успішно підтверджено. Тепер ви можете увійти на сайт.";
+
+        status.textContent =
+          "Підтвердження успішне.";
+
+        status.className = "status success";
+        status.style.display = "block";
+
+        loginButton.style.display = "block";
+
+        setTimeout(async () => {
+          await supabaseClient.auth.signOut();
+          window.location.href = "login.html";
+        }, 2500);
+
+      } catch (error) {
+
+        console.error("Email verification error:", error);
+
+        icon.textContent = "!";
+
+        title.textContent = "Не вдалося підтвердити пошту";
+
+        description.textContent =
+          "Посилання може бути простроченим або вже використаним.";
+
+        status.textContent =
+          error.message || "Спробуйте запросити новий лист підтвердження.";
+
+        status.className = "status error";
+        status.style.display = "block";
+
+        loginButton.textContent = "Перейти до входу";
+        loginButton.style.display = "block";
+      }
+    }
+
+    verifyEmail();
+  </script>
+
+</body>
+</html>
