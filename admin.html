@@ -1,484 +1,212 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Адмін-панель — Ліцей №2</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Адмін-панель — Ліцей №2</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
 </head>
-
 <body>
+  <header class="site-header">
+    <div class="header-container container">
+      <a href="admin.html" class="logo" aria-label="Ліцей №2 Admin">
+        <span class="logo-mark">Л2</span>
+        <span class="logo-text">
+          <strong>Ліцей №2</strong>
+          <small>Центр керування</small>
+        </span>
+      </a>
 
-<header class="topbar">
-    <div>
-        <h1>Ліцей №2</h1>
-        <p>Адмін-панель</p>
+      <nav class="navigation" aria-label="Адмін навігація">
+        <a href="#overview" class="active">Огляд</a>
+        <a href="#users">Користувачі</a>
+        <a href="#schedule">Розклад</a>
+        <a href="#announcements">Оголошення</a>
+        <a href="#messages">Повідомлення</a>
+        <a href="#settings">Налаштування</a>
+      </nav>
+
+      <button class="mobile-menu" type="button" aria-label="Меню" onclick="toggleMenu()">☰</button>
+      <button id="logoutBtn" class="danger-btn">Вийти</button>
     </div>
+  </header>
 
-    <button id="logoutBtn" class="danger-btn">
-        Вийти
-    </button>
-</header>
-
-<main class="container">
-
-    <section class="card">
-        <h2>👋 Вітаємо, адміністраторе!</h2>
-
-        <p id="adminName">
-            Завантаження профілю...
-        </p>
-
-        <p id="adminEmail">
-            Перевірка акаунта...
-        </p>
-
-        <div class="status-box">
-            <strong>Роль:</strong>
-            <span id="adminRole">admin</span>
+  <main class="admin-shell" id="overview">
+    <div class="container">
+      <section class="admin-hero">
+        <div>
+          <span class="section-label">Панель адміністратора</span>
+          <h1>Керуйте ліцеєм<br><span>в одному просторі.</span></h1>
+          <p>Стан системи, навчальні процеси та комунікація — під рукою.</p>
         </div>
-    </section>
 
-
-    <section class="card">
-        <h2>⚙️ Керування сайтом</h2>
-
-        <div class="admin-grid">
-
-            <button class="admin-button" onclick="openSection('users')">
-                👥
-                <span>Користувачі</span>
-            </button>
-
-            <button class="admin-button" onclick="openSection('schedule')">
-                📅
-                <span>Розклад</span>
-            </button>
-
-            <button class="admin-button" onclick="openSection('announcements')">
-                📢
-                <span>Оголошення</span>
-            </button>
-
-            <button class="admin-button" onclick="openSection('messages')">
-                💬
-                <span>Повідомлення</span>
-            </button>
-
-            <button class="admin-button" onclick="openSection('settings')">
-                ⚙️
-                <span>Налаштування</span>
-            </button>
-
-            <button class="admin-button maintenance-button" onclick="openMaintenance()">
-                🛠️
-                <span>Технічні роботи</span>
-            </button>
-
+        <div class="admin-profile">
+          <div class="logo-mark">АД</div>
+          <div>
+            <strong id="adminName">Завантаження…</strong>
+            <small id="adminEmail">Перевірка акаунта…</small>
+          </div>
+          <span class="badge badge-success">ONLINE</span>
         </div>
-    </section>
+      </section>
 
+      <section class="stat-grid admin-stats">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <h3>248</h3>
+          <p>Користувачів системи</p>
+          <span class="trend">↗ +12 цього місяця</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📚</div>
+          <h3>32</h3>
+          <p>Активні класи</p>
+          <span class="trend">Синхронізовано</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📢</div>
+          <h3>18</h3>
+          <p>Оголошень цього тижня</p>
+          <span class="trend">↗ +4 нових</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚡</div>
+          <h3 id="authStatus">…</h3>
+          <p>Стан авторизації</p>
+          <span class="trend" id="securityRole">Роль: …</span>
+        </div>
+      </section>
 
-    <section id="usersSection" class="card hidden-section">
+      <section class="admin-grid" id="users">
+        <button class="admin-button" onclick="openSection('users')"><b>👥</b><span>Користувачі</span><small>Профілі та ролі</small></button>
+        <button class="admin-button" onclick="openSection('schedule')"><b>📅</b><span>Розклад</span><small>Навчальний процес</small></button>
+        <button class="admin-button" onclick="openSection('announcements')"><b>📢</b><span>Оголошення</span><small>Новини ліцею</small></button>
+        <button class="admin-button" onclick="openSection('messages')"><b>💬</b><span>Повідомлення</span><small>Центр комунікації</small></button>
+        <button class="admin-button" onclick="openSection('settings')"><b>⚙️</b><span>Налаштування</span><small>Параметри системи</small></button>
+        <button class="admin-button maintenance-button" onclick="openMaintenance()"><b>🛠️</b><span>Технічні роботи</span><small>Керування доступністю</small></button>
+      </section>
 
+      <section class="card-panel admin-panel">
+        <div class="card-title">
+          <div>
+            <span class="section-label">Системний огляд</span>
+            <h2>Платформа працює стабільно</h2>
+          </div>
+          <span class="badge badge-success">● Усі сервіси онлайн</span>
+        </div>
+
+        <div class="admin-progress"><span style="width:92%"></span></div>
+
+        <div class="security-item"><span>Авторизація Supabase</span><strong>Захищено</strong></div>
+        <div class="security-item"><span>Ролі та доступи</span><strong>Активні</strong></div>
+        <div class="security-item"><span>Режим системи</span><strong data-system-status>У розробці</strong></div>
+      </section>
+
+      <section id="usersSection" class="card-panel hidden-section">
         <h2>👥 Користувачі</h2>
+        <p>Керування учнями, батьками, вчителями та адміністраторами.</p>
+        <div class="info-box">🚧 Розділ готується до підключення до Supabase.</div>
+        <button class="btn btn-secondary" onclick="closeSections()">← До огляду</button>
+      </section>
 
-        <p>
-            Тут буде керування учнями, батьками, вчителями та адміністраторами.
-        </p>
-
-        <div class="info-box">
-            🚧 Розділ готується до підключення до Supabase.
-        </div>
-
-        <button class="secondary-btn" onclick="closeSections()">
-            Назад
-        </button>
-
-    </section>
-
-
-    <section id="scheduleSection" class="card hidden-section">
-
+      <section id="scheduleSection" class="card-panel hidden-section">
         <h2>📅 Розклад</h2>
+        <p>Створення та редагування розкладу занять.</p>
+        <div class="info-box">🚧 Розділ готується до підключення до таблиці schedule.</div>
+        <button class="btn btn-secondary" onclick="closeSections()">← До огляду</button>
+      </section>
 
-        <p>
-            Адміністратор зможе створювати та редагувати розклад занять.
-        </p>
-
-        <div class="info-box">
-            🚧 Розділ готується до підключення до таблиці schedule.
-        </div>
-
-        <button class="secondary-btn" onclick="closeSections()">
-            Назад
-        </button>
-
-    </section>
-
-
-    <section id="announcementsSection" class="card hidden-section">
-
+      <section id="announcementsSection" class="card-panel hidden-section">
         <h2>📢 Оголошення</h2>
+        <p>Публікація важливої інформації для спільноти ліцею.</p>
+        <div class="info-box">🚧 Розділ готується до підключення до Supabase.</div>
+        <button class="btn btn-secondary" onclick="closeSections()">← До огляду</button>
+      </section>
 
-        <p>
-            Тут можна буде створювати оголошення для учнів, батьків та вчителів.
-        </p>
-
-        <div class="info-box">
-            🚧 Розділ готується до підключення до Supabase.
-        </div>
-
-        <button class="secondary-btn" onclick="closeSections()">
-            Назад
-        </button>
-
-    </section>
-
-
-    <section id="messagesSection" class="card hidden-section">
-
+      <section id="messagesSection" class="card-panel hidden-section">
         <h2>💬 Повідомлення</h2>
+        <p>Керування повідомленнями між адміністрацією та користувачами.</p>
+        <div class="info-box">🚧 Розділ готується до підключення до Supabase.</div>
+        <button class="btn btn-secondary" onclick="closeSections()">← До огляду</button>
+      </section>
 
-        <p>
-            Керування повідомленнями між адміністрацією та користувачами.
-        </p>
-
-        <div class="info-box">
-            🚧 Розділ готується до підключення до Supabase.
-        </div>
-
-        <button class="secondary-btn" onclick="closeSections()">
-            Назад
-        </button>
-
-    </section>
-
-
-    <section id="settingsSection" class="card hidden-section">
-
+      <section id="settingsSection" class="card-panel hidden-section">
         <h2>⚙️ Налаштування</h2>
+        <p>Основні параметри електронної системи.</p>
+        <div class="info-box">Версія 1.0.0 · Стан: тестування · Офіційне підтвердження: очікується</div>
+        <button class="btn btn-secondary" onclick="closeSections()">← До огляду</button>
+      </section>
+    </div>
+  </main>
 
-        <p>
-            Основні налаштування сайту.
-        </p>
+  <script>
+    async function loadAdminProfile() {
+      const authStatus = document.getElementById('authStatus');
+      const securityRole = document.getElementById('securityRole');
 
-        <div class="info-box">
-            Версія системи: 1.0.0
-            <br>
-            Стан: тестування
-            <br>
-            Офіційне підтвердження школи: ще не отримано
-        </div>
-
-        <button class="secondary-btn" onclick="closeSections()">
-            Назад
-        </button>
-
-    </section>
-
-
-    <section class="card">
-
-        <h2>🛡️ Безпека</h2>
-
-        <div class="security-item">
-            <span>Авторизація</span>
-            <strong id="authStatus">Перевірка...</strong>
-        </div>
-
-        <div class="security-item">
-            <span>Роль</span>
-            <strong id="securityRole">Перевірка...</strong>
-        </div>
-
-    </section>
-
-</main>
-
-
-<style>
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f7fb;
-    color: #172033;
-}
-
-.topbar {
-    background: linear-gradient(135deg, #1769ff, #4b8dff);
-    color: white;
-    padding: 18px 22px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-}
-
-.topbar h1 {
-    margin: 0;
-    font-size: 24px;
-}
-
-.topbar p {
-    margin: 4px 0 0;
-    opacity: 0.9;
-}
-
-.container {
-    width: min(1000px, calc(100% - 30px));
-    margin: 25px auto;
-}
-
-.card {
-    background: white;
-    border-radius: 18px;
-    padding: 22px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.07);
-}
-
-.card h2 {
-    margin-top: 0;
-}
-
-.status-box,
-.info-box {
-    background: #eef5ff;
-    border-radius: 12px;
-    padding: 14px;
-    margin-top: 15px;
-}
-
-.admin-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    margin-top: 20px;
-}
-
-.admin-button {
-    border: 0;
-    border-radius: 16px;
-    background: #f1f5fb;
-    padding: 22px 12px;
-    cursor: pointer;
-    font-size: 15px;
-    transition: 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-.admin-button:hover {
-    transform: translateY(-3px);
-    background: #e6efff;
-}
-
-.admin-button span {
-    font-weight: 600;
-}
-
-.maintenance-button {
-    background: #fff3d9;
-}
-
-.danger-btn {
-    border: 0;
-    background: #e53935;
-    color: white;
-    padding: 11px 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.secondary-btn {
-    border: 0;
-    background: #1769ff;
-    color: white;
-    padding: 11px 18px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.hidden-section {
-    display: none;
-}
-
-.security-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 13px 0;
-    border-bottom: 1px solid #e5e9f0;
-}
-
-.security-item:last-child {
-    border-bottom: 0;
-}
-
-@media (max-width: 650px) {
-
-    .topbar {
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .topbar h1 {
-        font-size: 20px;
-    }
-
-    .admin-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-}
-
-@media (max-width: 400px) {
-
-    .admin-grid {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-</style>
-
-
-<script>
-
-async function loadAdminProfile() {
-
-    const authStatus = document.getElementById("authStatus");
-    const securityRole = document.getElementById("securityRole");
-
-    try {
-
-        const {
-            data: { user },
-            error
-        } = await supabaseClient.auth.getUser();
-
+      try {
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
         if (error || !user) {
-            window.location.href = "login.html";
-            return;
+          window.location.href = 'login.html';
+          return;
         }
 
-        authStatus.textContent = "Авторизовано";
+        authStatus.textContent = 'Авторизовано';
+        document.getElementById('adminEmail').textContent = user.email || 'Email не вказано';
 
-        document.getElementById("adminEmail").textContent =
-            "Email: " + (user.email || "не вказано");
-
-
-        const { data: profile, error: profileError } =
-            await supabaseClient
-                .from("profiles")
-                .select("id, role, full_name")
-                .eq("id", user.id)
-                .single();
-
+        const { data: profile, error: profileError } = await supabaseClient
+          .from('profiles')
+          .select('id, role, full_name')
+          .eq('id', user.id)
+          .single();
 
         if (profileError || !profile) {
-
-            document.getElementById("adminName").textContent =
-                "Профіль не знайдено";
-
-            securityRole.textContent = "Невідомо";
-
-            return;
+          document.getElementById('adminName').textContent = 'Профіль не знайдено';
+          securityRole.textContent = 'Невідомо';
+          return;
         }
 
+        document.getElementById('adminName').textContent = profile.full_name || 'Адміністратор';
+        securityRole.textContent = 'Роль: ' + (profile.role || 'невідомо');
 
-        document.getElementById("adminName").textContent =
-            "Користувач: " +
-            (profile.full_name || "Адміністратор");
-
-
-        document.getElementById("adminRole").textContent =
-            profile.role || "невідомо";
-
-
-        securityRole.textContent =
-            profile.role || "невідомо";
-
-
-        if (profile.role !== "admin") {
-
-            alert("У вас немає прав адміністратора.");
-
-            window.location.href = "dashboard.html";
-
-            return;
+        if (profile.role !== 'admin') {
+          window.location.href = 'dashboard.html';
+          return;
         }
-
-    } catch (error) {
-
+      } catch (error) {
         console.error(error);
-
-        authStatus.textContent = "Помилка";
-
+        authStatus.textContent = 'Помилка';
+      }
     }
 
-}
+    function closeSections() {
+      document.querySelectorAll('.hidden-section').forEach((section) => {
+        section.style.display = 'none';
+      });
+    }
 
+    function openSection(name) {
+      closeSections();
+      const section = document.getElementById(name + 'Section');
+      if (section) {
+        section.style.display = 'block';
+        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
 
-function closeSections() {
+    function openMaintenance() {
+      window.location.href = 'maintenance.html';
+    }
 
-    document.querySelectorAll(".hidden-section").forEach(section => {
-        section.style.display = "none";
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await supabaseClient.auth.signOut();
+      localStorage.removeItem('lyceum2_user');
+      window.location.href = 'login.html';
     });
 
-}
-
-
-function openSection(name) {
-
-    closeSections();
-
-    const section =
-        document.getElementById(name + "Section");
-
-    if (section) {
-        section.style.display = "block";
-
-        section.scrollIntoView({
-            behavior: "smooth"
-        });
-    }
-
-}
-
-
-function openMaintenance() {
-
-    window.location.href = "maintenance.html";
-
-}
-
-
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-
-    await supabaseClient.auth.signOut();
-
-    window.location.href = "login.html";
-
-});
-
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    loadAdminProfile();
-
-});
-
-</script>
-
+    document.addEventListener('DOMContentLoaded', loadAdminProfile);
+  </script>
 </body>
 </html>

@@ -1,467 +1,170 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Ліцей №2 — Електронна система</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ліцей №2 — Електронна система</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <header class="site-header">
+    <div class="header-container container">
+      <a href="index.html" class="logo" aria-label="Ліцей №2">
+        <span class="logo-mark">Л2</span>
+        <span class="logo-text">
+          <strong>Ліцей №2</strong>
+          <small>Електронна система</small>
+        </span>
+      </a>
 
-    <!-- HEADER -->
-    <header class="topbar">
+      <nav class="navigation" aria-label="Main navigation">
+        <a href="#about">Про систему</a>
+        <a href="#features">Можливості</a>
+        <a href="#contacts">Контакти</a>
+        <a href="login.html" class="login-button">Увійти</a>
+      </nav>
 
-        <a href="index.html" class="logo">
-            <div class="logo-icon">Л2</div>
+      <button class="mobile-menu" type="button" aria-label="Відкрити навігацію" onclick="toggleMenu()">☰</button>
+    </div>
+  </header>
 
-            <div class="logo-text">
-                <strong>Ліцей №2</strong>
-                <span>Електронна система</span>
-            </div>
-        </a>
+  <main>
+    <div class="container system-notice" style="margin-top: 24px; display:flex; gap:12px; align-items:flex-start; padding:16px 18px; border-radius:18px; background:linear-gradient(135deg, rgba(255,244,207,.86), rgba(255,255,255,.75)); border:1px solid rgba(241,177,56,.24); color:#6b4e12; box-shadow: var(--shadow-soft);">
+      <div style="font-size:1.3rem;">⚠️</div>
+      <div>
+        <strong style="display:block; margin-bottom:4px;">Важлива інформація</strong>
+        <span>Ця електронна система наразі перебуває у розробці та ще не підтверджена адміністрацією ліцею.</span>
+      </div>
+    </div>
 
-        <nav class="navigation">
-            <a href="#about">Про систему</a>
-            <a href="#features">Можливості</a>
-            <a href="#contacts">Контакти</a>
+    <section class="hero container">
+      <div class="hero-content">
+        <div class="status-badge"><span class="status-dot"></span>Система працює</div>
+        <h1>Навчання,<br><span>яке завжди</span><br>поруч.</h1>
+        <p class="hero-description">Сучасний цифровий простір Ліцею №2 для учнів, батьків, учителів та адміністрації.</p>
 
-            <a href="login.html" class="login-button">
-                Увійти
-            </a>
-        </nav>
-
-        <button
-            class="mobile-menu"
-            type="button"
-            onclick="toggleMenu()"
-            aria-label="Відкрити меню">
-            ☰
-        </button>
-
-    </header>
-
-
-    <!-- MAIN -->
-    <main>
-
-        <!-- STATUS -->
-        <div class="system-notice">
-
-            <div class="notice-icon">
-                ⚠️
-            </div>
-
-            <div class="notice-content">
-                <strong>Важлива інформація</strong>
-
-                <span>
-                    Ця електронна система наразі перебуває у розробці
-                    та ще не підтверджена адміністрацією школи.
-                </span>
-            </div>
-
+        <div class="hero-buttons">
+          <a href="login.html" class="primary-button">Увійти до системи →</a>
+          <a href="#features" class="secondary-button">Дізнатися більше</a>
         </div>
 
-
-        <!-- HERO -->
-        <section class="hero">
-
-            <div class="hero-content">
-
-                <div class="status-badge">
-                    <span class="status-dot"></span>
-                    Система працює
-                </div>
-
-                <h1>
-                    Ласкаво просимо до
-                    <span>Ліцею №2</span>
-                </h1>
-
-                <p class="hero-description">
-                    Сучасна електронна система для учнів,
-                    батьків, учителів та адміністрації.
-                </p>
-
-                <div class="hero-buttons">
-
-                    <a href="login.html" class="primary-button">
-                        Увійти до системи
-                        <span>→</span>
-                    </a>
-
-                    <a href="#features" class="secondary-button">
-                        Дізнатися більше
-                    </a>
-
-                </div>
-
-
-                <div class="hero-info">
-
-                    <div class="info-item">
-                        <strong>24/7</strong>
-                        <span>Доступ до системи</span>
-                    </div>
-
-                    <div class="info-item">
-                        <strong>4</strong>
-                        <span>Типи користувачів</span>
-                    </div>
-
-                    <div class="info-item">
-                        <strong>100%</strong>
-                        <span>Онлайн</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- PREVIEW CARD -->
-            <div class="hero-card-wrapper">
-
-                <div class="hero-glow"></div>
-
-                <div class="school-card">
-
-                    <div class="school-card-header">
-
-                        <div>
-                            <span class="small-label">
-                                ЕЛЕКТРОННА СИСТЕМА
-                            </span>
-
-                            <h2>Ліцей №2</h2>
-                        </div>
-
-                        <div class="school-icon">
-                            🏫
-                        </div>
-
-                    </div>
-
-
-                    <div class="card-line"></div>
-
-
-                    <div class="dashboard-preview">
-
-                        <div class="preview-item">
-
-                            <span class="preview-icon">
-                                📅
-                            </span>
-
-                            <div>
-                                <strong>Розклад</strong>
-                                <small>Актуальні уроки</small>
-                            </div>
-
-                        </div>
-
-
-                        <div class="preview-item">
-
-                            <span class="preview-icon">
-                                📚
-                            </span>
-
-                            <div>
-                                <strong>Домашні завдання</strong>
-                                <small>Нові завдання</small>
-                            </div>
-
-                        </div>
-
-
-                        <div class="preview-item">
-
-                            <span class="preview-icon">
-                                📢
-                            </span>
-
-                            <div>
-                                <strong>Оголошення</strong>
-                                <small>Важливі новини</small>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="card-footer">
-
-                        <span class="online-indicator"></span>
-
-                        Система онлайн
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ABOUT -->
-        <section id="about" class="about-section">
-
-            <div class="section-heading">
-
-                <span class="section-label">
-                    ПРО СИСТЕМУ
-                </span>
-
-                <h2>
-                    Усе необхідне —
-                    <span>в одному місці</span>
-                </h2>
-
-                <p>
-                    Електронна система допомагає організувати
-                    навчальний процес та забезпечує швидкий доступ
-                    до важливої інформації.
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- FEATURES -->
-        <section id="features" class="features-section">
-
-            <div class="section-heading">
-
-                <span class="section-label">
-                    МОЖЛИВОСТІ
-                </span>
-
-                <h2>
-                    Зручність для кожного
-                </h2>
-
-            </div>
-
-
-            <div class="features-grid">
-
-                <div class="feature-card">
-
-                    <div class="feature-icon purple">
-                        📅
-                    </div>
-
-                    <h3>
-                        Розклад
-                    </h3>
-
-                    <p>
-                        Переглядайте актуальний розклад
-                        уроків у будь-який момент.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon blue">
-                        📚
-                    </div>
-
-                    <h3>
-                        Домашні завдання
-                    </h3>
-
-                    <p>
-                        Усі домашні завдання зібрані
-                        в одному зручному розділі.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon green">
-                        📊
-                    </div>
-
-                    <h3>
-                        Успішність
-                    </h3>
-
-                    <p>
-                        Переглядайте оцінки та результати
-                        навчання.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon orange">
-                        📢
-                    </div>
-
-                    <h3>
-                        Оголошення
-                    </h3>
-
-                    <p>
-                        Важливі новини та оголошення
-                        завжди під рукою.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon pink">
-                        💬
-                    </div>
-
-                    <h3>
-                        Повідомлення
-                    </h3>
-
-                    <p>
-                        Спілкуйтеся з учителями
-                        та адміністрацією.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon cyan">
-                        📝
-                    </div>
-
-                    <h3>
-                        Тести
-                    </h3>
-
-                    <p>
-                        Виконуйте онлайн-тести та
-                        переглядайте результати.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- CONTACT -->
-        <section id="contacts" class="contact-section">
-
-            <div class="contact-card">
-
-                <div>
-
-                    <span class="section-label">
-                        ДОПОМОГА
-                    </span>
-
-                    <h2>
-                        Потрібна допомога?
-                    </h2>
-
-                    <p>
-                        Якщо у вас виникли питання щодо системи,
-                        зверніться до адміністрації.
-                    </p>
-
-                </div>
-
-
-                <a href="login.html" class="primary-button">
-                    Увійти до системи →
-                </a>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- FOOTER -->
-    <footer class="footer">
-
-        <div class="footer-content">
-
-            <div class="footer-logo">
-
-                <div class="logo-icon">
-                    Л2
-                </div>
-
-                <div>
-                    <strong>Ліцей №2</strong>
-                    <span>Електронна система</span>
-                </div>
-
-            </div>
-
-
-            <div class="footer-links">
-
-                <a href="#about">
-                    Про систему
-                </a>
-
-                <a href="#features">
-                    Можливості
-                </a>
-
-                <a href="#contacts">
-                    Контакти
-                </a>
-
-                <a href="consent.html">
-                    Правила
-                </a>
-
-                <a href="login.html">
-                    Увійти
-                </a>
-
-            </div>
-
+        <div class="hero-info">
+          <div class="info-item"><strong>24/7</strong><span>доступ</span></div>
+          <div class="info-item"><strong>4</strong><span>ролі</span></div>
+          <div class="info-item"><strong>100%</strong><span>онлайн</span></div>
         </div>
+      </div>
 
+      <div class="hero-card-wrap">
+        <div class="school-card">
+          <div class="school-card-header">
+            <div>
+              <span class="small-label">DIGITAL LYCEUM</span>
+              <h2>Ліцей №2</h2>
+            </div>
+            <div class="school-icon">🏫</div>
+          </div>
 
-        <div class="footer-bottom">
+          <div class="card-line"></div>
 
-            <span>
-                © 2026 Ліцей №2
-            </span>
+          <div class="dashboard-preview">
+            <div class="preview-item">
+              <span class="preview-icon">📅</span>
+              <div><strong>Розклад</strong><small>Наступний урок о 08:55</small></div>
+            </div>
+            <div class="preview-item">
+              <span class="preview-icon">📚</span>
+              <div><strong>Завдання</strong><small>3 активні завдання</small></div>
+            </div>
+            <div class="preview-item">
+              <span class="preview-icon">📢</span>
+              <div><strong>Оголошення</strong><small>2 нові повідомлення</small></div>
+            </div>
+          </div>
 
-            <span>
-                Електронна система · Версія 0.1.0
-            </span>
-
+          <div class="card-footer"><span class="online-indicator"></span>Усе під контролем</div>
         </div>
+      </div>
+    </section>
 
-    </footer>
+    <section id="about" class="section container">
+      <div class="section-header">
+        <span class="section-label">Про систему</span>
+        <h2>Один простір для<br><span>всієї шкільної спільноти.</span></h2>
+        <p>Менше пошуку, більше уваги навчанню та спілкуванню.</p>
+      </div>
+    </section>
 
+    <section id="features" class="section container">
+      <div class="section-header">
+        <span class="section-label">Можливості</span>
+        <h2>Усе важливе — <span>поруч</span></h2>
+      </div>
 
-    <!-- APP -->
-    <script src="app.js"></script>
+      <div class="features-grid">
+        <article class="feature-card">
+          <div class="feature-icon">📅</div>
+          <h3>Розклад</h3>
+          <p>Актуальні уроки, кабінети та навчальний тиждень.</p>
+        </article>
 
+        <article class="feature-card">
+          <div class="feature-icon">📚</div>
+          <h3>Завдання</h3>
+          <p>Домашня робота й дедлайни без зайвих повідомлень.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Успішність</h3>
+          <p>Оцінки та відвідування в зрозумілому форматі.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Комунікація</h3>
+          <p>Зручний контакт між учнями, батьками й учителями.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">🎉</div>
+          <h3>Події</h3>
+          <p>Шкільне життя, зустрічі та важливі дати.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Безпека</h3>
+          <p>Ролі та авторизація на базі Supabase.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="contacts" class="section container">
+      <div class="contact-card">
+        <div>
+          <span class="section-label">Допомога</span>
+          <h2>Почніть із власного кабінету.</h2>
+          <p>Увійдіть, щоб перейти до персонального навчального простору.</p>
+        </div>
+        <a href="login.html" class="primary-button">Увійти до системи →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <strong>Ліцей №2</strong>
+      <div class="footer-links">
+        <a href="#about">Про систему</a>
+        <a href="#features">Можливості</a>
+        <a href="#contacts">Контакти</a>
+        <a href="consent.html">Правила</a>
+        <a href="login.html">Увійти</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>

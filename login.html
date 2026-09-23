@@ -1,351 +1,160 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Вхід — Ліцей №2</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Вхід — Ліцей №2</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
 </head>
-
 <body>
+  <main class="auth-page">
+    <div class="auth-showcase">
+      <a class="logo" href="index.html" aria-label="Ліцей №2">
+        <span class="logo-mark">Л2</span>
+        <span class="logo-text">
+          <strong>Ліцей №2</strong>
+          <small>Електронна система</small>
+        </span>
+      </a>
 
-<header class="site-header">
-    <div class="container nav-container">
+      <div class="auth-copy">
+        <span class="section-label" style="color:#dfe9ff;">Єдиний простір для навчання</span>
+        <h1>Вчитися.<br><span>Спілкуватися.</span><br>Розвиватися.</h1>
+        <p>Усе важливе для учнів, батьків, учителів та адміністрації — в одному безпечному кабінеті.</p>
 
-        <a href="index.html" class="logo">
-            <span class="logo-icon">Л2</span>
-            <span>Ліцей №2</span>
-        </a>
-
-        <nav class="main-nav">
-            <a href="index.html">Головна</a>
-            <a href="consent.html">Правила</a>
-        </nav>
-
-    </div>
-</header>
-
-
-<main class="auth-page">
-
-    <div class="auth-card">
-
-        <div class="auth-header">
-            <div class="auth-icon">🔐</div>
-
-            <h1>Вхід до системи</h1>
-
-            <p>
-                Увійдіть до особистого кабінету
-                Ліцею №2
-            </p>
+        <div class="auth-orbit">
+          <b>24/7</b>
+          <span>доступ до навчального процесу</span>
         </div>
+      </div>
+    </div>
 
+    <section class="auth-card">
+      <a class="back-link" href="index.html">← На головну</a>
 
-        <div id="message" class="notice hidden"></div>
+      <div class="auth-header">
+        <div class="auth-icon">✦</div>
+        <h2>Раді вас бачити</h2>
+        <p>Увійдіть до особистого кабінету Ліцею №2</p>
+      </div>
 
+      <div id="message" class="notice" aria-live="polite"></div>
 
-        <form id="loginForm">
+      <form id="loginForm" novalidate>
+        <div class="form-column">
+          <div class="form-group">
+            <label for="email">Електронна пошта</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+          </div>
 
-            <div class="form-group">
-                <label for="email">
-                    Електронна пошта
-                </label>
-
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="example@email.com"
-                    autocomplete="email"
-                    required
-                >
+          <div class="form-group">
+            <label for="password">Пароль</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" name="password" placeholder="Введіть пароль" autocomplete="current-password" required />
+              <button type="button" id="togglePassword" class="password-toggle" aria-label="Показати пароль">👁</button>
             </div>
+          </div>
 
-
-            <div class="form-group">
-
-                <label for="password">
-                    Пароль
-                </label>
-
-                <div class="password-wrapper">
-
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Введіть пароль"
-                        autocomplete="current-password"
-                        required
-                    >
-
-                    <button
-                        type="button"
-                        id="togglePassword"
-                        class="password-toggle"
-                        aria-label="Показати пароль"
-                    >
-                        👁️
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <button
-                type="submit"
-                id="loginButton"
-                class="btn btn-primary btn-large"
-            >
-                Увійти
-            </button>
-
-        </form>
-
-
-        <div class="auth-divider">
-            <span>або</span>
+          <button type="submit" id="loginButton" class="btn btn-primary btn-large">Увійти до системи <span>→</span></button>
         </div>
+      </form>
 
+      <div class="auth-links">
+        <a href="consent.html" class="auth-link">Правила та згода</a>
+      </div>
 
-        <div class="auth-links">
+      <div class="auth-info">
+        <strong>🔒 Захищений вхід</strong>
+        <p>Авторизація працює через Supabase. Ваші дані не зберігаються в браузері.</p>
+      </div>
+    </section>
+  </main>
 
-            <a href="index.html" class="btn btn-secondary">
-                ← На головну
-            </a>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('loginForm');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const loginButton = document.getElementById('loginButton');
+      const message = document.getElementById('message');
+      const togglePassword = document.getElementById('togglePassword');
 
-            <a href="consent.html" class="auth-link">
-                Правила та згода
-            </a>
-
-        </div>
-
-
-        <div class="auth-info">
-            <strong>ℹ️ Важливо</strong>
-
-            <p>
-                Для входу використовується обліковий
-                запис Supabase.
-            </p>
-
-            <p>
-                Якщо електронна пошта ще не підтверджена,
-                спочатку підтвердьте її через лист.
-            </p>
-        </div>
-
-    </div>
-
-</main>
-
-
-<footer class="site-footer">
-
-    <div class="container">
-
-        <p>
-            © <span id="currentYear"></span> Ліцей №2
-        </p>
-
-        <p class="footer-warning">
-            Система перебуває у розробці та
-            не є офіційною системою ліцею.
-        </p>
-
-    </div>
-
-</footer>
-
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const form = document.getElementById("loginForm");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const loginButton = document.getElementById("loginButton");
-    const message = document.getElementById("message");
-    const togglePassword = document.getElementById("togglePassword");
-    const currentYear = document.getElementById("currentYear");
-
-
-    currentYear.textContent = new Date().getFullYear();
-
-
-    function showMessage(text, type = "error") {
-
+      function showMessage(text, type = 'error') {
         message.textContent = text;
+        message.className = 'notice visible ' + (type === 'success' ? 'notice-success' : 'notice-error');
+      }
 
-        message.className = "notice";
+      togglePassword.addEventListener('click', function () {
+        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+      });
 
-        if (type === "success") {
-            message.classList.add("notice-success");
-        } else {
-            message.classList.add("notice-error");
-        }
-
-        message.classList.remove("hidden");
-    }
-
-
-    togglePassword.addEventListener("click", function () {
-
-        if (passwordInput.type === "password") {
-
-            passwordInput.type = "text";
-            togglePassword.textContent = "🙈";
-
-        } else {
-
-            passwordInput.type = "password";
-            togglePassword.textContent = "👁️";
-
-        }
-
-    });
-
-
-    form.addEventListener("submit", async function (event) {
-
+      form.addEventListener('submit', async function (event) {
         event.preventDefault();
-
 
         const email = emailInput.value.trim();
         const password = passwordInput.value;
 
-
         if (!email || !password) {
-
-            showMessage("Введіть електронну пошту та пароль.");
-
-            return;
+          showMessage('Введіть електронну пошту та пароль.');
+          return;
         }
-
 
         loginButton.disabled = true;
-        loginButton.textContent = "Вхід...";
-
+        loginButton.innerHTML = 'Вхід...';
 
         try {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          if (!data.user) throw new Error('Користувача не знайдено.');
 
-            const { data, error } =
-                await supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
+          const { data: profile, error: profileError } = await supabaseClient
+            .from('profiles')
+            .select('id, role, full_name, email')
+            .eq('id', data.user.id)
+            .single();
 
+          if (profileError || !profile) {
+            throw new Error('Профіль користувача не знайдено.');
+          }
 
-            if (error) {
-                throw error;
-            }
+          localStorage.setItem('lyceum2_user', JSON.stringify({
+            id: profile.id,
+            login: profile.full_name || profile.email,
+            role: profile.role,
+            email: profile.email
+          }));
 
+          const pages = {
+            admin: 'admin.html',
+            teacher: 'teacher.html',
+            student: 'student.html',
+            parent: 'parent.html'
+          };
 
-            if (!data.user) {
-                throw new Error("Користувача не знайдено.");
-            }
-
-
-            const userId = data.user.id;
-
-
-            const { data: profile, error: profileError } =
-                await supabaseClient
-                    .from("profiles")
-                    .select("id, role, full_name, email")
-                    .eq("id", userId)
-                    .single();
-
-
-            if (profileError) {
-                throw profileError;
-            }
-
-
-            if (!profile) {
-                throw new Error("Профіль користувача не знайдено.");
-            }
-
-
-            const role = profile.role;
-
-
-            if (role === "admin") {
-
-                window.location.href = "admin.html";
-
-            } else if (role === "teacher") {
-
-                window.location.href = "teacher.html";
-
-            } else if (role === "student") {
-
-                window.location.href = "student.html";
-
-            } else if (role === "parent") {
-
-                window.location.href = "parent.html";
-
-            } else {
-
-                await supabaseClient.auth.signOut();
-
-                throw new Error(
-                    "Для цього користувача не визначена роль."
-                );
-
-            }
-
+          window.location.href = pages[profile.role] || 'dashboard.html';
         } catch (error) {
+          console.error('Login error:', error);
+          let text = 'Не вдалося виконати вхід.';
 
-            console.error("Login error:", error);
-
-            let text = "Не вдалося виконати вхід.";
-
-            if (error.message) {
-
-                if (
-                    error.message.includes("Invalid login credentials")
-                ) {
-                    text = "Неправильна електронна пошта або пароль.";
-                }
-
-                else if (
-                    error.message.includes("Email not confirmed")
-                ) {
-                    text =
-                        "Електронна пошта ще не підтверджена. " +
-                        "Перевірте свою пошту та відкрийте лист від Supabase.";
-                }
-
-                else {
-                    text = error.message;
-                }
+          if (error.message) {
+            if (error.message.includes('Invalid login credentials')) {
+              text = 'Неправильна електронна пошта або пароль.';
+            } else if (error.message.includes('Email not confirmed')) {
+              text = 'Електронна пошта ще не підтверджена. Перевірте лист у Supabase.';
+            } else {
+              text = error.message;
             }
+          }
 
-
-            showMessage(text);
-
+          showMessage(text);
         } finally {
-
-            loginButton.disabled = false;
-            loginButton.textContent = "Увійти";
-
+          loginButton.disabled = false;
+          loginButton.innerHTML = 'Увійти до системи <span>→</span>';
         }
-
+      });
     });
-
-});
-
-</script>
-
+  </script>
 </body>
 </html>
