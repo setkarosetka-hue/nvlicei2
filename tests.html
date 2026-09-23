@@ -1,666 +1,430 @@
-<!DOCTYPE html>
-<html lang="uk">
+<!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Тести — Ліцей №2</title>
-
     <link rel="stylesheet" href="style.css">
+    <script src="supabase.js"></script>
+    <script src="app.js" defer></script><style>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        background:
+            radial-gradient(circle at 15% 10%, rgba(80,120,255,.18), transparent 30%),
+            radial-gradient(circle at 85% 20%, rgba(0,220,255,.12), transparent 28%),
+            #070b14;
+        color: #fff;
+    }
 
-    <style>
+    .tests-page {
+        width: min(1100px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 24px 0 50px;
+    }
+
+    .tests-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #fff;
+        text-decoration: none;
+        padding: 11px 16px;
+        border-radius: 14px;
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .back-button:hover {
+        background: rgba(255,255,255,.12);
+    }
+
+    .hero {
+        padding: 28px;
+        border-radius: 28px;
+        background: linear-gradient(135deg, rgba(45,105,255,.2), rgba(0,220,255,.08));
+        border: 1px solid rgba(255,255,255,.1);
+        box-shadow: 0 20px 60px rgba(0,0,0,.25);
+        margin-bottom: 22px;
+    }
+
+    .hero h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 6vw, 44px);
+    }
+
+    .hero p {
+        margin: 0;
+        color: #aebbd1;
+        line-height: 1.5;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .stat {
+        padding: 20px;
+        border-radius: 20px;
+        background: rgba(255,255,255,.055);
+        border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .stat-number {
+        font-size: 30px;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: #9eabc0;
+        font-size: 14px;
+    }
+
+    .filters {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .filter-button {
+        border: 1px solid rgba(255,255,255,.1);
+        background: rgba(255,255,255,.06);
+        color: #fff;
+        padding: 11px 16px;
+        border-radius: 13px;
+        cursor: pointer;
+    }
+
+    .filter-button.active {
+        background: #2777ff;
+        border-color: #2777ff;
+    }
+
+    .tests-list {
+        display: grid;
+        gap: 16px;
+    }
+
+    .test-card {
+        padding: 22px;
+        border-radius: 22px;
+        background: rgba(255,255,255,.055);
+        border: 1px solid rgba(255,255,255,.09);
+        box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    }
+
+    .test-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .test-subject {
+        color: #66b7ff;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .test-title {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .test-description {
+        color: #b5bfd0;
+        line-height: 1.55;
+        white-space: pre-wrap;
+    }
+
+    .test-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 17px;
+    }
+
+    .info-tag {
+        padding: 8px 11px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.06);
+        color: #c8d2e2;
+        font-size: 13px;
+    }
+
+    .test-button {
+        display: inline-flex;
+        margin-top: 18px;
+        padding: 12px 17px;
+        border-radius: 13px;
+        background: linear-gradient(135deg, #2777ff, #15b9ff);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .empty,
+    .loading,
+    .error {
+        padding: 35px 20px;
+        text-align: center;
+        border-radius: 22px;
+        background: rgba(255,255,255,.045);
+        border: 1px solid rgba(255,255,255,.08);
+        color: #aeb9ca;
+    }
+
+    .error {
+        color: #ff9e9e;
+    }
+
+    @media (max-width: 650px) {
         .tests-page {
-            min-height: 100vh;
-            background: var(--background);
+            width: min(100% - 18px, 1100px);
+            padding-top: 14px;
         }
 
         .tests-header {
-            padding: 30px 20px 20px;
-        }
-
-        .tests-container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-
-            color: var(--primary);
-            text-decoration: none;
-
-            font-size: 13px;
-            font-weight: 700;
-
-            margin-bottom: 14px;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        .page-title {
-            margin-bottom: 25px;
-        }
-
-        .page-title h1 {
-            font-size: clamp(28px, 5vw, 38px);
-            margin-bottom: 6px;
-        }
-
-        .page-title p {
-            color: var(--text-light);
-            font-size: 13px;
-        }
-
-        .test-summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            margin-bottom: 25px;
-        }
-
-        .summary-box {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 18px;
-        }
-
-        .summary-box span {
-            display: block;
-            color: var(--text-muted);
-            font-size: 11px;
-            margin-bottom: 6px;
-        }
-
-        .summary-box strong {
-            font-size: 22px;
-        }
-
-        .tests-list {
-            display: flex;
+            align-items: stretch;
             flex-direction: column;
-            gap: 14px;
+        }
+
+        .hero {
+            padding: 22px;
+            border-radius: 22px;
+        }
+
+        .stats {
+            grid-template-columns: 1fr;
         }
 
         .test-card {
-            display: grid;
-            grid-template-columns: 58px 1fr auto;
-            align-items: center;
-            gap: 17px;
-
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-
-            padding: 20px;
-
-            box-shadow: var(--shadow-sm);
-
-            transition: .2s ease;
+            padding: 18px;
         }
 
-        .test-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+        .test-top {
+            flex-direction: column;
         }
-
-        .test-icon {
-            width: 48px;
-            height: 48px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 13px;
-
-            background: var(--primary-soft);
-
-            font-size: 23px;
-        }
-
-        .test-info h2 {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .test-description {
-            color: var(--text-light);
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        .test-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-
-            margin-top: 9px;
-
-            color: var(--text-muted);
-            font-size: 10px;
-        }
-
-        .test-status {
-            text-align: right;
-            min-width: 120px;
-        }
-
-        .status {
-            display: inline-block;
-
-            padding: 6px 9px;
-
-            border-radius: 8px;
-
-            font-size: 9px;
-            font-weight: 800;
-        }
-
-        .status-available {
-            background: #e9e7ff;
-            color: var(--primary);
-        }
-
-        .status-progress {
-            background: #fff4df;
-            color: #a96d08;
-        }
-
-        .status-completed {
-            background: #e6f8ed;
-            color: #26834b;
-        }
-
-        .test-button {
-            display: inline-block;
-
-            margin-top: 9px;
-
-            padding: 9px 13px;
-
-            border: 0;
-            border-radius: 9px;
-
-            background: var(--primary);
-            color: white;
-
-            text-decoration: none;
-
-            font-family: inherit;
-            font-size: 11px;
-            font-weight: 800;
-
-            cursor: pointer;
-
-            transition: .2s ease;
-        }
-
-        .test-button:hover {
-            transform: translateY(-1px);
-            background: var(--primary-dark);
-        }
-
-        .test-button.secondary {
-            background: #f0f1f6;
-            color: var(--text);
-        }
-
-        .test-button.secondary:hover {
-            background: #e5e6ec;
-        }
-
-        .test-footer {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-
-            margin-top: 25px;
-
-            color: var(--text-muted);
-            font-size: 11px;
-        }
-
-        @media (max-width: 750px) {
-            .test-card {
-                grid-template-columns: 50px 1fr;
-            }
-
-            .test-status {
-                grid-column: 2;
-                text-align: left;
-            }
-        }
-
-        @media (max-width: 550px) {
-            .tests-header {
-                padding: 20px 12px;
-            }
-
-            .test-summary {
-                gap: 8px;
-            }
-
-            .summary-box {
-                padding: 14px;
-            }
-
-            .summary-box strong {
-                font-size: 18px;
-            }
-
-            .test-card {
-                padding: 15px;
-                gap: 12px;
-            }
-
-            .test-description {
-                font-size: 11px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="tests-page">
-
-    <header class="tests-header">
-
-        <div class="tests-container">
-
-            <a
-                href="dashboard.html"
-                class="back-link"
-            >
-                ← Особистий кабінет
-            </a>
-
-
-            <div class="page-title">
-
-                <h1>
-                    Тести
-                </h1>
-
-                <p>
-                    Навчальні перевірки та контрольні роботи
-                </p>
-
-            </div>
-
-
-            <div class="test-summary">
-
-                <div class="summary-box">
-
-                    <span>
-                        Доступно
-                    </span>
-
-                    <strong>
-                        3
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-box">
-
-                    <span>
-                        У процесі
-                    </span>
-
-                    <strong>
-                        1
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-box">
-
-                    <span>
-                        Завершено
-                    </span>
-
-                    <strong>
-                        2
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="tests-list">
-
-
-                <article class="test-card">
-
-                    <div class="test-icon">
-                        📐
-                    </div>
-
-                    <div class="test-info">
-
-                        <h2>
-                            Математика — Дроби
-                        </h2>
-
-                        <div class="test-description">
-                            Перевірка знань з теми
-                            «Звичайні дроби».
-                        </div>
-
-                        <div class="test-meta">
-
-                            <span>
-                                ❓ 15 питань
-                            </span>
-
-                            <span>
-                                ⏱ 20 хвилин
-                            </span>
-
-                            <span>
-                                📅 До 24 вересня
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="test-status">
-
-                        <span class="status status-available">
-                            ДОСТУПНИЙ
-                        </span>
-
-                        <br>
-
-                        <button
-                            class="test-button"
-                            onclick="startTest('Математика — Дроби')"
-                        >
-                            Почати
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-                <article class="test-card">
-
-                    <div class="test-icon">
-                        🧬
-                    </div>
-
-                    <div class="test-info">
-
-                        <h2>
-                            Біологія — Клітина
-                        </h2>
-
-                        <div class="test-description">
-                            Контроль знань з будови
-                            та функцій клітини.
-                        </div>
-
-                        <div class="test-meta">
-
-                            <span>
-                                ❓ 20 питань
-                            </span>
-
-                            <span>
-                                ⏱ 25 хвилин
-                            </span>
-
-                            <span>
-                                📅 До 25 вересня
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="test-status">
-
-                        <span class="status status-progress">
-                            У ПРОЦЕСІ
-                        </span>
-
-                        <br>
-
-                        <button
-                            class="test-button"
-                            onclick="startTest('Біологія — Клітина')"
-                        >
-                            Продовжити
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-                <article class="test-card">
-
-                    <div class="test-icon">
-                        🇬🇧
-                    </div>
-
-                    <div class="test-info">
-
-                        <h2>
-                            Англійська — Unit 3
-                        </h2>
-
-                        <div class="test-description">
-                            Перевірка словникового запасу
-                            та граматики.
-                        </div>
-
-                        <div class="test-meta">
-
-                            <span>
-                                ❓ 25 питань
-                            </span>
-
-                            <span>
-                                ⏱ 30 хвилин
-                            </span>
-
-                            <span>
-                                📅 Завершено
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="test-status">
-
-                        <span class="status status-completed">
-                            ЗАВЕРШЕНО
-                        </span>
-
-                        <br>
-
-                        <button
-                            class="test-button secondary"
-                            onclick="showResult('Англійська — Unit 3')"
-                        >
-                            Результат
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-                <article class="test-card">
-
-                    <div class="test-icon">
-                        🌍
-                    </div>
-
-                    <div class="test-info">
-
-                        <h2>
-                            Географія — Європа
-                        </h2>
-
-                        <div class="test-description">
-                            Країни Європи, столиці та
-                            географічні особливості.
-                        </div>
-
-                        <div class="test-meta">
-
-                            <span>
-                                ❓ 18 питань
-                            </span>
-
-                            <span>
-                                ⏱ 20 хвилин
-                            </span>
-
-                            <span>
-                                📅 До 27 вересня
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="test-status">
-
-                        <span class="status status-available">
-                            ДОСТУПНИЙ
-                        </span>
-
-                        <br>
-
-                        <button
-                            class="test-button"
-                            onclick="startTest('Географія — Європа')"
-                        >
-                            Почати
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-                <article class="test-card">
-
-                    <div class="test-icon">
-                        📖
-                    </div>
-
-                    <div class="test-info">
-
-                        <h2>
-                            Українська мова — Орфографія
-                        </h2>
-
-                        <div class="test-description">
-                            Навчальна перевірка правил
-                            українського правопису.
-                        </div>
-
-                        <div class="test-meta">
-
-                            <span>
-                                ❓ 20 питань
-                            </span>
-
-                            <span>
-                                ⏱ 25 хвилин
-                            </span>
-
-                            <span>
-                                📅 Завершено
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="test-status">
-
-                        <span class="status status-completed">
-                            ЗАВЕРШЕНО
-                        </span>
-
-                        <br>
-
-                        <button
-                            class="test-button secondary"
-                            onclick="showResult('Українська мова — Орфографія')"
-                        >
-                            Результат
-                        </button>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-
-            <div class="test-footer">
-
-                <span>
-                    📝 Результати зберігатимуться в особистому кабінеті.
-                </span>
-
-                <span>
-                    Версія 0.1.0
-                </span>
-
-            </div>
-
+    }
+</style>
+
+</head><body>
+    <main class="tests-page">    <div class="tests-header">
+        <a class="back-button" href="dashboard.html">← Назад</a>
+        <div data-user-name>Користувач</div>
+    </div>
+
+    <section class="hero">
+        <h1>📝 Тести</h1>
+        <p>Переглядай доступні тести, предмети, класи та терміни виконання.</p>
+    </section>
+
+    <section class="stats">
+        <div class="stat">
+            <div class="stat-number" id="totalTests">0</div>
+            <div class="stat-label">Усього тестів</div>
         </div>
 
-    </header>
+        <div class="stat">
+            <div class="stat-number" id="activeTests">0</div>
+            <div class="stat-label">Актуальні</div>
+        </div>
 
-</div>
+        <div class="stat">
+            <div class="stat-number" id="overdueTests">0</div>
+            <div class="stat-label">Завершені за терміном</div>
+        </div>
+    </section>
 
+    <div class="filters">
+        <button class="filter-button active" data-filter="all">Усі</button>
+        <button class="filter-button" data-filter="active">Актуальні</button>
+        <button class="filter-button" data-filter="overdue">Завершені</button>
+    </div>
 
-<script src="app.js"></script>
+    <section id="testsList" class="tests-list">
+        <div class="loading">Завантаження тестів...</div>
+    </section>
+
+</main>
 
 <script>
+    let allTests = [];
+    let currentFilter = 'all';
 
-    function startTest(testName) {
-
-        alert(
-            "Тест «" +
-            testName +
-            "» буде доступний після підключення модуля тестування."
-        );
-
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
 
+    function formatDate(value) {
+        if (!value) return 'Без терміну';
 
-    function showResult(testName) {
+        const date = new Date(value + 'T00:00:00');
 
-        alert(
-            "Результат тесту «" +
-            testName +
-            "» буде показуватися тут після підключення бази даних."
-        );
+        if (Number.isNaN(date.getTime())) {
+            return value;
+        }
 
+        return date.toLocaleDateString('uk-UA', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
     }
 
+    function isOverdue(test) {
+        if (!test.due_date) return false;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const due = new Date(test.due_date + 'T00:00:00');
+        return due < today;
+    }
+
+    function updateStats() {
+        const total = allTests.length;
+        const overdue = allTests.filter(isOverdue).length;
+        const active = total - overdue;
+
+        document.getElementById('totalTests').textContent = total;
+        document.getElementById('activeTests').textContent = active;
+        document.getElementById('overdueTests').textContent = overdue;
+    }
+
+    function renderTests() {
+        const container = document.getElementById('testsList');
+
+        let tests = [...allTests];
+
+        if (currentFilter === 'active') {
+            tests = tests.filter(test => !isOverdue(test));
+        }
+
+        if (currentFilter === 'overdue') {
+            tests = tests.filter(isOverdue);
+        }
+
+        if (!tests.length) {
+            container.innerHTML = `
+                <div class="empty">
+                    <div style="font-size:36px;margin-bottom:10px;">📭</div>
+                    <div>Тестів у цьому розділі поки немає.</div>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = tests.map(test => {
+            const overdue = isOverdue(test);
+
+            return `
+                <article class="test-card">
+                    <div class="test-top">
+                        <div>
+                            <div class="test-subject">
+                                📚 ${escapeHtml(test.subject)}
+                            </div>
+
+                            <div class="test-title">
+                                ${escapeHtml(test.title)}
+                            </div>
+
+                            <div class="test-description">
+                                ${escapeHtml(test.description || 'Опис тесту відсутній.')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="test-info">
+                        ${test.class_name
+                            ? `<span class="info-tag">👥 ${escapeHtml(test.class_name)}</span>`
+                            : ''}
+
+                        <span class="info-tag">
+                            📅 ${test.due_date ? formatDate(test.due_date) : 'Без терміну'}
+                        </span>
+
+                        <span class="info-tag">
+                            ${overdue ? '🔴 Завершено' : '🟢 Актуальний'}
+                        </span>
+                    </div>
+
+                    ${test.test_url
+                        ? `<a class="test-button" href="${escapeHtml(test.test_url)}" target="_blank" rel="noopener noreferrer">Відкрити тест →</a>`
+                        : ''}
+                </article>
+            `;
+        }).join('');
+    }
+
+    async function loadTests() {
+        const container = document.getElementById('testsList');
+
+        try {
+            if (typeof supabaseClient === 'undefined') {
+                throw new Error('Supabase не підключено.');
+            }
+
+            const { data, error } = await supabaseClient
+                .from('tests')
+                .select('*')
+                .order('due_date', { ascending: true })
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            allTests = data || [];
+
+            updateStats();
+            renderTests();
+
+        } catch (error) {
+            console.error('Tests loading error:', error);
+
+            container.innerHTML = `
+                <div class="error">
+                    Не вдалося завантажити тести.<br>
+                    Перевір підключення Supabase та права доступу до таблиці tests.
+                </div>
+            `;
+        }
+    }
+
+    document.querySelectorAll('[data-filter]').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('[data-filter]').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            button.classList.add('active');
+            currentFilter = button.dataset.filter;
+
+            renderTests();
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', loadTests);
 </script>
 
 </body>
