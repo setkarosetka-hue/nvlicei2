@@ -1,308 +1,453 @@
 <!DOCTYPE html><html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Оголошення — Ліцей №2</title>
-<link rel="stylesheet" href="style.css"><style>
-body{
-    margin:0;
-    min-height:100vh;
-    background:
-        radial-gradient(circle at top left,rgba(37,99,235,.25),transparent 35%),
-        radial-gradient(circle at bottom right,rgba(14,165,233,.18),transparent 35%),
-        #07111f;
-    color:#fff;
-    font-family:Arial,sans-serif;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Оголошення — Ліцей №2</title>
 
-.page{
-    width:min(1000px,calc(100% - 24px));
-    margin:auto;
-    padding:20px 0 50px;
-}
+<link rel="stylesheet" href="style.css">
+<script src="supabase.js"></script>
+<script src="app.js" defer></script>
 
-.top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
-    padding:20px;
-    margin-bottom:18px;
-    border-radius:22px;
-    background:rgba(10,24,42,.85);
-    border:1px solid rgba(255,255,255,.1);
-}
-
-.top h1{
-    margin:0 0 5px;
-}
-
-.top p{
-    margin:0;
-    color:#8fa2b8;
-}
-
-.back{
-    color:white;
-    text-decoration:none;
-    padding:10px 14px;
-    border-radius:12px;
-    background:rgba(255,255,255,.07);
-}
-
-.announcements{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-}
-
-.announcement{
-    padding:21px;
-    border-radius:21px;
-    background:rgba(10,24,42,.8);
-    border:1px solid rgba(255,255,255,.09);
-    transition:.2s;
-}
-
-.announcement:hover{
-    transform:translateY(-2px);
-    border-color:rgba(37,99,235,.35);
-}
-
-.announcement-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:15px;
-}
-
-.title{
-    font-size:19px;
-    font-weight:700;
-}
-
-.date{
-    color:#7f92a8;
-    font-size:12px;
-    white-space:nowrap;
-}
-
-.content{
-    margin-top:13px;
-    color:#c9d7e7;
-    line-height:1.6;
-    white-space:pre-wrap;
-}
-
-.audience{
-    display:inline-block;
-    margin-top:15px;
-    padding:5px 10px;
-    border-radius:999px;
-    background:rgba(37,99,235,.14);
-    color:#8bb7ff;
-    font-size:12px;
-}
-
-.empty{
-    text-align:center;
-    padding:55px 20px;
-    border-radius:20px;
-    background:rgba(10,24,42,.7);
-    color:#8194aa;
-}
-
-.loading{
-    text-align:center;
-    color:#8194aa;
-    padding:40px;
-}
-
-@media(max-width:600px){
-
-    .top{
-        flex-direction:column;
-        align-items:flex-start;
+<style>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        background:
+            radial-gradient(circle at 15% 10%, rgba(80,120,255,.18), transparent 30%),
+            radial-gradient(circle at 85% 20%, rgba(0,220,255,.12), transparent 28%),
+            #070b14;
+        color: #fff;
     }
 
-    .announcement-head{
-        flex-direction:column;
+    .announcements-page {
+        width: min(1100px, calc(100% - 28px));
+        margin: auto;
+        padding: 24px 0 50px;
     }
 
-    .date{
-        white-space:normal;
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 22px;
     }
-}
-</style></head><body><div class="page"><header class="top"><div>
-<h1>📢 Оголошення</h1>
-<p>Важлива інформація від Ліцею №2</p>
-</div><a href="dashboard.html" class="back">
-← Назад
-</a></header><main><div id="announcements" class="announcements"><div class="loading">
-Завантаження оголошень...
-</div></div></main></div><script src="supabase.js"></script><script src="app.js"></script><script>
 
-document.addEventListener("DOMContentLoaded",async()=>{
+    .back-button {
+        color: #fff;
+        text-decoration: none;
+        padding: 11px 16px;
+        border-radius: 14px;
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.1);
+    }
 
-const container=document.getElementById("announcements");
+    .hero {
+        padding: 28px;
+        border-radius: 28px;
+        background: linear-gradient(
+            135deg,
+            rgba(45,105,255,.2),
+            rgba(0,220,255,.08)
+        );
+        border: 1px solid rgba(255,255,255,.1);
+        margin-bottom: 22px;
+    }
 
-const {
-data:{user},
-error:authError
-}=await supabaseClient.auth.getUser();
+    .hero h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 6vw, 44px);
+    }
 
-if(authError || !user){
+    .hero p {
+        margin: 0;
+        color: #aebbd1;
+        line-height: 1.5;
+    }
 
-location.href="login.html";
+    .announcements-list {
+        display: grid;
+        gap: 16px;
+    }
 
-return;
+    .announcement-card {
+        position: relative;
+        padding: 23px;
+        border-radius: 22px;
+        background: rgba(255,255,255,.055);
+        border: 1px solid rgba(255,255,255,.09);
+        box-shadow: 0 12px 40px rgba(0,0,0,.18);
+        overflow: hidden;
+    }
 
-}
+    .announcement-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(
+            180deg,
+            #2777ff,
+            #15c9ff
+        );
+    }
 
+    .announcement-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+    }
 
-function escape(value){
+    .announcement-title {
+        font-size: 21px;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
 
-return String(value??"")
-.replaceAll("&","&amp;")
-.replaceAll("<","&lt;")
-.replaceAll(">","&gt;")
-.replaceAll('"',"&quot;")
-.replaceAll("'","&#039;");
+    .announcement-date {
+        color: #8f9caf;
+        font-size: 13px;
+        white-space: nowrap;
+    }
 
-}
+    .announcement-content {
+        margin-top: 15px;
+        color: #c0cad9;
+        line-height: 1.65;
+        white-space: pre-wrap;
+    }
 
+    .announcement-audience {
+        display: inline-flex;
+        margin-top: 16px;
+        padding: 7px 10px;
+        border-radius: 9px;
+        background: rgba(39,119,255,.12);
+        color: #73baff;
+        font-size: 12px;
+        font-weight: 700;
+    }
 
-function formatDate(value){
+    .empty,
+    .loading,
+    .error {
+        padding: 35px 20px;
+        text-align: center;
+        border-radius: 22px;
+        background: rgba(255,255,255,.045);
+        border: 1px solid rgba(255,255,255,.08);
+        color: #aeb9ca;
+    }
 
-if(!value)return "";
+    .error {
+        color: #ff9e9e;
+    }
 
-return new Date(value).toLocaleString("uk-UA",{
-day:"2-digit",
-month:"2-digit",
-year:"numeric",
-hour:"2-digit",
-minute:"2-digit"
-});
+    @media (max-width: 650px) {
+        .announcements-page {
+            width: calc(100% - 18px);
+            padding-top: 14px;
+        }
 
-}
+        .page-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
 
+        .hero {
+            padding: 22px;
+            border-radius: 22px;
+        }
 
-const {
-data:profile,
-error:profileError
-}=await supabaseClient
-.from("profiles")
-.select("role")
-.eq("id",user.id)
-.single();
+        .announcement-card {
+            padding: 19px;
+        }
 
+        .announcement-top {
+            flex-direction: column;
+            gap: 5px;
+        }
 
-if(profileError || !profile){
+        .announcement-date {
+            white-space: normal;
+        }
+    }
+</style>
 
-container.innerHTML=`
-<div class="empty">
-Не вдалося визначити вашу роль.
-</div>`;
+</head><body><main class="announcements-page"><div class="page-header">
 
-return;
+    <a class="back-button" href="dashboard.html">
+        ← Назад
+    </a>
 
-}
+    <div data-user-name>
+        Користувач
+    </div>
 
-
-let audience="all";
-
-if(profile.role==="teacher"){
-audience="teachers";
-}
-
-if(profile.role==="student"){
-audience="students";
-}
-
-if(profile.role==="parent"){
-audience="parents";
-}
-
-
-const {
-data,
-error
-}=await supabaseClient
-.from("announcements")
-.select("*")
-.or(`audience.eq.all,audience.eq.${audience}`)
-.order("created_at",{ascending:false});
-
-
-if(error){
-
-console.error(error);
-
-container.innerHTML=`
-<div class="empty">
-Не вдалося завантажити оголошення.
-</div>`;
-
-return;
-
-}
-
-
-if(!data || !data.length){
-
-container.innerHTML=`
-<div class="empty">
-📭<br><br>
-Поки що немає оголошень.
-</div>`;
-
-return;
-
-}
-
-
-const audienceNames={
-
-all:"Для всіх",
-
-teachers:"Для вчителів",
-
-students:"Для учнів",
-
-parents:"Для батьків"
-
-};
-
-
-container.innerHTML=data.map(item=>`
-
-<article class="announcement">
-
-<div class="announcement-head">
-
-<div class="title">
-${escape(item.title)}
 </div>
 
-<div class="date">
-${formatDate(item.created_at)}
-</div>
+<section class="hero">
 
-</div>
+    <h1>📢 Оголошення</h1>
 
-<div class="content">
-${escape(item.content)}
-</div>
+    <p>
+        Важливі повідомлення та новини
+        для учнів, батьків, вчителів і всієї
+        спільноти ліцею.
+    </p>
 
-<div class="audience">
-${audienceNames[item.audience]||"Оголошення"}
-</div>
+</section>
 
-</article>
+<section id="announcementsList" class="announcements-list">
 
-`).join("");
+    <div class="loading">
+        Завантаження оголошень...
+    </div>
 
-});
+</section>
+
+</main><script>
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function formatDate(value) {
+
+        if (!value) {
+            return 'Дата не вказана';
+        }
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return value;
+        }
+
+        return date.toLocaleString('uk-UA', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function getAudience(role) {
+
+        switch (role) {
+
+            case 'teacher':
+                return 'teachers';
+
+            case 'student':
+                return 'students';
+
+            case 'parent':
+                return 'parents';
+
+            case 'admin':
+                return 'all';
+
+            default:
+                return null;
+        }
+    }
+
+    function getAudienceName(audience) {
+
+        switch (audience) {
+
+            case 'teachers':
+                return 'Для вчителів';
+
+            case 'students':
+                return 'Для учнів';
+
+            case 'parents':
+                return 'Для батьків';
+
+            case 'all':
+                return 'Для всіх';
+
+            default:
+                return audience || 'Загальне';
+        }
+    }
+
+    async function loadAnnouncements() {
+
+        const container =
+            document.getElementById(
+                'announcementsList'
+            );
+
+        try {
+
+            if (
+                typeof supabaseClient ===
+                'undefined'
+            ) {
+                throw new Error(
+                    'Supabase не підключено.'
+                );
+            }
+
+            const profile =
+                await getCurrentProfile();
+
+            if (!profile) {
+
+                location.href =
+                    'login.html';
+
+                return;
+            }
+
+            const audience =
+                getAudience(profile.role);
+
+            if (!audience) {
+                throw new Error(
+                    'Невідома роль користувача.'
+                );
+            }
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from('announcements')
+                .select('*')
+                .or(
+                    `audience.eq.all,audience.eq.${audience}`
+                )
+                .order('created_at', {
+                    ascending: false
+                });
+
+            if (error) {
+                throw error;
+            }
+
+            const announcements =
+                data || [];
+
+            if (!announcements.length) {
+
+                container.innerHTML = `
+                    <div class="empty">
+
+                        <div style="
+                            font-size:38px;
+                            margin-bottom:10px;
+                        ">
+                            📭
+                        </div>
+
+                        <div>
+                            Оголошень поки немає.
+                        </div>
+
+                    </div>
+                `;
+
+                return;
+            }
+
+            container.innerHTML =
+                announcements.map(
+                    announcement => `
+
+                    <article
+                        class="announcement-card"
+                    >
+
+                        <div class="announcement-top">
+
+                            <div>
+
+                                <div class="
+                                    announcement-title
+                                ">
+                                    ${escapeHtml(
+                                        announcement.title ||
+                                        'Оголошення'
+                                    )}
+                                </div>
+
+                            </div>
+
+                            <div class="
+                                announcement-date
+                            ">
+                                ${escapeHtml(
+                                    formatDate(
+                                        announcement.created_at
+                                    )
+                                )}
+                            </div>
+
+                        </div>
+
+                        <div class="
+                            announcement-content
+                        ">
+                            ${escapeHtml(
+                                announcement.content ||
+                                'Текст оголошення відсутній.'
+                            )}
+                        </div>
+
+                        <div class="
+                            announcement-audience
+                        ">
+                            📢 ${escapeHtml(
+                                getAudienceName(
+                                    announcement.audience
+                                )
+                            )}
+                        </div>
+
+                    </article>
+
+                `
+                ).join('');
+
+        } catch (error) {
+
+            console.error(
+                'Announcements loading error:',
+                error
+            );
+
+            container.innerHTML = `
+                <div class="error">
+
+                    Не вдалося завантажити
+                    оголошення.<br>
+
+                    Перевір таблицю
+                    announcements та RLS-політики
+                    у Supabase.
+
+                </div>
+            `;
+        }
+    }
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        loadAnnouncements
+    );
 
 </script></body>
 </html>
