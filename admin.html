@@ -1,212 +1,1230 @@
-<!doctype html>
-<html lang="uk">
+<!DOCTYPE html><html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Адмін-панель — Ліцей №2</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase.js"></script>
-</head>
-<body>
-  <header class="site-header">
-    <div class="header-container container">
-      <a href="admin.html" class="logo" aria-label="Ліцей №2 Admin">
-        <span class="logo-mark">Л2</span>
-        <span class="logo-text">
-          <strong>Ліцей №2</strong>
-          <small>Центр керування</small>
-        </span>
-      </a>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Адмін-панель — Ліцей №2</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(59,130,246,.22), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(14,165,233,.18), transparent 35%),
+                #07111f;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }    .admin-shell {
+        width: min(1180px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 24px 0 50px;
+    }
 
-      <nav class="navigation" aria-label="Адмін навігація">
-        <a href="#overview" class="active">Огляд</a>
-        <a href="#users">Користувачі</a>
-        <a href="#schedule">Розклад</a>
-        <a href="#announcements">Оголошення</a>
-        <a href="#messages">Повідомлення</a>
-        <a href="#settings">Налаштування</a>
-      </nav>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 22px;
+        padding: 22px;
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 24px;
+        background: rgba(10,24,42,.82);
+        backdrop-filter: blur(18px);
+    }
 
-      <button class="mobile-menu" type="button" aria-label="Меню" onclick="toggleMenu()">☰</button>
-      <button id="logoutBtn" class="danger-btn">Вийти</button>
+    .admin-title h1 {
+        margin: 0 0 6px;
+        font-size: clamp(25px, 5vw, 38px);
+    }
+
+    .admin-title p {
+        margin: 0;
+        color: #9fb0c7;
+    }
+
+    .admin-user {
+        text-align: right;
+        color: #a9bad0;
+        font-size: 14px;
+    }
+
+    .admin-user strong {
+        display: block;
+        color: #fff;
+        margin-bottom: 4px;
+    }
+
+    .logout-btn {
+        margin-top: 8px;
+        border: 0;
+        border-radius: 12px;
+        padding: 9px 14px;
+        background: rgba(239,68,68,.16);
+        color: #ff9b9b;
+        cursor: pointer;
+    }
+
+    .admin-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .admin-card {
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 22px;
+        background: rgba(10,24,42,.78);
+        backdrop-filter: blur(16px);
+        padding: 22px;
+        box-shadow: 0 18px 50px rgba(0,0,0,.18);
+    }
+
+    .admin-card.full {
+        grid-column: 1 / -1;
+    }
+
+    .card-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .card-heading h2 {
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .card-heading span {
+        color: #8194ad;
+        font-size: 13px;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .stat {
+        padding: 17px;
+        border-radius: 17px;
+        background: rgba(255,255,255,.045);
+        border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .stat b {
+        display: block;
+        font-size: 27px;
+        margin-bottom: 4px;
+    }
+
+    .stat small {
+        color: #8fa1b7;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .field.full {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        color: #b8c6d8;
+        font-size: 13px;
+    }
+
+    input,
+    textarea,
+    select {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 13px;
+        padding: 12px 13px;
+        background: rgba(255,255,255,.055);
+        color: #fff;
+        outline: none;
+    }
+
+    textarea {
+        min-height: 105px;
+        resize: vertical;
+    }
+
+    select option {
+        background: #0b1a2d;
+        color: #fff;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+        border-color: rgba(59,130,246,.75);
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .danger-btn {
+        border: 0;
+        border-radius: 13px;
+        padding: 11px 15px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .primary-btn {
+        background: #2563eb;
+        color: #fff;
+    }
+
+    .secondary-btn {
+        background: rgba(255,255,255,.08);
+        color: #dbe8f7;
+    }
+
+    .danger-btn {
+        background: rgba(239,68,68,.15);
+        color: #ff9d9d;
+    }
+
+    .actions {
+        display: flex;
+        gap: 9px;
+        flex-wrap: wrap;
+        margin-top: 13px;
+    }
+
+    .maintenance-box {
+        padding: 17px;
+        border-radius: 17px;
+        background: rgba(245,158,11,.08);
+        border: 1px solid rgba(245,158,11,.2);
+    }
+
+    .maintenance-box strong {
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    .switch-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .switch {
+        position: relative;
+        width: 52px;
+        height: 29px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        inset: 0;
+        border-radius: 30px;
+        background: #334155;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .slider:before {
+        content: "";
+        position: absolute;
+        width: 21px;
+        height: 21px;
+        left: 4px;
+        top: 4px;
+        background: white;
+        border-radius: 50%;
+        transition: .2s;
+    }
+
+    .switch input:checked + .slider {
+        background: #2563eb;
+    }
+
+    .switch input:checked + .slider:before {
+        transform: translateX(23px);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 650px;
+    }
+
+    th,
+    td {
+        text-align: left;
+        padding: 12px 9px;
+        border-bottom: 1px solid rgba(255,255,255,.07);
+        vertical-align: middle;
+    }
+
+    th {
+        color: #8194ad;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    td {
+        color: #d9e5f3;
+        font-size: 14px;
+    }
+
+    .role-badge {
+        display: inline-flex;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: rgba(59,130,246,.13);
+        color: #8db9ff;
+        font-size: 12px;
+    }
+
+    .empty {
+        padding: 22px;
+        text-align: center;
+        color: #8194ad;
+    }
+
+    #adminMessage {
+        position: fixed;
+        left: 50%;
+        bottom: 20px;
+        transform: translate(-50%, 20px);
+        opacity: 0;
+        pointer-events: none;
+        padding: 12px 17px;
+        border-radius: 13px;
+        background: #10243b;
+        border: 1px solid rgba(255,255,255,.12);
+        transition: .25s;
+        z-index: 1000;
+    }
+
+    #adminMessage.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 800px) {
+        .admin-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-card.full {
+            grid-column: auto;
+        }
+
+        .stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .admin-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .admin-user {
+            text-align: left;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .admin-shell {
+            width: min(100% - 18px, 1180px);
+            padding-top: 10px;
+        }
+
+        .admin-card,
+        .admin-header {
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .field.full {
+            grid-column: auto;
+        }
+    }
+</style>
+
+</head><body><div class="admin-shell"><header class="admin-header">
+    <div class="admin-title">
+        <h1>Панель адміністратора</h1>
+        <p>Керування Ліцеєм №2</p>
     </div>
-  </header>
 
-  <main class="admin-shell" id="overview">
-    <div class="container">
-      <section class="admin-hero">
-        <div>
-          <span class="section-label">Панель адміністратора</span>
-          <h1>Керуйте ліцеєм<br><span>в одному просторі.</span></h1>
-          <p>Стан системи, навчальні процеси та комунікація — під рукою.</p>
-        </div>
-
-        <div class="admin-profile">
-          <div class="logo-mark">АД</div>
-          <div>
-            <strong id="adminName">Завантаження…</strong>
-            <small id="adminEmail">Перевірка акаунта…</small>
-          </div>
-          <span class="badge badge-success">ONLINE</span>
-        </div>
-      </section>
-
-      <section class="stat-grid admin-stats">
-        <div class="stat-card">
-          <div class="stat-icon">👥</div>
-          <h3>248</h3>
-          <p>Користувачів системи</p>
-          <span class="trend">↗ +12 цього місяця</span>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">📚</div>
-          <h3>32</h3>
-          <p>Активні класи</p>
-          <span class="trend">Синхронізовано</span>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">📢</div>
-          <h3>18</h3>
-          <p>Оголошень цього тижня</p>
-          <span class="trend">↗ +4 нових</span>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">⚡</div>
-          <h3 id="authStatus">…</h3>
-          <p>Стан авторизації</p>
-          <span class="trend" id="securityRole">Роль: …</span>
-        </div>
-      </section>
-
-      <section class="admin-grid" id="users">
-        <button class="admin-button" onclick="openSection('users')"><b>👥</b><span>Користувачі</span><small>Профілі та ролі</small></button>
-        <button class="admin-button" onclick="openSection('schedule')"><b>📅</b><span>Розклад</span><small>Навчальний процес</small></button>
-        <button class="admin-button" onclick="openSection('announcements')"><b>📢</b><span>Оголошення</span><small>Новини ліцею</small></button>
-        <button class="admin-button" onclick="openSection('messages')"><b>💬</b><span>Повідомлення</span><small>Центр комунікації</small></button>
-        <button class="admin-button" onclick="openSection('settings')"><b>⚙️</b><span>Налаштування</span><small>Параметри системи</small></button>
-        <button class="admin-button maintenance-button" onclick="openMaintenance()"><b>🛠️</b><span>Технічні роботи</span><small>Керування доступністю</small></button>
-      </section>
-
-      <section class="card-panel admin-panel">
-        <div class="card-title">
-          <div>
-            <span class="section-label">Системний огляд</span>
-            <h2>Платформа працює стабільно</h2>
-          </div>
-          <span class="badge badge-success">● Усі сервіси онлайн</span>
-        </div>
-
-        <div class="admin-progress"><span style="width:92%"></span></div>
-
-        <div class="security-item"><span>Авторизація Supabase</span><strong>Захищено</strong></div>
-        <div class="security-item"><span>Ролі та доступи</span><strong>Активні</strong></div>
-        <div class="security-item"><span>Режим системи</span><strong data-system-status>У розробці</strong></div>
-      </section>
-
-      <section id="usersSection" class="card-panel hidden-section">
-        <h2>👥 Користувачі</h2>
-        <p>Керування учнями, батьками, вчителями та адміністраторами.</p>
-        <div class="info-box">🚧 Розділ готується до підключення до Supabase.</div>
-        <button class="btn btn-secondary" onclick="closeSections()">← До огляду</button>
-      </section>
-
-      <section id="scheduleSection" class="card-panel hidden-section">
-        <h2>📅 Розклад</h2>
-        <p>Створення та редагування розкладу занять.</p>
-        <div class="info-box">🚧 Розділ готується до підключення до таблиці schedule.</div>
-        <button class="btn btn-secondary" onclick="closeSections()">← До огляду</button>
-      </section>
-
-      <section id="announcementsSection" class="card-panel hidden-section">
-        <h2>📢 Оголошення</h2>
-        <p>Публікація важливої інформації для спільноти ліцею.</p>
-        <div class="info-box">🚧 Розділ готується до підключення до Supabase.</div>
-        <button class="btn btn-secondary" onclick="closeSections()">← До огляду</button>
-      </section>
-
-      <section id="messagesSection" class="card-panel hidden-section">
-        <h2>💬 Повідомлення</h2>
-        <p>Керування повідомленнями між адміністрацією та користувачами.</p>
-        <div class="info-box">🚧 Розділ готується до підключення до Supabase.</div>
-        <button class="btn btn-secondary" onclick="closeSections()">← До огляду</button>
-      </section>
-
-      <section id="settingsSection" class="card-panel hidden-section">
-        <h2>⚙️ Налаштування</h2>
-        <p>Основні параметри електронної системи.</p>
-        <div class="info-box">Версія 1.0.0 · Стан: тестування · Офіційне підтвердження: очікується</div>
-        <button class="btn btn-secondary" onclick="closeSections()">← До огляду</button>
-      </section>
+    <div class="admin-user">
+        <strong data-user-name>Адміністратор</strong>
+        <span data-user-email></span>
+        <br>
+        <span data-user-role>Адміністратор</span>
+        <br>
+        <button class="logout-btn" data-logout>Вийти</button>
     </div>
-  </main>
+</header>
 
-  <script>
-    async function loadAdminProfile() {
-      const authStatus = document.getElementById('authStatus');
-      const securityRole = document.getElementById('securityRole');
+<section class="stats">
+    <div class="stat">
+        <b id="usersCount">—</b>
+        <small>Користувачів</small>
+    </div>
 
-      try {
-        const { data: { user }, error } = await supabaseClient.auth.getUser();
-        if (error || !user) {
-          window.location.href = 'login.html';
-          return;
+    <div class="stat">
+        <b id="pendingCount">—</b>
+        <small>Заявок</small>
+    </div>
+
+    <div class="stat">
+        <b id="messagesCount">—</b>
+        <small>Повідомлень</small>
+    </div>
+
+    <div class="stat">
+        <b id="announcementsCount">—</b>
+        <small>Оголошень</small>
+    </div>
+</section>
+
+<main class="admin-grid">
+
+    <section class="admin-card full">
+        <div class="card-heading">
+            <div>
+                <h2>👥 Заявки користувачів</h2>
+                <span>Підтвердження ролей</span>
+            </div>
+            <button class="secondary-btn" id="refreshUsers">
+                Оновити
+            </button>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Користувач</th>
+                        <th>Email</th>
+                        <th>Запитана роль</th>
+                        <th>Статус</th>
+                        <th>Дії</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable">
+                    <tr>
+                        <td colspan="5" class="empty">
+                            Завантаження...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="admin-card">
+        <div class="card-heading">
+            <div>
+                <h2>💬 Повідомлення</h2>
+                <span>Надіслати користувачам</span>
+            </div>
+        </div>
+
+        <form id="messageForm">
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="messageRecipient">
+                        Отримувач
+                    </label>
+
+                    <select id="messageRecipient" required>
+                        <option value="all">
+                            Усім користувачам
+                        </option>
+                        <option value="teachers">
+                            Усім вчителям
+                        </option>
+                        <option value="students">
+                            Усім учням
+                        </option>
+                        <option value="parents">
+                            Усім батькам
+                        </option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="messageSubject">
+                        Тема
+                    </label>
+
+                    <input
+                        id="messageSubject"
+                        type="text"
+                        placeholder="Тема повідомлення"
+                        required
+                    >
+                </div>
+
+                <div class="field full">
+                    <label for="messageText">
+                        Повідомлення
+                    </label>
+
+                    <textarea
+                        id="messageText"
+                        placeholder="Напишіть повідомлення..."
+                        required
+                    ></textarea>
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <button class="primary-btn" type="submit">
+                    Надіслати
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="admin-card">
+        <div class="card-heading">
+            <div>
+                <h2>📢 Оголошення</h2>
+                <span>Публікація на сайті</span>
+            </div>
+        </div>
+
+        <form id="announcementForm">
+            <div class="form-grid">
+
+                <div class="field full">
+                    <label for="announcementTitle">
+                        Заголовок
+                    </label>
+
+                    <input
+                        id="announcementTitle"
+                        type="text"
+                        placeholder="Наприклад: Зміни у розкладі"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="announcementAudience">
+                        Аудиторія
+                    </label>
+
+                    <select id="announcementAudience" required>
+                        <option value="all">Усім</option>
+                        <option value="teachers">Вчителям</option>
+                        <option value="students">Учням</option>
+                        <option value="parents">Батькам</option>
+                    </select>
+                </div>
+
+                <div class="field full">
+                    <label for="announcementText">
+                        Текст
+                    </label>
+
+                    <textarea
+                        id="announcementText"
+                        placeholder="Текст оголошення..."
+                        required
+                    ></textarea>
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <button class="primary-btn" type="submit">
+                    Опублікувати
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="admin-card full">
+        <div class="card-heading">
+            <div>
+                <h2>📅 Розклад</h2>
+                <span>Керування уроками</span>
+            </div>
+        </div>
+
+        <form id="scheduleForm">
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="scheduleDay">
+                        День
+                    </label>
+
+                    <select id="scheduleDay" required>
+                        <option value="monday">Понеділок</option>
+                        <option value="tuesday">Вівторок</option>
+                        <option value="wednesday">Середа</option>
+                        <option value="thursday">Четвер</option>
+                        <option value="friday">П'ятниця</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="scheduleClass">
+                        Клас
+                    </label>
+
+                    <input
+                        id="scheduleClass"
+                        type="text"
+                        placeholder="Наприклад: 6Г"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="scheduleLesson">
+                        Урок
+                    </label>
+
+                    <input
+                        id="scheduleLesson"
+                        type="number"
+                        min="1"
+                        max="12"
+                        placeholder="1"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="scheduleSubject">
+                        Предмет
+                    </label>
+
+                    <input
+                        id="scheduleSubject"
+                        type="text"
+                        placeholder="Математика"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="scheduleTeacher">
+                        Вчитель
+                    </label>
+
+                    <input
+                        id="scheduleTeacher"
+                        type="text"
+                        placeholder="ПІБ вчителя"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="scheduleRoom">
+                        Кабінет
+                    </label>
+
+                    <input
+                        id="scheduleRoom"
+                        type="text"
+                        placeholder="Каб. 203"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="scheduleStart">
+                        Початок
+                    </label>
+
+                    <input
+                        id="scheduleStart"
+                        type="time"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="scheduleEnd">
+                        Кінець
+                    </label>
+
+                    <input
+                        id="scheduleEnd"
+                        type="time"
+                        required
+                    >
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <button class="primary-btn" type="submit">
+                    Додати урок
+                </button>
+
+                <button
+                    class="secondary-btn"
+                    type="button"
+                    id="refreshSchedule"
+                >
+                    Оновити розклад
+                </button>
+            </div>
+        </form>
+
+        <div class="table-wrap" style="margin-top:20px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>День</th>
+                        <th>Клас</th>
+                        <th>Урок</th>
+                        <th>Предмет</th>
+                        <th>Вчитель</th>
+                        <th>Кабінет</th>
+                        <th>Час</th>
+                        <th>Дії</th>
+                    </tr>
+                </thead>
+
+                <tbody id="scheduleTable">
+                    <tr>
+                        <td colspan="8" class="empty">
+                            Розклад ще не завантажено
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="admin-card full">
+        <div class="card-heading">
+            <div>
+                <h2>🛠️ Технічні роботи</h2>
+                <span>Тимчасове блокування сайту</span>
+            </div>
+        </div>
+
+        <div class="maintenance-box">
+
+            <div class="switch-row">
+                <div>
+                    <strong>
+                        Режим технічних робіт
+                    </strong>
+
+                    <span style="color:#9caec3;font-size:13px;">
+                        Адміністратори продовжать мати доступ.
+                    </span>
+                </div>
+
+                <label class="switch">
+                    <input
+                        type="checkbox"
+                        id="maintenanceToggle"
+                    >
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-grid" style="margin-top:18px;">
+
+                <div class="field full">
+                    <label for="maintenanceReason">
+                        Причина / повідомлення
+                    </label>
+
+                    <textarea
+                        id="maintenanceReason"
+                        placeholder="Наприклад: Оновлення системи. Сайт буде доступний після завершення робіт."
+                    ></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="maintenanceEnd">
+                        Орієнтовне завершення
+                    </label>
+
+                    <input
+                        id="maintenanceEnd"
+                        type="datetime-local"
+                    >
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <button
+                    class="primary-btn"
+                    id="saveMaintenance"
+                    type="button"
+                >
+                    Зберегти режим
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+</div><div id="adminMessage"></div><script src="supabase.js"></script><script src="app.js"></script><script>
+document.addEventListener('DOMContentLoaded', async () => {
+
+    const messageBox = document.getElementById('adminMessage');
+
+    function notify(text) {
+        messageBox.textContent = text;
+        messageBox.classList.add('show');
+
+        setTimeout(() => {
+            messageBox.classList.remove('show');
+        }, 2800);
+    }
+
+    async function getAdminProfile() {
+        if (
+            typeof supabaseClient === 'undefined' ||
+            !supabaseClient
+        ) {
+            return null;
         }
 
-        authStatus.textContent = 'Авторизовано';
-        document.getElementById('adminEmail').textContent = user.email || 'Email не вказано';
+        const {
+            data: { user }
+        } = await supabaseClient.auth.getUser();
 
-        const { data: profile, error: profileError } = await supabaseClient
-          .from('profiles')
-          .select('id, role, full_name')
-          .eq('id', user.id)
-          .single();
+        if (!user) return null;
 
-        if (profileError || !profile) {
-          document.getElementById('adminName').textContent = 'Профіль не знайдено';
-          securityRole.textContent = 'Невідомо';
-          return;
+        const { data } = await supabaseClient
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+        return data;
+    }
+
+    async function verifyAdmin() {
+        const profile = await getAdminProfile();
+
+        if (!profile || profile.role !== 'admin') {
+            location.href = 'login.html';
+            return false;
         }
 
-        document.getElementById('adminName').textContent = profile.full_name || 'Адміністратор';
-        securityRole.textContent = 'Роль: ' + (profile.role || 'невідомо');
+        return true;
+    }
 
-        if (profile.role !== 'admin') {
-          window.location.href = 'dashboard.html';
-          return;
+    if (!(await verifyAdmin())) return;
+
+    async function loadUsers() {
+        const table = document.getElementById('usersTable');
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="5" class="empty">
+                    Завантаження...
+                </td>
+            </tr>
+        `;
+
+        const { data, error } = await supabaseClient
+            .from('profiles')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error(error);
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty">
+                        Не вдалося завантажити користувачів.
+                    </td>
+                </tr>
+            `;
+
+            return;
         }
-      } catch (error) {
-        console.error(error);
-        authStatus.textContent = 'Помилка';
-      }
+
+        const users = data || [];
+
+        document.getElementById('usersCount').textContent =
+            users.length;
+
+        const pending = users.filter(user =>
+            [
+                'pending',
+                'teacher_pending',
+                'student_pending',
+                'parent_pending'
+            ].includes(user.role)
+        );
+
+        document.getElementById('pendingCount').textContent =
+            pending.length;
+
+        if (!users.length) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty">
+                        Користувачів поки немає.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        table.innerHTML = users.map(user => {
+
+            const isPending = [
+                'pending',
+                'teacher_pending',
+                'student_pending',
+                'parent_pending'
+            ].includes(user.role);
+
+            const requested = {
+                teacher_pending: 'Вчитель',
+                student_pending: 'Учень',
+                parent_pending: 'Батьки',
+                teacher: 'Вчитель',
+                student: 'Учень',
+                parent: 'Батьки',
+                admin: 'Адміністратор'
+            }[user.role] || 'Не визначено';
+
+            const name =
+                user.full_name ||
+                'Без імені';
+
+            let actions = '';
+
+            if (isPending) {
+                actions = `
+                    <div class="actions" style="margin:0;">
+                        <button
+                            class="primary-btn approve-user"
+                            data-id="${user.id}"
+                            data-role="${requested}"
+                        >
+                            Підтвердити
+                        </button>
+
+                        <button
+                            class="danger-btn reject-user"
+                            data-id="${user.id}"
+                        >
+                            Відхилити
+                        </button>
+                    </div>
+                `;
+            } else if (user.role !== 'admin') {
+                actions = `
+                    <div class="actions" style="margin:0;">
+                        <button
+                            class="secondary-btn change-role"
+                            data-id="${user.id}"
+                        >
+                            Змінити роль
+                        </button>
+                    </div>
+                `;
+            } else {
+                actions = `
+                    <span style="color:#7dd3fc;">
+                        Адміністратор
+                    </span>
+                `;
+            }
+
+            return `
+                <tr>
+                    <td>${escapeHtml(name)}</td>
+                    <td>${escapeHtml(user.email || '')}</td>
+                    <td>
+                        <span class="role-badge">
+                            ${escapeHtml(requested)}
+                        </span>
+                    </td>
+                    <td>
+                        ${
+                            isPending
+                                ? 'Очікує'
+                                : 'Активний'
+                        }
+                    </td>
+                    <td>${actions}</td>
+                </tr>
+            `;
+        }).join('');
     }
 
-    function closeSections() {
-      document.querySelectorAll('.hidden-section').forEach((section) => {
-        section.style.display = 'none';
-      });
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
     }
 
-    function openSection(name) {
-      closeSections();
-      const section = document.getElementById(name + 'Section');
-      if (section) {
-        section.style.display = 'block';
-        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+    async function approveUser(id, requestedRole) {
+
+        const roleMap = {
+            'Вчитель': 'teacher',
+            'Учень': 'student',
+            'Батьки': 'parent'
+        };
+
+        const role = roleMap[requestedRole];
+
+        if (!role) {
+            notify('Не вдалося визначити роль.');
+            return;
+        }
+
+        const { error } = await supabaseClient
+            .from('profiles')
+            .update({
+                role
+            })
+            .eq('id', id);
+
+        if (error) {
+            console.error(error);
+            notify('Помилка підтвердження.');
+            return;
+        }
+
+        notify('Користувача підтверджено.');
+        await loadUsers();
     }
 
-    function openMaintenance() {
-      window.location.href = 'maintenance.html';
+    async function rejectUser(id) {
+
+        const { error } = await supabaseClient
+            .from('profiles')
+            .update({
+                role: 'pending'
+            })
+            .eq('id', id);
+
+        if (error) {
+            console.error(error);
+            notify('Помилка.');
+            return;
+        }
+
+        notify('Заявку скинуто.');
+        await loadUsers();
     }
 
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      await supabaseClient.auth.signOut();
-      localStorage.removeItem('lyceum2_user');
-      window.location.href = 'login.html';
-    });
+    document
+        .getElementById('usersTable')
+        .addEventListener('click', async event => {
 
-    document.addEventListener('DOMContentLoaded', loadAdminProfile);
-  </script>
-</body>
+            const approve =
+                event.target.closest('.approve-user');
+
+            const reject =
+                event.target.closest('.reject-user');
+
+            const change =
+                event.target.closest('.change-role');
+
+            if (approve) {
+                await approveUser(
+                    approve.dataset.id,
+                    approve.dataset.role
+                );
+            }
+
+            if (reject) {
+                await rejectUser(
+                    reject.dataset.id
+                );
+            }
+
+            if (change) {
+                const newRole =
+                    prompt(
+                        'Введіть роль: teacher, student або parent'
+                    );
+
+                if (
+                    ![
+                        'teacher',
+                        'student',
+                        'parent'
+                    ].includes(newRole)
+                ) {
+                    notify('Невірна роль.');
+                    return;
+                }
+
+                const { error } =
+                    await supabaseClient
+                        .from('profiles')
+                        .update({
+                            role: newRole
+                        })
+                        .eq('id', change.dataset.id);
+
+                if (error) {
+                    console.error(error);
+                    notify('Не вдалося змінити роль.');
+                    return;
+                }
+
+                notify('Роль змінено.');
+                await loadUsers();
+            }
+        });
+
+    document
+        .getElementById('refreshUsers')
+        .addEventListener('click', loadUsers);
+
+    document
+        .getElementById('messageForm')
+        .addEventListener('submit', async event => {
+
+            event.preventDefault();
+
+            notify(
+                'Система повідомлень буде підключена після створення таблиці messages.'
+            );
+        });
+
+    document
+        .getElementById('announcementForm')
+        .addEventListener('submit', async event => {
+
+            event.preventDefault();
+
+            notify(
+                'Оголошення буде підключено після створення таблиці announcements.'
+            );
+        });
+
+    document
+        .getElementById('scheduleForm')
+        .addEventListener('submit', async event => {
+
+            event.preventDefault();
+
+            notify(
+                'Розклад буде підключено після створення таблиці schedule.'
+            );
+        });
+
+    document
+        .getElementById('refreshSchedule')
+        .addEventListener('click', () => {
+            notify(
+                'Спочатку створимо таблицю розкладу в Supabase.'
+            );
+        });
+
+    const maintenanceToggle =
+        document.getElementById('maintenanceToggle');
+
+    const maintenanceReason =
+        document.getElementById('maintenanceReason');
+
+    const maintenanceEnd =
+        document.getElementById('maintenanceEnd');
+
+    function loadMaintenance() {
+        try {
+            const state =
+                JSON.parse(
+                    localStorage.getItem(
+                        'lyceum2_maintenance'
+                    )
+                );
+
+            if (!state) return;
+
+            maintenanceToggle.checked =
+                !!state.enabled;
+
+            maintenanceReason.value =
+                state.reason || '';
+
+            maintenanceEnd.value =
+                state.endTime || '';
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    document
+        .getElementById('saveMaintenance')
+        .addEventListener('click', () => {
+
+            if (
+                typeof setMaintenanceState ===
+                'function'
+            ) {
+                setMaintenanceState(
+                    maintenanceToggle.checked,
+                    maintenanceReason.value.trim(),
+                    maintenanceEnd.value
+                );
+
+                notify(
+                    maintenanceToggle.checked
+                        ? 'Технічні роботи увімкнено.'
+                        : 'Технічні роботи вимкнено.'
+                );
+            }
+        });
+
+    await loadUsers();
+
+    loadMaintenance();
+
+});
+</script></body>
 </html>
