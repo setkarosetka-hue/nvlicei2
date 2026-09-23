@@ -1,136 +1,531 @@
-<!doctype html>
-<html lang="uk">
+<!DOCTYPE html><html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Відвідуваність — Ліцей №2</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header class="site-header">
-    <div class="header-container container">
-      <a href="index.html" class="logo" aria-label="Ліцей №2">
-        <span class="logo-mark">Л2</span>
-        <span class="logo-text">
-          <strong>Ліцей №2</strong>
-          <small>Кабінет</small>
-        </span>
-      </a>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Відвідування — Ліцей №2</title>
 
-      <nav class="navigation" aria-label="Навігація сторінки">
-        <a href="dashboard.html">Кабінет</a>
-        <a href="schedule.html">Розклад</a>
-        <a href="homework.html">Домашні завдання</a>
-        <a href="attendance.html" class="active">Відвідуваність</a>
-      </nav>
+<link rel="stylesheet" href="style.css">
+<script src="supabase.js"></script>
+<script src="app.js" defer></script>
 
-      <button class="mobile-menu" type="button" aria-label="Відкрити меню" onclick="toggleMenu()">☰</button>
-    </div>
-  </header>
-
-  <main class="page-shell">
-    <div class="container">
-      <a href="dashboard.html" class="back-link">← Назад до кабінету</a>
-
-      <div class="section-header" style="margin-top: 18px; margin-bottom: 26px;">
-        <span class="section-label">Аналіз відвідуваності</span>
-        <h2>📊 Відвідуваність</h2>
-        <p>Перегляд присутності, запізнень та пропусків</p>
-      </div>
-
-      <div class="info-box" style="margin-bottom: 24px; border-radius:18px; background:linear-gradient(135deg, rgba(255,244,207,.72), rgba(255,255,255,.7)); border:1px solid rgba(241,177,56,.18); color:#6b4e12;">
-        <strong>Тестові дані.</strong> Показники відвідуваності демонстраційні. Після підключення Supabase дані будуть автоматично оновлюватися.
-      </div>
-
-      <section class="stat-grid" style="grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 28px;">
-        <div class="stat-card">
-          <div class="stat-icon">✅</div>
-          <h3>92%</h3>
-          <p>Відвідуваність</p>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">📚</div>
-          <h3>46</h3>
-          <p>Відвідано уроків</p>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">❌</div>
-          <h3>3</h3>
-          <p>Пропущено уроків</p>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">⏰</div>
-          <h3>1</h3>
-          <p>Запізнення</p>
-        </div>
-      </section>
-
-      <div style="display:grid; grid-template-columns: minmax(0,1fr) 360px; gap:24px; align-items:start;">
-        <section class="card-panel" style="padding:24px;">
-          <div class="card-title">
-            <h2>Історія відвідуваності</h2>
-            <select class="month-select" id="monthSelect" onchange="changeMonth()">
-              <option value="9">Вересень 2026</option>
-              <option value="8">Серпень 2026</option>
-              <option value="10">Жовтень 2026</option>
-            </select>
-          </div>
-
-          <div style="overflow-x:auto;">
-            <table style="width:100%; min-width:640px; border-collapse:collapse;">
-              <thead>
-                <tr>
-                  <th style="padding:12px 10px; border-bottom:1px solid var(--line); text-align:left; color:var(--ink-500); font-size:.75rem; letter-spacing:.08em; text-transform:uppercase;">Дата</th>
-                  <th style="padding:12px 10px; border-bottom:1px solid var(--line); text-align:left; color:var(--ink-500); font-size:.75rem; letter-spacing:.08em; text-transform:uppercase;">Предмет</th>
-                  <th style="padding:12px 10px; border-bottom:1px solid var(--line); text-align:left; color:var(--ink-500); font-size:.75rem; letter-spacing:.08em; text-transform:uppercase;">Урок</th>
-                  <th style="padding:12px 10px; border-bottom:1px solid var(--line); text-align:left; color:var(--ink-500); font-size:.75rem; letter-spacing:.08em; text-transform:uppercase;">Статус</th>
-                  <th style="padding:12px 10px; border-bottom:1px solid var(--line); text-align:left; color:var(--ink-500); font-size:.75rem; letter-spacing:.08em; text-transform:uppercase;">Причина</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">18.09.2026</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">Математика</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">1</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);"><span class="badge badge-success">● Присутній</span></td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">—</td></tr>
-                <tr><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">18.09.2026</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">Українська мова</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">2</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);"><span class="badge badge-success">● Присутній</span></td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">—</td></tr>
-                <tr><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">17.09.2026</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">Географія</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">3</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);"><span class="badge" style="background:rgba(244,172,61,0.12); color:#b67818;">● Запізнення</span></td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">5 хв</td></tr>
-                <tr><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">16.09.2026</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">Біологія</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">4</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);"><span class="badge" style="background:rgba(225,90,104,0.09); color:#b43d52;">● Відсутній</span></td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">Не вказано</td></tr>
-                <tr><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">15.09.2026</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">Англійська мова</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">5</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);"><span class="badge badge-success">● Присутній</span></td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">—</td></tr>
-                <tr><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">14.09.2026</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">Фізична культура</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">6</td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);"><span class="badge" style="background:rgba(26,99,255,0.08); color:#1a63ff;">● Поважна причина</span></td><td style="padding:14px 10px; border-bottom:1px solid rgba(116,137,181,0.12);">Підтверджено</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <aside class="card-panel" style="padding:24px;">
-          <div class="card-title">
-            <h2>Підсумок</h2>
-          </div>
-
-          <div style="display:flex; justify-content:center; align-items:center; margin:16px auto 18px; width:170px; height:170px; border-radius:50%; background: conic-gradient(#1a63ff 0 331deg, rgba(116,137,181,0.12) 331deg 360deg); position:relative;">
-            <span style="position:relative; z-index:2; font-size:2rem; font-weight:800; color:var(--ink-900);">92%</span>
-          </div>
-
-          <div style="text-align:center; color:var(--ink-500); margin-bottom:24px;">Загальна відвідуваність</div>
-
-          <div style="display:grid; gap:12px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:14px; background:rgba(242,247,255,.8); border:1px solid rgba(116,137,181,.12);"><div style="display:flex; align-items:center; gap:8px;"><span style="width:9px; height:9px; border-radius:50%; background:#18a870; display:inline-block;"></span> Присутній</div><strong>46</strong></div>
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:14px; background:rgba(242,247,255,.8); border:1px solid rgba(116,137,181,.12);"><div style="display:flex; align-items:center; gap:8px;"><span style="width:9px; height:9px; border-radius:50%; background:#e15a68; display:inline-block;"></span> Відсутній</div><strong>3</strong></div>
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:14px; background:rgba(242,247,255,.8); border:1px solid rgba(116,137,181,.12);"><div style="display:flex; align-items:center; gap:8px;"><span style="width:9px; height:9px; border-radius:50%; background:#f4ac3d; display:inline-block;"></span> Запізнення</div><strong>1</strong></div>
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:14px; background:rgba(242,247,255,.8); border:1px solid rgba(116,137,181,.12);"><div style="display:flex; align-items:center; gap:8px;"><span style="width:9px; height:9px; border-radius:50%; background:#1a63ff; display:inline-block;"></span> Поважна причина</div><strong>2</strong></div>
-          </div>
-
-          <div style="margin-top:18px; padding:14px; border-radius:14px; background:rgba(242,247,255,.8); color:var(--ink-500); font-size:.82rem; line-height:1.5;">💡 Відвідуваність розраховується на основі кількості проведених уроків та зареєстрованої присутності учня.</div>
-        </aside>
-      </div>
-    </div>
-  </main>
-
-  <script src="app.js"></script>
-  <script>
-    function changeMonth() {
-      const month = document.getElementById('monthSelect').value;
-      if (month === '8') alert('Демонстраційні дані за серпень 2026.');
-      if (month === '10') alert('Демонстраційні дані за жовтень 2026.');
-      if (month === '9') alert('Відображено вересень 2026.');
+<style>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        background:
+            radial-gradient(circle at 15% 10%, rgba(80,120,255,.18), transparent 30%),
+            radial-gradient(circle at 85% 20%, rgba(0,220,255,.12), transparent 28%),
+            #070b14;
+        color: #fff;
     }
-  </script>
-</body>
+
+    .attendance-page {
+        width: min(1100px, calc(100% - 28px));
+        margin: auto;
+        padding: 24px 0 50px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .back-button {
+        color: #fff;
+        text-decoration: none;
+        padding: 11px 16px;
+        border-radius: 14px;
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .hero {
+        padding: 28px;
+        border-radius: 28px;
+        background: linear-gradient(
+            135deg,
+            rgba(45,105,255,.2),
+            rgba(0,220,255,.08)
+        );
+        border: 1px solid rgba(255,255,255,.1);
+        margin-bottom: 22px;
+    }
+
+    .hero h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 6vw, 44px);
+    }
+
+    .hero p {
+        margin: 0;
+        color: #aebbd1;
+        line-height: 1.5;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .stat {
+        padding: 20px;
+        border-radius: 20px;
+        background: rgba(255,255,255,.055);
+        border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .stat-number {
+        font-size: 30px;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: #9eabc0;
+        font-size: 14px;
+    }
+
+    .filters {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .filter-button {
+        border: 1px solid rgba(255,255,255,.1);
+        background: rgba(255,255,255,.06);
+        color: #fff;
+        padding: 11px 16px;
+        border-radius: 13px;
+        cursor: pointer;
+    }
+
+    .filter-button.active {
+        background: #2777ff;
+        border-color: #2777ff;
+    }
+
+    .attendance-list {
+        display: grid;
+        gap: 14px;
+    }
+
+    .attendance-card {
+        padding: 20px;
+        border-radius: 20px;
+        background: rgba(255,255,255,.055);
+        border: 1px solid rgba(255,255,255,.09);
+    }
+
+    .attendance-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .student-name {
+        font-size: 19px;
+        font-weight: 800;
+    }
+
+    .attendance-date {
+        color: #9eabc0;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status.present {
+        background: rgba(50,210,130,.12);
+        color: #6ff0ad;
+    }
+
+    .status.absent {
+        background: rgba(255,80,100,.12);
+        color: #ff8f9d;
+    }
+
+    .status.late {
+        background: rgba(255,190,50,.12);
+        color: #ffd36b;
+    }
+
+    .attendance-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .info-tag {
+        padding: 8px 11px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.06);
+        color: #c8d2e2;
+        font-size: 13px;
+    }
+
+    .empty,
+    .loading,
+    .error {
+        padding: 35px 20px;
+        text-align: center;
+        border-radius: 22px;
+        background: rgba(255,255,255,.045);
+        border: 1px solid rgba(255,255,255,.08);
+        color: #aeb9ca;
+    }
+
+    .error {
+        color: #ff9e9e;
+    }
+
+    @media (max-width: 650px) {
+        .attendance-page {
+            width: calc(100% - 18px);
+            padding-top: 14px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .hero {
+            padding: 22px;
+            border-radius: 22px;
+        }
+
+        .stats {
+            grid-template-columns: 1fr;
+        }
+
+        .attendance-top {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+</head><body><main class="attendance-page"><div class="page-header">
+    <a class="back-button" href="dashboard.html">← Назад</a>
+    <div data-user-name>Користувач</div>
+</div>
+
+<section class="hero">
+    <h1>📋 Відвідування</h1>
+    <p>
+        Перегляд відвідування учнів, пропусків та запізнень.
+    </p>
+</section>
+
+<section class="stats">
+
+    <div class="stat">
+        <div class="stat-number" id="presentCount">0</div>
+        <div class="stat-label">Присутні</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-number" id="absentCount">0</div>
+        <div class="stat-label">Відсутні</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-number" id="lateCount">0</div>
+        <div class="stat-label">Запізнилися</div>
+    </div>
+
+</section>
+
+<div class="filters">
+    <button class="filter-button active" data-filter="all">
+        Усі
+    </button>
+
+    <button class="filter-button" data-filter="present">
+        Присутні
+    </button>
+
+    <button class="filter-button" data-filter="absent">
+        Відсутні
+    </button>
+
+    <button class="filter-button" data-filter="late">
+        Запізнення
+    </button>
+</div>
+
+<section id="attendanceList" class="attendance-list">
+    <div class="loading">
+        Завантаження відвідування...
+    </div>
+</section>
+
+</main><script>
+    let allAttendance = [];
+    let currentFilter = 'all';
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function formatDate(value) {
+        if (!value) return 'Дата не вказана';
+
+        const date = new Date(value + 'T00:00:00');
+
+        if (Number.isNaN(date.getTime())) {
+            return value;
+        }
+
+        return date.toLocaleDateString('uk-UA', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+    }
+
+    function getStatus(status) {
+        switch (status) {
+            case 'absent':
+                return {
+                    text: 'Відсутній',
+                    className: 'absent',
+                    icon: '🔴'
+                };
+
+            case 'late':
+                return {
+                    text: 'Запізнення',
+                    className: 'late',
+                    icon: '🟡'
+                };
+
+            default:
+                return {
+                    text: 'Присутній',
+                    className: 'present',
+                    icon: '🟢'
+                };
+        }
+    }
+
+    function updateStats() {
+        const present = allAttendance.filter(
+            item => item.status === 'present'
+        ).length;
+
+        const absent = allAttendance.filter(
+            item => item.status === 'absent'
+        ).length;
+
+        const late = allAttendance.filter(
+            item => item.status === 'late'
+        ).length;
+
+        document.getElementById('presentCount').textContent = present;
+        document.getElementById('absentCount').textContent = absent;
+        document.getElementById('lateCount').textContent = late;
+    }
+
+    function renderAttendance() {
+        const container = document.getElementById('attendanceList');
+
+        let records = [...allAttendance];
+
+        if (currentFilter !== 'all') {
+            records = records.filter(
+                item => item.status === currentFilter
+            );
+        }
+
+        if (!records.length) {
+            container.innerHTML = `
+                <div class="empty">
+                    <div style="font-size:36px;margin-bottom:10px;">
+                        📭
+                    </div>
+                    <div>
+                        Записів про відвідування немає.
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+        container.innerHTML = records.map(item => {
+
+            const status = getStatus(item.status);
+
+            const studentName =
+                item.student_name ||
+                item.full_name ||
+                'Учень';
+
+            return `
+                <article class="attendance-card">
+
+                    <div class="attendance-top">
+
+                        <div>
+                            <div class="student-name">
+                                ${escapeHtml(studentName)}
+                            </div>
+
+                            <div class="attendance-date">
+                                ${escapeHtml(
+                                    formatDate(item.attendance_date)
+                                )}
+                            </div>
+                        </div>
+
+                        <div class="status ${status.className}">
+                            ${status.icon}
+                            ${status.text}
+                        </div>
+
+                    </div>
+
+                    <div class="attendance-info">
+
+                        ${
+                            item.class_name
+                                ? `
+                                    <span class="info-tag">
+                                        👥 ${escapeHtml(item.class_name)}
+                                    </span>
+                                  `
+                                : ''
+                        }
+
+                        ${
+                            item.late_minutes > 0
+                                ? `
+                                    <span class="info-tag">
+                                        ⏱ ${escapeHtml(
+                                            item.late_minutes
+                                        )} хв.
+                                    </span>
+                                  `
+                                : ''
+                        }
+
+                        ${
+                            item.reason
+                                ? `
+                                    <span class="info-tag">
+                                        💬 ${escapeHtml(item.reason)}
+                                    </span>
+                                  `
+                                : ''
+                        }
+
+                    </div>
+
+                </article>
+            `;
+        }).join('');
+    }
+
+    async function loadAttendance() {
+        const container =
+            document.getElementById('attendanceList');
+
+        try {
+
+            if (typeof supabaseClient === 'undefined') {
+                throw new Error(
+                    'Supabase не підключено.'
+                );
+            }
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from('attendance')
+                .select('*')
+                .order('attendance_date', {
+                    ascending: false
+                })
+                .order('created_at', {
+                    ascending: false
+                });
+
+            if (error) {
+                throw error;
+            }
+
+            allAttendance = data || [];
+
+            updateStats();
+            renderAttendance();
+
+        } catch (error) {
+
+            console.error(
+                'Attendance loading error:',
+                error
+            );
+
+            container.innerHTML = `
+                <div class="error">
+                    Не вдалося завантажити відвідування.<br>
+                    Перевір таблицю attendance у Supabase
+                    та права доступу.
+                </div>
+            `;
+        }
+    }
+
+    document
+        .querySelectorAll('[data-filter]')
+        .forEach(button => {
+
+            button.addEventListener('click', () => {
+
+                document
+                    .querySelectorAll('[data-filter]')
+                    .forEach(item => {
+                        item.classList.remove('active');
+                    });
+
+                button.classList.add('active');
+
+                currentFilter =
+                    button.dataset.filter;
+
+                renderAttendance();
+            });
+        });
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        loadAttendance
+    );
+</script></body>
 </html>
