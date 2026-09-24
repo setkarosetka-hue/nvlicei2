@@ -1,5 +1,5 @@
 const SYSTEM_CONFIG = {
-version: '1.1.0',
+version: '1.2.0',
 officiallyApproved: false,
 rulesVersion: '1.0',
 testMode: false
@@ -23,13 +23,56 @@ const PAGE_ROLES = {
 'teacher.html': ['teacher', 'admin'],
 'student.html': ['student', 'admin'],
 'parent.html': ['parent', 'admin'],
-'messages.html': ['admin', 'teacher', 'student', 'parent'],
-'announcements.html': ['admin', 'teacher', 'student', 'parent'],
-'schedule.html': ['admin', 'teacher', 'student', 'parent'],
-'homework.html': ['admin', 'teacher', 'student', 'parent'],
-'tests.html': ['admin', 'teacher', 'student', 'parent'],
-'events.html': ['admin', 'teacher', 'student', 'parent'],
-'attendance.html': ['admin', 'teacher', 'student', 'parent']
+
+'messages.html': [
+    'admin',
+    'teacher',
+    'student',
+    'parent'
+],
+
+'announcements.html': [
+    'admin',
+    'teacher',
+    'student',
+    'parent'
+],
+
+'schedule.html': [
+    'admin',
+    'teacher',
+    'student',
+    'parent'
+],
+
+'homework.html': [
+    'admin',
+    'teacher',
+    'student',
+    'parent'
+],
+
+'tests.html': [
+    'admin',
+    'teacher',
+    'student',
+    'parent'
+],
+
+'events.html': [
+    'admin',
+    'teacher',
+    'student',
+    'parent'
+],
+
+'attendance.html': [
+    'admin',
+    'teacher',
+    'student',
+    'parent'
+]
+
 };
 
 const ROLE_NAMES = {
@@ -37,60 +80,116 @@ admin: 'Адміністратор',
 teacher: 'Вчитель',
 student: 'Учень',
 parent: 'Батьки',
+
 teacher_pending: 'Вчитель — очікує підтвердження',
 student_pending: 'Учень — очікує підтвердження',
-parent_pending: 'Батьки — очікує підтвердження',
+parent_pending: 'Батьки — очікують підтвердження',
+
 pending: 'Очікує підтвердження'
+
 };
 
 function getCurrentPage() {
-const path = location.pathname;
-return path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+
+const path = window.location.pathname;
+
+return (
+    path.substring(
+        path.lastIndexOf('/') + 1
+    ) || 'index.html'
+);
+
 }
 
+/* =========================
+AUTH
+========================= */
+
 async function getCurrentUser() {
-if (typeof supabaseClient === 'undefined' || !supabaseClient?.auth) {
-return null;
+
+if (
+    typeof supabaseClient === 'undefined' ||
+    !supabaseClient?.auth
+) {
+    return null;
 }
 
 try {
-    const { data, error } = await supabaseClient.auth.getUser();
+
+    const {
+        data,
+        error
+    } = await supabaseClient.auth.getUser();
 
     if (error) {
-        console.error('Auth error:', error);
+        console.error(
+            'Auth error:',
+            error
+        );
+
         return null;
     }
 
     return data?.user || null;
+
 } catch (error) {
-    console.error('Auth error:', error);
+
+    console.error(
+        'Auth error:',
+        error
+    );
+
     return null;
 }
 
 }
 
 async function getCurrentProfile() {
+
 const user = await getCurrentUser();
 
-if (!user || typeof supabaseClient === 'undefined') {
+if (
+    !user ||
+    typeof supabaseClient === 'undefined'
+) {
     return null;
 }
 
 try {
-    const { data, error } = await supabaseClient
+
+    /*
+     * Не запрашиваем profiles.email.
+     * Email берём напрямую из Supabase Auth.
+     */
+
+    const {
+        data,
+        error
+    } = await supabaseClient
         .from('profiles')
-        .select('*')
+        .select('id,full_name,role,created_at,updated_at')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
     if (error) {
-        console.error('Profile error:', error);
+
+        console.error(
+            'Profile error:',
+            error
+        );
+
         return null;
     }
 
-    return data;
+    return data || null;
+
 } catch (error) {
-    console.error('Profile error:', error);
+
+    console.error(
+        'Profile error:',
+        error
+    );
+
     return null;
 }
 
@@ -105,108 +204,288 @@ return ROLE_NAMES[role] || 'Користувач';
 }
 
 function isPendingRole(role) {
+
 return [
-'pending',
-'teacher_pending',
-'student_pending',
-'parent_pending'
+    'pending',
+    'teacher_pending',
+    'student_pending',
+    'parent_pending'
 ].includes(role);
+
 }
 
 function getRequestedRole(role) {
-if (role === 'teacher_pending') return 'teacher';
-if (role === 'student_pending') return 'student';
-if (role === 'parent_pending') return 'parent';
+
+if (role === 'teacher_pending') {
+    return 'teacher';
+}
+
+if (role === 'student_pending') {
+    return 'student';
+}
+
+if (role === 'parent_pending') {
+    return 'parent';
+}
 
 return null;
 
 }
 
 function getRequestedRoleName(role) {
-const requestedRole = getRequestedRole(role);
 
-return {
+const requestedRole =
+    getRequestedRole(role);
+
+const names = {
     teacher: 'Вчитель',
     student: 'Учень',
     parent: 'Батьки'
-}[requestedRole] || 'роль';
+};
+
+return names[requestedRole] || 'роль';
 
 }
 
 function getRoleHome(role) {
+
 const pages = {
-admin: 'admin.html',
-teacher: 'teacher.html',
-student: 'student.html',
-parent: 'parent.html'
+    admin: 'admin.html',
+    teacher: 'teacher.html',
+    student: 'student.html',
+    parent: 'parent.html'
 };
 
 return pages[role] || 'login.html';
 
 }
 
+/* =========================
+CONSENT
+========================= */
+
 function getConsent() {
+
 try {
-return JSON.parse(
-localStorage.getItem(CONSENT_STORAGE_KEY)
-);
+
+    return JSON.parse(
+        localStorage.getItem(
+            CONSENT_STORAGE_KEY
+        )
+    );
+
 } catch {
-return null;
+
+    return null;
 }
+
 }
 
 function hasValidConsent() {
+
 const consent = getConsent();
 
 return !!(
     consent?.accepted &&
-    consent.version === SYSTEM_CONFIG.rulesVersion
+    consent.version ===
+        SYSTEM_CONFIG.rulesVersion
 );
 
 }
 
 function saveConsent(type = 'all') {
+
 localStorage.setItem(
-CONSENT_STORAGE_KEY,
-JSON.stringify({
-accepted: true,
-type,
-version: SYSTEM_CONFIG.rulesVersion,
-acceptedAt: new Date().toISOString()
-})
+    CONSENT_STORAGE_KEY,
+    JSON.stringify({
+        accepted: true,
+        type,
+        version:
+            SYSTEM_CONFIG.rulesVersion,
+        acceptedAt:
+            new Date().toISOString()
+    })
+);
+
+}
+
+function clearConsent() {
+localStorage.removeItem(
+CONSENT_STORAGE_KEY
 );
 }
+
+function setupConsentButtons() {
+
+const button =
+    document.getElementById(
+        'acceptAllRules'
+    );
+
+if (!button) {
+    return;
+}
+
+button.addEventListener(
+    'click',
+    () => {
+
+        saveConsent('all');
+
+        window.location.href =
+            'login.html';
+    }
+);
+
+}
+
+/*
+
+* Перше відкриття сайту:
+* якщо правила ще не прийняті,
+* користувача відправляємо на consent.html.
+  */
+
+function checkConsentAccess() {
+
+const page =
+    getCurrentPage();
+
+if (page === 'consent.html') {
+    return true;
+}
+
+if (
+    page === 'verify-email.html' ||
+    page === 'reset-password.html' ||
+    page === 'maintenance.html'
+) {
+    return true;
+}
+
+if (!hasValidConsent()) {
+
+    window.location.href =
+        'consent.html';
+
+    return false;
+}
+
+return true;
+
+}
+
+/* =========================
+LOGOUT
+========================= */
 
 async function logout() {
+
 try {
-if (
-typeof supabaseClient !== 'undefined' &&
-supabaseClient?.auth
-) {
-await supabaseClient.auth.signOut();
-}
+
+    if (
+        typeof supabaseClient !==
+            'undefined' &&
+        supabaseClient?.auth
+    ) {
+
+        /*
+         * Global logout.
+         * Це завершує активну сесію
+         * Supabase, а не тільки локальний стан.
+         */
+
+        const {
+            error
+        } =
+            await supabaseClient.auth.signOut({
+                scope: 'global'
+            });
+
+        if (error) {
+            console.error(
+                'Logout error:',
+                error
+            );
+        }
+    }
+
 } catch (error) {
-console.error('Logout error:', error);
+
+    console.error(
+        'Logout error:',
+        error
+    );
+
+} finally {
+
+    localStorage.removeItem(
+        'lyceum2_user'
+    );
+
+    /*
+     * Замість звичайного переходу
+     * використовуємо replace,
+     * щоб сторінка адмінки не залишалась
+     * доступною через просте повернення назад.
+     */
+
+    window.location.replace(
+        'login.html'
+    );
 }
 
-localStorage.removeItem('lyceum2_user');
+}
 
-location.href = 'login.html';
+function setupLogoutButtons() {
+
+document
+    .querySelectorAll(
+        '[data-logout], .logout-button, #logoutButton, #logoutBtn'
+    )
+    .forEach(button => {
+
+        button.addEventListener(
+            'click',
+            event => {
+
+                event.preventDefault();
+
+                logout();
+            }
+        );
+
+    });
 
 }
+
+/* =========================
+MAINTENANCE
+========================= */
 
 function getMaintenanceState() {
+
 try {
-return JSON.parse(
-localStorage.getItem(MAINTENANCE_STORAGE_KEY)
-);
+
+    return JSON.parse(
+        localStorage.getItem(
+            MAINTENANCE_STORAGE_KEY
+        )
+    );
+
 } catch {
-return null;
+
+    return null;
 }
+
 }
 
 function isMaintenanceEnabled() {
-return !!getMaintenanceState()?.enabled;
+
+return !!(
+    getMaintenanceState()?.enabled
+);
+
 }
 
 function setMaintenanceState(
@@ -214,55 +493,120 @@ enabled,
 reason = '',
 endTime = ''
 ) {
+
 localStorage.setItem(
-MAINTENANCE_STORAGE_KEY,
-JSON.stringify({
-enabled,
-reason,
-endTime,
-updatedAt: new Date().toISOString()
-})
+    MAINTENANCE_STORAGE_KEY,
+    JSON.stringify({
+        enabled,
+        reason,
+        endTime,
+        updatedAt:
+            new Date().toISOString()
+    })
 );
+
 }
 
 async function checkMaintenance() {
-if (!isMaintenanceEnabled()) {
-return false;
-}
 
-const page = getCurrentPage();
+const state =
+    getMaintenanceState();
 
-if (page === 'maintenance.html') {
-    return true;
-}
-
-if (PUBLIC_PAGES.includes(page)) {
+if (!state?.enabled) {
     return false;
 }
 
-const profile = await getCurrentProfile();
+/*
+ * Якщо час завершення вже настав,
+ * автоматично вимикаємо режим.
+ */
+
+if (state.endTime) {
+
+    const end =
+        new Date(state.endTime);
+
+    if (
+        !Number.isNaN(end.getTime()) &&
+        end.getTime() <= Date.now()
+    ) {
+
+        setMaintenanceState(
+            false,
+            '',
+            ''
+        );
+
+        return false;
+    }
+}
+
+const page =
+    getCurrentPage();
+
+if (
+    page === 'maintenance.html'
+) {
+    return true;
+}
+
+/*
+ * Сторінки правил, входу,
+ * підтвердження пошти та відновлення
+ * не блокуються самим maintenance.
+ */
+
+if (
+    page === 'consent.html' ||
+    page === 'login.html' ||
+    page === 'verify-email.html' ||
+    page === 'reset-password.html'
+) {
+    return false;
+}
+
+/*
+ * Адміністратор залишається в системі.
+ */
+
+const profile =
+    await getCurrentProfile();
 
 if (profile?.role === 'admin') {
     return false;
 }
 
-location.href = 'maintenance.html';
+window.location.href =
+    'maintenance.html';
 
 return true;
 
 }
 
-async function checkAuthentication() {
-const page = getCurrentPage();
+/* =========================
+AUTHENTICATION GUARD
+========================= */
 
-if (PUBLIC_PAGES.includes(page)) {
+async function checkAuthentication() {
+
+const page =
+    getCurrentPage();
+
+if (
+    PUBLIC_PAGES.includes(page)
+) {
     return true;
 }
 
-const loggedIn = await isLoggedIn();
+const loggedIn =
+    await isLoggedIn();
 
 if (!loggedIn) {
-    location.href = 'login.html';
+
+    window.location.replace(
+        'login.html'
+    );
+
     return false;
 }
 
@@ -270,31 +614,60 @@ return true;
 
 }
 
+/* =========================
+ROLE GUARD
+========================= */
+
 async function checkRoleAccess() {
-const page = getCurrentPage();
+
+const page =
+    getCurrentPage();
 
 if (!PAGE_ROLES[page]) {
     return true;
 }
 
-const profile = await getCurrentProfile();
+const profile =
+    await getCurrentProfile();
 
 if (!profile) {
-    location.href = 'login.html';
+
+    /*
+     * Auth існує, але профілю немає.
+     * Не показуємо помилку сторінки —
+     * повертаємо користувача на вхід.
+     */
+
+    window.location.replace(
+        'login.html'
+    );
+
     return false;
 }
 
-const role = profile.role;
+const role =
+    profile.role;
 
 if (isPendingRole(role)) {
-    location.href = 'login.html';
+
+    window.location.replace(
+        'login.html'
+    );
+
     return false;
 }
 
-const allowedRoles = PAGE_ROLES[page];
+const allowedRoles =
+    PAGE_ROLES[page];
 
-if (!allowedRoles.includes(role)) {
-    location.href = getRoleHome(role);
+if (
+    !allowedRoles.includes(role)
+) {
+
+    window.location.replace(
+        getRoleHome(role)
+    );
+
     return false;
 }
 
@@ -302,163 +675,239 @@ return true;
 
 }
 
+/* =========================
+MOBILE MENU
+========================= */
+
 function toggleMenu() {
+
 document
-.querySelectorAll('.navigation, .main-nav')
-.forEach(nav => {
-nav.classList.toggle('mobile-open');
-});
+    .querySelectorAll(
+        '.navigation, .main-nav'
+    )
+    .forEach(nav => {
+
+        nav.classList.toggle(
+            'mobile-open'
+        );
+
+    });
+
 }
 
 function setupMobileMenu() {
+
 document
-.querySelectorAll('.mobile-menu, .mobile-menu-btn')
-.forEach(button => {
-button.addEventListener('click', toggleMenu);
-});
+    .querySelectorAll(
+        '.mobile-menu, .mobile-menu-btn'
+    )
+    .forEach(button => {
+
+        button.addEventListener(
+            'click',
+            toggleMenu
+        );
+
+    });
+
 }
+
+/* =========================
+COMMON UI
+========================= */
 
 function updateYear() {
-document
-.querySelectorAll('[data-year], #currentYear')
-.forEach(element => {
-element.textContent = new Date().getFullYear();
-});
-}
 
-function setupLogoutButtons() {
 document
-.querySelectorAll(
-'[data-logout], .logout-button, #logoutButton, #logoutBtn'
-)
-.forEach(button => {
-button.addEventListener('click', event => {
-event.preventDefault();
-logout();
-});
-});
+    .querySelectorAll(
+        '[data-year], #currentYear'
+    )
+    .forEach(element => {
+
+        element.textContent =
+            new Date().getFullYear();
+
+    });
+
 }
 
 function setupScrollAnimations() {
+
 document
-.querySelectorAll(
-'.feature-card, .stat-card, .card, .card-panel, .section'
-)
-.forEach(element => {
-element.classList.add('visible');
-});
+    .querySelectorAll(
+        '.feature-card, .stat-card, .card, .card-panel, .section, .admin-card'
+    )
+    .forEach(element => {
+
+        element.classList.add(
+            'visible'
+        );
+
+    });
+
 }
 
 function updateSystemStatus() {
+
 document
-.querySelectorAll('[data-system-status]')
-.forEach(element => {
-element.textContent =
-SYSTEM_CONFIG.officiallyApproved
-? 'Офіційно підтверджено'
-: 'У розробці';
-});
-}
+    .querySelectorAll(
+        '[data-system-status]'
+    )
+    .forEach(element => {
 
-function setupConsentButtons() {
-const buttons = [
-['acceptAllRules', 'all'],
-['acceptRequiredRules', 'required'],
-['acceptCustomRules', 'custom']
-];
+        element.textContent =
+            SYSTEM_CONFIG.officiallyApproved
+                ? 'Офіційно підтверджено'
+                : 'У розробці';
 
-buttons.forEach(([id, type]) => {
-    const button = document.getElementById(id);
-
-    if (!button) return;
-
-    button.addEventListener('click', () => {
-        saveConsent(type);
-        location.href = 'login.html';
     });
-});
 
 }
+
+/* =========================
+USER DATA
+========================= */
 
 async function updateUserElements() {
-const profile = await getCurrentProfile();
+
+const user =
+    await getCurrentUser();
+
+const profile =
+    await getCurrentProfile();
 
 document
-    .querySelectorAll('[data-user-name]')
+    .querySelectorAll(
+        '[data-user-name]'
+    )
     .forEach(element => {
+
         element.textContent =
             profile?.full_name ||
-            profile?.email ||
+            user?.user_metadata?.full_name ||
+            user?.email ||
             'Користувач';
+
     });
 
 document
-    .querySelectorAll('[data-user-email]')
+    .querySelectorAll(
+        '[data-user-email]'
+    )
     .forEach(element => {
+
+        /*
+         * Email беремо з Auth,
+         * а не з profiles.email.
+         */
+
         element.textContent =
-            profile?.email || '';
+            user?.email || '';
+
     });
 
 document
-    .querySelectorAll('[data-user-role]')
+    .querySelectorAll(
+        '[data-user-role]'
+    )
     .forEach(element => {
+
         element.textContent =
-            getRoleName(profile?.role);
+            getRoleName(
+                profile?.role
+            );
+
     });
 
 document
-    .querySelectorAll('[data-user-requested-role]')
+    .querySelectorAll(
+        '[data-user-requested-role]'
+    )
     .forEach(element => {
+
         element.textContent =
-            getRequestedRoleName(profile?.role);
+            getRequestedRoleName(
+                profile?.role
+            );
+
     });
 
 }
 
-function showPendingMessage() {
-const container =
-document.querySelector('[data-pending-user]');
+/* =========================
+PENDING USER
+========================= */
 
-if (!container) return;
+function showPendingMessage() {
+
+const container =
+    document.querySelector(
+        '[data-pending-user]'
+    );
+
+if (!container) {
+    return;
+}
 
 container.hidden = false;
 
 }
 
 async function handlePendingUser() {
-const page = getCurrentPage();
 
-if (page !== 'login.html') {
+const page =
+    getCurrentPage();
+
+if (
+    page !== 'login.html'
+) {
     return false;
 }
 
-const user = await getCurrentUser();
+const user =
+    await getCurrentUser();
 
 if (!user) {
     return false;
 }
 
-const profile = await getCurrentProfile();
+const profile =
+    await getCurrentProfile();
 
 if (!profile) {
     return false;
 }
 
-if (isPendingRole(profile.role)) {
+if (
+    isPendingRole(
+        profile.role
+    )
+) {
+
     showPendingMessage();
 
     document
-        .querySelectorAll('[data-pending-role]')
+        .querySelectorAll(
+            '[data-pending-role]'
+        )
         .forEach(element => {
+
             element.textContent =
-                getRequestedRoleName(profile.role);
+                getRequestedRoleName(
+                    profile.role
+                );
+
         });
 
     document
-        .querySelectorAll('[data-pending-email]')
+        .querySelectorAll(
+            '[data-pending-email]'
+        )
         .forEach(element => {
+
             element.textContent =
-                profile.email || user.email || '';
+                user.email || '';
+
         });
 
     return true;
@@ -468,30 +917,117 @@ return false;
 
 }
 
+/* =========================
+AUTH STATE LISTENER
+========================= */
+
+function setupAuthStateListener() {
+
+if (
+    typeof supabaseClient ===
+        'undefined' ||
+    !supabaseClient?.auth
+) {
+    return;
+}
+
+supabaseClient.auth.onAuthStateChange(
+    (event, session) => {
+
+        /*
+         * Якщо користувача реально
+         * вивело із системи —
+         * захищені сторінки не повинні
+         * залишатися відкритими.
+         */
+
+        if (
+            event === 'SIGNED_OUT' &&
+            getCurrentPage() !==
+                'login.html'
+        ) {
+
+            window.location.replace(
+                'login.html'
+            );
+        }
+    }
+);
+
+}
+
+/* =========================
+INITIALIZATION
+========================= */
+
 async function initializeApp() {
+
 setupMobileMenu();
 setupLogoutButtons();
 setupConsentButtons();
+
 updateYear();
 updateSystemStatus();
 setupScrollAnimations();
 
-const page = getCurrentPage();
+setupAuthStateListener();
 
-if (page === 'login.html') {
-    await handlePendingUser();
-    await updateUserElements();
+const page =
+    getCurrentPage();
+
+/*
+ * Сторінка правил завжди
+ * доступна для прийняття правил.
+ */
+
+if (
+    page === 'consent.html'
+) {
     return;
 }
 
-if (page !== 'login.html') {
-    const maintenanceBlocked =
-        await checkMaintenance();
+/*
+ * Перше відкриття сайту:
+ * автоматично показуємо правила.
+ */
 
-    if (maintenanceBlocked) {
-        return;
-    }
+const consentAllowed =
+    checkConsentAccess();
+
+if (!consentAllowed) {
+    return;
 }
+
+/*
+ * Технічні роботи перевіряємо
+ * до звичайної авторизації.
+ */
+
+const maintenanceBlocked =
+    await checkMaintenance();
+
+if (maintenanceBlocked) {
+    return;
+}
+
+/*
+ * На login.html окремо
+ * обробляємо очікування підтвердження.
+ */
+
+if (
+    page === 'login.html'
+) {
+
+    await handlePendingUser();
+    await updateUserElements();
+
+    return;
+}
+
+/*
+ * Захищені сторінки.
+ */
 
 const authenticated =
     await checkAuthentication();
@@ -511,7 +1047,23 @@ await updateUserElements();
 
 }
 
+/*
+
+* Не запускаємо код до завантаження DOM.
+  */
+
+if (
+document.readyState ===
+'loading'
+) {
+
 document.addEventListener(
-'DOMContentLoaded',
-initializeApp
+    'DOMContentLoaded',
+    initializeApp
 );
+
+} else {
+
+initializeApp();
+
+}
