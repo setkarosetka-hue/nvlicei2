@@ -1,1248 +1,899 @@
 <!DOCTYPE html><html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#07111f">
-
-<title>Адміністратор — Ліцей №2</title>
-
-<link rel="stylesheet" href="style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
-<script src="app.js" defer></script>
-
-</head><body class="dashboard-page"><div class="page-background"></div>
-
-<header class="site-header">
-
-    <a href="admin.html" class="brand">
-        <span class="brand-mark">Л2</span>
-
-        <span class="brand-text">
-            <strong>Ліцей №2</strong>
-            <small>Адміністратор</small>
-        </span>
-    </a>
-
-    <button
-        class="mobile-menu-btn"
-        type="button"
-        aria-label="Відкрити меню"
-    >
-        ☰
-    </button>
-
-    <nav class="main-nav">
-
-        <a href="admin.html" class="active">
-            Адмінпанель
-        </a>
-
-        <a href="schedule.html">
-            Розклад
-        </a>
-
-        <a href="messages.html">
-            Повідомлення
-        </a>
-
-        <a href="announcements.html">
-            Оголошення
-        </a>
-
-        <button
-            type="button"
-            class="logout-button"
-            data-logout
-        >
-            Вийти
-        </button>
-
-    </nav>
-
-</header>
-
-<main class="dashboard-main">
-
-    <section class="dashboard-hero">
-
-        <div>
-            <span class="eyebrow">
-                КЕРУВАННЯ СИСТЕМОЮ
-            </span>
-
-            <h1>
-                Адмінпанель
-            </h1>
-
-            <p>
-                Керування користувачами, контентом та роботою
-                цифрової системи ліцею.
-            </p>
-        </div>
-
-        <div class="hero-user">
-            <span class="hero-user-label">
-                Ви увійшли як
-            </span>
-
-            <strong data-user-name>
-                Адміністратор
-            </strong>
-
-            <span data-user-email>
-                —
-            </span>
-        </div>
-
-    </section>
-
-    <section class="stats-grid">
-
-        <article class="stat-card">
-            <span class="stat-icon">👥</span>
-            <span class="stat-label">Користувачі</span>
-            <strong id="usersCount">—</strong>
-        </article>
-
-        <article class="stat-card">
-            <span class="stat-icon">⏳</span>
-            <span class="stat-label">Очікують підтвердження</span>
-            <strong id="pendingCount">—</strong>
-        </article>
-
-        <article class="stat-card">
-            <span class="stat-icon">💬</span>
-            <span class="stat-label">Повідомлення</span>
-            <strong id="messagesCount">—</strong>
-        </article>
-
-        <article class="stat-card">
-            <span class="stat-icon">📢</span>
-            <span class="stat-label">Оголошення</span>
-            <strong id="announcementsCount">—</strong>
-        </article>
-
-    </section>
-
-    <section class="admin-grid">
-
-        <article class="admin-card admin-card-wide">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">КОРИСТУВАЧІ</span>
-                    <h2>Керування акаунтами</h2>
-                </div>
-
-                <button
-                    type="button"
-                    class="secondary-button"
-                    id="refreshUsers"
-                >
-                    Оновити
-                </button>
-            </div>
-
-            <div
-                id="usersMessage"
-                class="admin-message"
-                hidden
-            ></div>
-
-            <div class="table-wrapper">
-
-                <table class="admin-table">
-
-                    <thead>
-                        <tr>
-                            <th>Користувач</th>
-                            <th>Роль</th>
-                            <th>Статус</th>
-                            <th>Дія</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="usersTableBody">
-                        <tr>
-                            <td colspan="4">
-                                Завантаження...
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </article>
-
-        <article class="admin-card">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">ПОВІДОМЛЕННЯ</span>
-                    <h2>Нове повідомлення</h2>
-                </div>
-            </div>
-
-            <form id="messageForm" class="admin-form">
-
-                <label>
-                    Кому
-
-                    <select id="messageAudience" required>
-                        <option value="all">
-                            Усім
-                        </option>
-
-                        <option value="teacher">
-                            Учителям
-                        </option>
-
-                        <option value="student">
-                            Учням
-                        </option>
-
-                        <option value="parent">
-                            Батькам
-                        </option>
-                    </select>
-                </label>
-
-                <label>
-                    Тема
-
-                    <input
-                        type="text"
-                        id="messageSubject"
-                        placeholder="Тема повідомлення"
-                        required
-                    >
-                </label>
-
-                <label>
-                    Повідомлення
-
-                    <textarea
-                        id="messageText"
-                        rows="5"
-                        placeholder="Введіть повідомлення..."
-                        required
-                    ></textarea>
-                </label>
-
-                <button
-                    type="submit"
-                    class="primary-button"
-                >
-                    Надіслати
-                </button>
-
-            </form>
-
-            <div
-                id="messageFormStatus"
-                class="admin-message"
-                hidden
-            ></div>
-
-        </article>
-
-        <article class="admin-card">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">ОГОЛОШЕННЯ</span>
-                    <h2>Нове оголошення</h2>
-                </div>
-            </div>
-
-            <form id="announcementForm" class="admin-form">
-
-                <label>
-                    Заголовок
-
-                    <input
-                        type="text"
-                        id="announcementTitle"
-                        placeholder="Наприклад: Зміни в розкладі"
-                        required
-                    >
-                </label>
-
-                <label>
-                    Для кого
-
-                    <select
-                        id="announcementAudience"
-                        required
-                    >
-                        <option value="all">
-                            Усім
-                        </option>
-
-                        <option value="teacher">
-                            Учителям
-                        </option>
-
-                        <option value="student">
-                            Учням
-                        </option>
-
-                        <option value="parent">
-                            Батькам
-                        </option>
-                    </select>
-                </label>
-
-                <label>
-                    Текст
-
-                    <textarea
-                        id="announcementContent"
-                        rows="5"
-                        placeholder="Текст оголошення..."
-                        required
-                    ></textarea>
-                </label>
-
-                <button
-                    type="submit"
-                    class="primary-button"
-                >
-                    Опублікувати
-                </button>
-
-            </form>
-
-            <div
-                id="announcementStatus"
-                class="admin-message"
-                hidden
-            ></div>
-
-        </article>
-
-        <article class="admin-card admin-card-wide">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">РОЗКЛАД</span>
-                    <h2>Додати урок</h2>
-                </div>
-            </div>
-
-            <form id="scheduleForm" class="admin-form schedule-admin-form">
-
-                <label>
-                    День
-
-                    <select id="scheduleDay" required>
-                        <option value="monday">Понеділок</option>
-                        <option value="tuesday">Вівторок</option>
-                        <option value="wednesday">Середа</option>
-                        <option value="thursday">Четвер</option>
-                        <option value="friday">П'ятниця</option>
-                    </select>
-                </label>
-
-                <label>
-                    Клас
-
-                    <input
-                        type="text"
-                        id="scheduleClass"
-                        placeholder="6-А"
-                    >
-                </label>
-
-                <label>
-                    № уроку
-
-                    <input
-                        type="number"
-                        id="scheduleLesson"
-                        min="1"
-                        max="20"
-                        required
-                    >
-                </label>
-
-                <label>
-                    Предмет
-
-                    <input
-                        type="text"
-                        id="scheduleSubject"
-                        placeholder="Математика"
-                        required
-                    >
-                </label>
-
-                <label>
-                    Учитель
-
-                    <input
-                        type="text"
-                        id="scheduleTeacher"
-                        placeholder="Ім'я вчителя"
-                    >
-                </label>
-
-                <label>
-                    Кабінет
-
-                    <input
-                        type="text"
-                        id="scheduleRoom"
-                        placeholder="205"
-                    >
-                </label>
-
-                <label>
-                    Початок
-
-                    <input
-                        type="time"
-                        id="scheduleStart"
-                    >
-                </label>
-
-                <label>
-                    Кінець
-
-                    <input
-                        type="time"
-                        id="scheduleEnd"
-                    >
-                </label>
-
-                <button
-                    type="submit"
-                    class="primary-button"
-                >
-                    Додати до розкладу
-                </button>
-
-            </form>
-
-            <div
-                id="scheduleStatus"
-                class="admin-message"
-                hidden
-            ></div>
-
-        </article>
-
-        <article class="admin-card maintenance-admin-card">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">СИСТЕМА</span>
-                    <h2>Технічні роботи</h2>
-                </div>
-
-                <span
-                    id="maintenanceBadge"
-                    class="system-badge"
-                >
-                    ВИМКНЕНО
-                </span>
-            </div>
-
-            <p class="admin-card-description">
-                Увімкнення режиму технічних робіт обмежує доступ
-                звичайних користувачів до системи. Адміністратор
-                продовжує мати доступ до адмінпанелі.
-            </p>
-
-            <div class="maintenance-control">
-
-                <label>
-                    Причина
-
-                    <input
-                        type="text"
-                        id="maintenanceReason"
-                        placeholder="Наприклад: оновлення системи"
-                    >
-                </label>
-
-                <label>
-                    Орієнтовне завершення
-
-                    <input
-                        type="datetime-local"
-                        id="maintenanceEnd"
-                    >
-                </label>
-
-            </div>
-
-            <div class="maintenance-actions">
-
-                <button
-                    type="button"
-                    class="danger-button"
-                    id="enableMaintenance"
-                >
-                    Увімкнути технічні роботи
-                </button>
-
-                <button
-                    type="button"
-                    class="secondary-button"
-                    id="disableMaintenance"
-                >
-                    Завершити технічні роботи
-                </button>
-
-            </div>
-
-            <div
-                id="maintenanceStatus"
-                class="admin-message"
-                hidden
-            ></div>
-
-        </article>
-
-        <article class="admin-card system-info-card">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">СТАН СИСТЕМИ</span>
-                    <h2>Інформація</h2>
-                </div>
-            </div>
-
-            <div class="system-info-list">
-
-                <div>
-                    <span>Версія</span>
-                    <strong>1.2.0</strong>
-                </div>
-
-                <div>
-                    <span>Статус</span>
-                    <strong data-system-status>
-                        У розробці
-                    </strong>
-                </div>
-
-                <div>
-                    <span>Режим тестування</span>
-                    <strong>Вимкнено</strong>
-                </div>
-
-            </div>
-
-        </article>
-
-    </section>
-
-</main>
-
-<footer class="site-footer">
-    <span>
-        © <span id="currentYear"></span> Ліцей №2
-    </span>
-
-    <a href="consent.html">
-        Правила системи
-    </a>
-</footer>
-
-<script>
-    document.addEventListener('DOMContentLoaded', async () => {
-
-        const usersBody =
-            document.getElementById('usersTableBody');
-
-        const usersCount =
-            document.getElementById('usersCount');
-
-        const pendingCount =
-            document.getElementById('pendingCount');
-
-        const messagesCount =
-            document.getElementById('messagesCount');
-
-        const announcementsCount =
-            document.getElementById('announcementsCount');
-
-        const maintenanceBadge =
-            document.getElementById('maintenanceBadge');
-
-        const maintenanceReason =
-            document.getElementById('maintenanceReason');
-
-        const maintenanceEnd =
-            document.getElementById('maintenanceEnd');
-
-        const maintenanceStatus =
-            document.getElementById('maintenanceStatus');
-
-        function showStatus(element, text, type = 'info') {
-
-            element.hidden = false;
-            element.textContent = text;
-
-            element.classList.remove(
-                'success',
-                'error',
-                'info'
-            );
-
-            element.classList.add(type);
-        }
-
-        function roleName(role) {
-
-            const names = {
-                admin: 'Адміністратор',
-                teacher: 'Вчитель',
-                student: 'Учень',
-                parent: 'Батьки',
-                teacher_pending: 'Вчитель — очікує',
-                student_pending: 'Учень — очікує',
-                parent_pending: 'Батьки — очікують',
-                pending: 'Очікує'
-            };
-
-            return names[role] || role || 'Не визначено';
-        }
-
-        function isPending(role) {
-            return [
-                'pending',
-                'teacher_pending',
-                'student_pending',
-                'parent_pending'
-            ].includes(role);
-        }
-
-        async function loadUsers() {
-
-            usersBody.innerHTML =
-                '<tr><td colspan="4">Завантаження...</td></tr>';
-
-            const {
-                data,
-                error
-            } = await supabaseClient
-                .from('profiles')
-                .select('id,full_name,role,created_at')
-                .order('created_at', {
-                    ascending: false
-                });
-
-            if (error) {
-
-                console.error(error);
-
-                usersBody.innerHTML =
-                    '<tr><td colspan="4">Не вдалося завантажити користувачів.</td></tr>';
-
-                return;
-            }
-
-            const users = data || [];
-
-            usersCount.textContent =
-                users.length;
-
-            pendingCount.textContent =
-                users.filter(user =>
-                    isPending(user.role)
-                ).length;
-
-            if (!users.length) {
-
-                usersBody.innerHTML =
-                    '<tr><td colspan="4">Користувачів поки немає.</td></tr>';
-
-                return;
-            }
-
-            usersBody.innerHTML =
-                users.map(user => {
-
-                    const pending =
-                        isPending(user.role);
-
-                    const currentRole =
-                        user.role || 'pending';
-
-                    return `
-                        <tr>
-                            <td>
-                                <strong>
-                                    ${escapeHtml(user.full_name || 'Без імені')}
-                                </strong>
-                                <small>
-                                    ID: ${escapeHtml(user.id)}
-                                </small>
-                            </td>
-
-                            <td>
-                                ${escapeHtml(roleName(currentRole))}
-                            </td>
-
-                            <td>
-                                <span class="user-status ${pending ? 'pending' : 'active'}">
-                                    ${pending ? 'Очікує' : 'Активний'}
-                                </span>
-                            </td>
-
-                            <td>
-                                <div class="user-actions">
-
-                                    ${pending ? `
-                                        <button
-                                            type="button"
-                                            class="small-button approve"
-                                            data-action="approve"
-                                            data-id="${user.id}"
-                                        >
-                                            Підтвердити
-                                        </button>
-                                    ` : ''}
-
-                                    <select
-                                        class="role-select"
-                                        data-role-select
-                                        data-id="${user.id}"
-                                    >
-                                        <option value="admin" ${currentRole === 'admin' ? 'selected' : ''}>
-                                            Адмін
-                                        </option>
-
-                                        <option value="teacher" ${currentRole === 'teacher' ? 'selected' : ''}>
-                                            Вчитель
-                                        </option>
-
-                                        <option value="student" ${currentRole === 'student' ? 'selected' : ''}>
-                                            Учень
-                                        </option>
-
-                                        <option value="parent" ${currentRole === 'parent' ? 'selected' : ''}>
-                                            Батьки
-                                        </option>
-                                    </select>
-
-                                    <button
-                                        type="button"
-                                        class="small-button"
-                                        data-action="save-role"
-                                        data-id="${user.id}"
-                                    >
-                                        Зберегти
-                                    </button>
-
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-
-                }).join('');
-
-            usersBody
-                .querySelectorAll('[data-action="approve"]')
-                .forEach(button => {
-
-                    button.addEventListener(
-                        'click',
-                        () => approveUser(button.dataset.id)
-                    );
-
-                });
-
-            usersBody
-                .querySelectorAll('[data-action="save-role"]')
-                .forEach(button => {
-
-                    button.addEventListener(
-                        'click',
-                        () => saveRole(button.dataset.id)
-                    );
-
-                });
-        }
-
-        async function approveUser(id) {
-
-            const select =
-                usersBody.querySelector(
-                    `[data-role-select][data-id="${id}"]`
-                );
-
-            const role =
-                select?.value || 'student';
-
-            const {
-                error
-            } = await supabaseClient
-                .from('profiles')
-                .update({
-                    role: role
-                })
-                .eq('id', id);
-
-            if (error) {
-
-                console.error(error);
-
-                alert(
-                    'Не вдалося підтвердити користувача.'
-                );
-
-                return;
-            }
-
-            await loadUsers();
-        }
-
-        async function saveRole(id) {
-
-            const select =
-                usersBody.querySelector(
-                    `[data-role-select][data-id="${id}"]`
-                );
-
-            if (!select) return;
-
-            const {
-                error
-            } = await supabaseClient
-                .from('profiles')
-                .update({
-                    role: select.value
-                })
-                .eq('id', id);
-
-            if (error) {
-
-                console.error(error);
-
-                alert(
-                    'Не вдалося змінити роль.'
-                );
-
-                return;
-            }
-
-            await loadUsers();
-        }
-
-        function escapeHtml(value) {
-
-            return String(value)
-                .replaceAll('&', '&amp;')
-                .replaceAll('<', '&lt;')
-                .replaceAll('>', '&gt;')
-                .replaceAll('"', '&quot;')
-                .replaceAll("'", '&#039;');
-        }
-
-        document
-            .getElementById('refreshUsers')
-            .addEventListener(
-                'click',
-                loadUsers
-            );
-
-        document
-            .getElementById('messageForm')
-            .addEventListener('submit', async event => {
-
-                event.preventDefault();
-
-                const status =
-                    document.getElementById(
-                        'messageFormStatus'
-                    );
-
-                const audience =
-                    document.getElementById(
-                        'messageAudience'
-                    ).value;
-
-                const subject =
-                    document.getElementById(
-                        'messageSubject'
-                    ).value.trim();
-
-                const message =
-                    document.getElementById(
-                        'messageText'
-                    ).value.trim();
-
-                const {
-                    data: {
-                        user
-                    }
-                } = await supabaseClient.auth.getUser();
-
-                if (!user) return;
-
-                const {
-                    data: recipients,
-                    error: recipientError
-                } = await supabaseClient
-                    .from('profiles')
-                    .select('id,role')
-                    .neq('id', user.id);
-
-                if (recipientError) {
-
-                    console.error(recipientError);
-
-                    showStatus(
-                        status,
-                        'Не вдалося отримати список користувачів.',
-                        'error'
-                    );
-
-                    return;
-                }
-
-                const filtered =
-                    (recipients || []).filter(profile => {
-
-                        if (audience === 'all') {
-                            return true;
-                        }
-
-                        return profile.role === audience;
-                    });
-
-                if (!filtered.length) {
-
-                    showStatus(
-                        status,
-                        'Немає отримувачів для цього повідомлення.',
-                        'error'
-                    );
-
-                    return;
-                }
-
-                const rows =
-                    filtered.map(profile => ({
-                        sender_id: user.id,
-                        recipient_id: profile.id,
-                        subject,
-                        message
-                    }));
-
-                const {
-                    error
-                } = await supabaseClient
-                    .from('messages')
-                    .insert(rows);
-
-                if (error) {
-
-                    console.error(error);
-
-                    showStatus(
-                        status,
-                        'Не вдалося надіслати повідомлення.',
-                        'error'
-                    );
-
-                    return;
-                }
-
-                event.target.reset();
-
-                showStatus(
-                    status,
-                    `Повідомлення надіслано: ${rows.length}.`,
-                    'success'
-                );
-
-                loadStatistics();
-            });
-
-        document
-            .getElementById('announcementForm')
-            .addEventListener('submit', async event => {
-
-                event.preventDefault();
-
-                const status =
-                    document.getElementById(
-                        'announcementStatus'
-                    );
-
-                const {
-                    data: {
-                        user
-                    }
-                } = await supabaseClient.auth.getUser();
-
-                if (!user) return;
-
-                const title =
-                    document.getElementById(
-                        'announcementTitle'
-                    ).value.trim();
-
-                const content =
-                    document.getElementById(
-                        'announcementContent'
-                    ).value.trim();
-
-                const audience =
-                    document.getElementById(
-                        'announcementAudience'
-                    ).value;
-
-                const {
-                    error
-                } = await supabaseClient
-                    .from('announcements')
-                    .insert({
-                        author_id: user.id,
-                        title,
-                        content,
-                        audience
-                    });
-
-                if (error) {
-
-                    console.error(error);
-
-                    showStatus(
-                        status,
-                        'Не вдалося опублікувати оголошення.',
-                        'error'
-                    );
-
-                    return;
-                }
-
-                event.target.reset();
-
-                showStatus(
-                    status,
-                    'Оголошення опубліковано.',
-                    'success'
-                );
-
-                loadStatistics();
-            });
-
-        document
-            .getElementById('scheduleForm')
-            .addEventListener('submit', async event => {
-
-                event.preventDefault();
-
-                const status =
-                    document.getElementById(
-                        'scheduleStatus'
-                    );
-
-                const {
-                    error
-                } = await supabaseClient
-                    .from('schedule')
-                    .insert({
-                        day: document.getElementById('scheduleDay').value,
-                        class_name: document.getElementById('scheduleClass').value.trim(),
-                        lesson_number: Number(document.getElementById('scheduleLesson').value),
-                        subject: document.getElementById('scheduleSubject').value.trim(),
-                        teacher: document.getElementById('scheduleTeacher').value.trim(),
-                        room: document.getElementById('scheduleRoom').value.trim(),
-                        start_time: document.getElementById('scheduleStart').value,
-                        end_time: document.getElementById('scheduleEnd').value
-                    });
-
-                if (error) {
-
-                    console.error(error);
-
-                    showStatus(
-                        status,
-                        'Не вдалося додати урок.',
-                        'error'
-                    );
-
-                    return;
-                }
-
-                event.target.reset();
-
-                showStatus(
-                    status,
-                    'Урок додано до розкладу.',
-                    'success'
-                );
-            });
-
-        function updateMaintenanceUI() {
-
-            const state =
-                typeof getMaintenanceState === 'function'
-                    ? getMaintenanceState()
-                    : null;
-
-            if (state?.enabled) {
-
-                maintenanceBadge.textContent =
-                    'УВІМКНЕНО';
-
-                maintenanceBadge.classList.add(
-                    'active'
-                );
-
-                maintenanceReason.value =
-                    state.reason || '';
-
-                if (state.endTime) {
-                    try {
-                        const date =
-                            new Date(state.endTime);
-
-                        const local =
-                            new Date(
-                                date.getTime() -
-                                date.getTimezoneOffset() * 60000
-                            );
-
-                        maintenanceEnd.value =
-                            local
-                                .toISOString()
-                                .slice(0, 16);
-                    } catch {}
-                }
-
-            } else {
-
-                maintenanceBadge.textContent =
-                    'ВИМКНЕНО';
-
-                maintenanceBadge.classList.remove(
-                    'active'
-                );
-            }
-        }
-
-        document
-            .getElementById('enableMaintenance')
-            .addEventListener('click', () => {
-
-                const reason =
-                    maintenanceReason.value.trim() ||
-                    'Оновлення системи';
-
-                const endTime =
-                    maintenanceEnd.value
-                        ? new Date(
-                            maintenanceEnd.value
-                        ).toISOString()
-                        : '';
-
-                if (
-                    typeof setMaintenanceState !==
-                    'function'
-                ) {
-                    showStatus(
-                        maintenanceStatus,
-                        'Функція технічних робіт недоступна.',
-                        'error'
-                    );
-
-                    return;
-                }
-
-                setMaintenanceState(
-                    true,
-                    reason,
-                    endTime
-                );
-
-                updateMaintenanceUI();
-
-                showStatus(
-                    maintenanceStatus,
-                    'Технічні роботи увімкнено.',
-                    'success'
-                );
-            });
-
-        document
-            .getElementById('disableMaintenance')
-            .addEventListener('click', () => {
-
-                if (
-                    typeof setMaintenanceState !==
-                    'function'
-                ) {
-                    return;
-                }
-
-                setMaintenanceState(
-                    false,
-                    '',
-                    ''
-                );
-
-                updateMaintenanceUI();
-
-                showStatus(
-                    maintenanceStatus,
-                    'Технічні роботи завершено.',
-                    'success'
-                );
-            });
-
-        async function loadStatistics() {
-
-            try {
-
-                const messages =
-                    await supabaseClient
-                        .from('messages')
-                        .select('id', {
-                            count: 'exact',
-                            head: true
-                        });
-
-                const announcements =
-                    await supabaseClient
-                        .from('announcements')
-                        .select('id', {
-                            count: 'exact',
-                            head: true
-                        });
-
-                messagesCount.textContent =
-                    messages.count ?? 0;
-
-                announcementsCount.textContent =
-                    announcements.count ?? 0;
-
-            } catch (error) {
-
-                console.error(
-                    'Statistics error:',
-                    error
-                );
-            }
-        }
-
-        updateMaintenanceUI();
-
-        await loadUsers();
-        await loadStatistics();
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Адмін-панель — Ліцей №2</title>  <link rel="stylesheet" href="style.css">  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <script src="supabase.js"></script>  <script src="app.js" defer></script>  <style>
+    body {
+      background:
+        radial-gradient(circle at 0 0, rgba(59,130,246,.2), transparent 30%),
+        radial-gradient(circle at 100% 100%, rgba(14,165,233,.14), transparent 35%),
+        #07111f;
+    }
+
+    .admin-page {
+      width: min(1200px, calc(100% - 28px));
+      margin: auto;
+      padding: 25px 0 50px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(27px, 7vw, 43px);
+    }
+
+    .subtitle {
+      margin: 7px 0 0;
+      opacity: .65;
+    }
+
+    .back {
+      display: inline-flex;
+      padding: 11px 16px;
+      border-radius: 14px;
+      color: white;
+      text-decoration: none;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 13px;
+      margin-bottom: 22px;
+    }
+
+    .stat {
+      padding: 18px;
+      border-radius: 19px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.09);
+    }
+
+    .stat-value {
+      font-size: 27px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .stat-name {
+      opacity: .6;
+      font-size: 13px;
+    }
+
+    .section {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09);
+      backdrop-filter: blur(15px);
+    }
+
+    .section h2 {
+      margin: 0 0 15px;
+      font-size: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 11px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 13px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.11);
+      background: rgba(0,0,0,.2);
+      color: white;
+      outline: none;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 13px;
+      padding: 12px 16px;
+      color: white;
+      background: rgba(59,130,246,.22);
+      border: 1px solid rgba(96,165,250,.2);
+      cursor: pointer;
+      font-weight: 650;
+    }
+
+    .button:hover {
+      background: rgba(59,130,246,.32);
+    }
+
+    .danger {
+      background: rgba(239,68,68,.14);
+      border-color: rgba(239,68,68,.2);
+    }
+
+    .success {
+      background: rgba(34,197,94,.13);
+      border-color: rgba(34,197,94,.2);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 12px 9px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      font-size: 13px;
+    }
+
+    th {
+      opacity: .55;
+      font-weight: 600;
+    }
+
+    .actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .actions select {
+      width: auto;
+      min-width: 120px;
+      padding: 8px;
+    }
+
+    .notice {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 13px;
+      background: rgba(255,255,255,.05);
+      opacity: .75;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .maintenance {
+      background:
+        linear-gradient(
+          135deg,
+          rgba(239,68,68,.12),
+          rgba(255,255,255,.035)
+        );
+      border-color: rgba(239,68,68,.2);
+    }
+
+    .maintenance-actions {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    #result {
+      margin-top: 13px;
+      min-height: 20px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 850px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stat {
+        padding: 14px;
+      }
+    }
+  </style></head><body><main class="admin-page">  <header class="header">
+    <div>
+      <h1>⚙️ Адмін-панель</h1>
+      <p class="subtitle">Керування системою «Ліцей №2»</p>
+    </div><a class="back" href="dashboard.html">← Панель</a>
+
+  </header>  <section class="stats">
+    <div class="stat">
+      <div class="stat-value" id="usersCount">—</div>
+      <div class="stat-name">Користувачів</div>
+    </div><div class="stat">
+  <div class="stat-value" id="pendingCount">—</div>
+  <div class="stat-name">Очікують підтвердження</div>
+</div>
+
+<div class="stat">
+  <div class="stat-value" id="messagesCount">—</div>
+  <div class="stat-name">Повідомлень</div>
+</div>
+
+<div class="stat">
+  <div class="stat-value" id="announcementsCount">—</div>
+  <div class="stat-name">Оголошень</div>
+</div>
+
+  </section>  <section class="section">
+    <h2>👥 Користувачі</h2><div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Ім'я</th>
+        <th>Email / ID</th>
+        <th>Роль</th>
+        <th>Дія</th>
+      </tr>
+    </thead>
+
+    <tbody id="usersTable">
+      <tr>
+        <td colspan="4">Завантаження…</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+  </section>  <section class="section">
+    <h2>💬 Надіслати повідомлення</h2><div class="form-grid">
+  <select id="messageAudience">
+    <option value="all">Усім</option>
+    <option value="teachers">Учителям</option>
+    <option value="students">Учням</option>
+    <option value="parents">Батькам</option>
+  </select>
+
+  <input
+    id="messageSubject"
+    type="text"
+    placeholder="Тема повідомлення"
+  >
+
+  <textarea
+    id="messageText"
+    class="full"
+    placeholder="Текст повідомлення"
+  ></textarea>
+
+  <button class="button full" onclick="sendMessage()">
+    📤 Надіслати повідомлення
+  </button>
+</div>
+
+  </section>  <section class="section">
+    <h2>📢 Створити оголошення</h2><div class="form-grid">
+  <input
+    id="announcementTitle"
+    type="text"
+    placeholder="Заголовок"
+  >
+
+  <select id="announcementAudience">
+    <option value="all">Усім</option>
+    <option value="teachers">Учителям</option>
+    <option value="students">Учням</option>
+    <option value="parents">Батькам</option>
+  </select>
+
+  <textarea
+    id="announcementContent"
+    class="full"
+    placeholder="Текст оголошення"
+  ></textarea>
+
+  <button class="button full" onclick="createAnnouncement()">
+    📢 Опублікувати
+  </button>
+</div>
+
+  </section>  <section class="section">
+    <h2>📚 Додати урок до розкладу</h2><div class="form-grid">
+  <select id="scheduleDay">
+    <option value="Понеділок">Понеділок</option>
+    <option value="Вівторок">Вівторок</option>
+    <option value="Середа">Середа</option>
+    <option value="Четвер">Четвер</option>
+    <option value="П’ятниця">П’ятниця</option>
+  </select>
+
+  <input
+    id="scheduleClass"
+    type="text"
+    placeholder="Клас, наприклад 6-А"
+  >
+
+  <input
+    id="scheduleLesson"
+    type="number"
+    min="1"
+    placeholder="Номер уроку"
+  >
+
+  <input
+    id="scheduleSubject"
+    type="text"
+    placeholder="Предмет"
+  >
+
+  <input
+    id="scheduleTeacher"
+    type="text"
+    placeholder="Учитель"
+  >
+
+  <input
+    id="scheduleRoom"
+    type="text"
+    placeholder="Кабінет"
+  >
+
+  <input
+    id="scheduleStart"
+    type="text"
+    placeholder="Початок, наприклад 08:30"
+  >
+
+  <input
+    id="scheduleEnd"
+    type="text"
+    placeholder="Кінець, наприклад 09:15"
+  >
+
+  <button class="button full" onclick="createSchedule()">
+    ➕ Додати урок
+  </button>
+</div>
+
+  </section>  <section class="section maintenance">
+    <h2>🛠 Технічні роботи</h2><div class="notice">
+  Увімкнення цього режиму тимчасово закриє звичайним користувачам
+  доступ до сайту та покаже сторінку технічних робіт.
+  Адміністратор продовжить мати доступ.
+</div>
+
+<div class="form-grid" style="margin-top:12px;">
+  <input
+    id="maintenanceReason"
+    type="text"
+    placeholder="Причина технічних робіт"
+  >
+
+  <input
+    id="maintenanceEnd"
+    type="datetime-local"
+  >
+</div>
+
+<div class="maintenance-actions">
+  <button class="button danger" onclick="enableMaintenance()">
+    🛠 Увімкнути технічні роботи
+  </button>
+
+  <button class="button success" onclick="disableMaintenance()">
+    ✅ Вимкнути технічні роботи
+  </button>
+</div>
+
+<div id="maintenanceStatus" class="notice">
+  Перевірка стану…
+</div>
+
+  </section>  <div id="result"></div></main><script>
+  function setResult(message, success = true) {
+    const element = document.getElementById("result");
+    element.textContent = message;
+    element.style.color = success ? "#86efac" : "#fca5a5";
+  }
+
+  async function requireClient() {
+    if (!window.supabaseClient) {
+      setResult(
+        "Supabase не підключено. Перевір supabase.js.",
+        false
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  async function loadStats() {
+    if (!await requireClient()) return;
+
+    try {
+      const users = await window.supabaseClient
+        .from("profiles")
+        .select("id,role", { count: "exact", head: false });
+
+      if (!users.error) {
+        document.getElementById("usersCount").textContent =
+          users.data?.length ?? 0;
+
+        document.getElementById("pendingCount").textContent =
+          users.data?.filter(user => user.role === "pending").length ?? 0;
+      }
+
+      const messages = await window.supabaseClient
+        .from("messages")
+        .select("id");
+
+      if (!messages.error) {
+        document.getElementById("messagesCount").textContent =
+          messages.data?.length ?? 0;
+      }
+
+      const announcements = await window.supabaseClient
+        .from("announcements")
+        .select("id");
+
+      if (!announcements.error) {
+        document.getElementById("announcementsCount").textContent =
+          announcements.data?.length ?? 0;
+      }
+
+    } catch (error) {
+      console.error("Stats error:", error);
+    }
+  }
+
+  async function loadUsers() {
+    const table = document.getElementById("usersTable");
+
+    if (!await requireClient()) return;
+
+    try {
+      const { data, error } = await window.supabaseClient
+        .from("profiles")
+        .select("id,full_name,email,role,created_at")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        table.innerHTML = `
+          <tr>
+            <td colspan="4">
+              Не вдалося завантажити користувачів.
+              Перевір RLS для profiles.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      if (!data?.length) {
+        table.innerHTML = `
+          <tr>
+            <td colspan="4">Користувачів поки немає.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      table.innerHTML = data.map(user => `
+        <tr>
+          <td>${escapeHtml(user.full_name || "Без імені")}</td>
+
+          <td>
+            ${escapeHtml(user.email || user.id)}
+          </td>
+
+          <td>
+            <select
+              id="role-${escapeHtml(user.id)}"
+              onchange="changeRole('${escapeJs(user.id)}', this.value)"
+            >
+              <option value="pending" ${user.role === "pending" ? "selected" : ""}>
+                Очікує
+              </option>
+              <option value="student" ${user.role === "student" ? "selected" : ""}>
+                Учень
+              </option>
+              <option value="teacher" ${user.role === "teacher" ? "selected" : ""}>
+                Учитель
+              </option>
+              <option value="parent" ${user.role === "parent" ? "selected" : ""}>
+                Батьки
+              </option>
+              <option value="admin" ${user.role === "admin" ? "selected" : ""}>
+                Адмін
+              </option>
+            </select>
+          </td>
+
+          <td>
+            <button
+              class="button success"
+              onclick="approveUser('${escapeJs(user.id)}')"
+            >
+              Підтвердити
+            </button>
+          </td>
+        </tr>
+      `).join("");
+
+    } catch (error) {
+      console.error(error);
+
+      table.innerHTML = `
+        <tr>
+          <td colspan="4">Помилка завантаження користувачів.</td>
+        </tr>
+      `;
+    }
+  }
+
+  async function approveUser(id) {
+    if (!await requireClient()) return;
+
+    const select = document.getElementById("role-" + id);
+    const role = select ? select.value : "student";
+
+    if (role === "pending") {
+      setResult("Спочатку виберіть роль користувача.", false);
+      return;
+    }
+
+    const { error } = await window.supabaseClient
+      .from("profiles")
+      .update({
+        role,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      setResult("Не вдалося підтвердити користувача.", false);
+      return;
+    }
+
+    setResult("Користувача підтверджено.");
+    await loadUsers();
+    await loadStats();
+  }
+
+  async function changeRole(id, role) {
+    if (!await requireClient()) return;
+
+    const { error } = await window.supabaseClient
+      .from("profiles")
+      .update({
+        role,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      setResult("Не вдалося змінити роль.", false);
+      return;
+    }
+
+    setResult("Роль користувача змінено.");
+    await loadStats();
+  }
+
+  async function sendMessage() {
+    if (!await requireClient()) return;
+
+    const audience =
+      document.getElementById("messageAudience").value;
+
+    const subject =
+      document.getElementById("messageSubject").value.trim();
+
+    const message =
+      document.getElementById("messageText").value.trim();
+
+    if (!subject || !message) {
+      setResult("Заповніть тему та текст повідомлення.", false);
+      return;
+    }
+
+    const {
+      data: { user }
+    } = await window.supabaseClient.auth.getUser();
+
+    if (!user) {
+      setResult("Потрібно увійти в акаунт.", false);
+      return;
+    }
+
+    let query = window.supabaseClient
+      .from("profiles")
+      .select("id,role");
+
+    if (audience !== "all") {
+      query = query.eq("role", audience === "teachers"
+        ? "teacher"
+        : audience === "students"
+          ? "student"
+          : "parent");
+    }
+
+    const { data: users, error: usersError } = await query;
+
+    if (usersError) {
+      console.error(usersError);
+      setResult("Не вдалося отримати список отримувачів.", false);
+      return;
+    }
+
+    const rows = (users || [])
+      .filter(item => item.id !== user.id)
+      .map(item => ({
+        sender_id: user.id,
+        recipient_id: item.id,
+        recipient_group: audience,
+        subject,
+        message,
+        is_read: false
+      }));
+
+    if (!rows.length) {
+      setResult("Немає отримувачів для цього повідомлення.", false);
+      return;
+    }
+
+    const { error } = await window.supabaseClient
+      .from("messages")
+      .insert(rows);
+
+    if (error) {
+      console.error(error);
+      setResult("Не вдалося надіслати повідомлення.", false);
+      return;
+    }
+
+    document.getElementById("messageSubject").value = "";
+    document.getElementById("messageText").value = "";
+
+    setResult("Повідомлення успішно надіслано.");
+    await loadStats();
+  }
+
+  async function createAnnouncement() {
+    if (!await requireClient()) return;
+
+    const title =
+      document.getElementById("announcementTitle").value.trim();
+
+    const content =
+      document.getElementById("announcementContent").value.trim();
+
+    const audience =
+      document.getElementById("announcementAudience").value;
+
+    if (!title || !content) {
+      setResult("Заповніть заголовок та текст оголошення.", false);
+      return;
+    }
+
+    const {
+      data: { user }
+    } = await window.supabaseClient.auth.getUser();
+
+    const { error } = await window.supabaseClient
+      .from("announcements")
+      .insert({
+        author_id: user?.id || null,
+        title,
+        content,
+        audience
+      });
+
+    if (error) {
+      console.error(error);
+      setResult("Не вдалося створити оголошення.", false);
+      return;
+    }
+
+    document.getElementById("announcementTitle").value = "";
+    document.getElementById("announcementContent").value = "";
+
+    setResult("Оголошення опубліковано.");
+    await loadStats();
+  }
+
+  async function createSchedule() {
+    if (!await requireClient()) return;
+
+    const payload = {
+      day: document.getElementById("scheduleDay").value,
+      class_name: document.getElementById("scheduleClass").value.trim(),
+      lesson_number:
+        Number(document.getElementById("scheduleLesson").value),
+      subject:
+        document.getElementById("scheduleSubject").value.trim(),
+      teacher:
+        document.getElementById("scheduleTeacher").value.trim(),
+      room:
+        document.getElementById("scheduleRoom").value.trim(),
+      start_time:
+        document.getElementById("scheduleStart").value.trim(),
+      end_time:
+        document.getElementById("scheduleEnd").value.trim()
+    };
+
+    if (!payload.class_name ||
+        !payload.lesson_number ||
+        !payload.subject) {
+      setResult(
+        "Заповніть клас, номер уроку та предмет.",
+        false
+      );
+      return;
+    }
+
+    const { error } = await window.supabaseClient
+      .from("schedule")
+      .insert(payload);
+
+    if (error) {
+      console.error(error);
+      setResult("Не вдалося додати урок.", false);
+      return;
+    }
+
+    document.getElementById("scheduleClass").value = "";
+    document.getElementById("scheduleLesson").value = "";
+    document.getElementById("scheduleSubject").value = "";
+    document.getElementById("scheduleTeacher").value = "";
+    document.getElementById("scheduleRoom").value = "";
+    document.getElementById("scheduleStart").value = "";
+    document.getElementById("scheduleEnd").value = "";
+
+    setResult("Урок додано до розкладу.");
+  }
+
+  async function enableMaintenance() {
+    if (typeof setMaintenanceState !== "function") {
+      setResult(
+        "Функція технічних робіт недоступна. Перевір app.js.",
+        false
+      );
+      return;
+    }
+
+    const reason =
+      document.getElementById("maintenanceReason").value.trim()
+      || "Виконуються технічні роботи.";
+
+    const endValue =
+      document.getElementById("maintenanceEnd").value;
+
+    let endTime = null;
+
+    if (endValue) {
+      endTime = new Date(endValue).toISOString();
+    }
+
+    setMaintenanceState({
+      enabled: true,
+      reason,
+      endTime,
+      updatedAt: new Date().toISOString()
     });
-</script>
 
-</body>
+    updateMaintenanceStatus();
+
+    setResult("Режим технічних робіт увімкнено.");
+  }
+
+  async function disableMaintenance() {
+    if (typeof setMaintenanceState !== "function") {
+      setResult(
+        "Функція технічних робіт недоступна. Перевір app.js.",
+        false
+      );
+      return;
+    }
+
+    setMaintenanceState({
+      enabled: false,
+      reason: "",
+      endTime: null,
+      updatedAt: new Date().toISOString()
+    });
+
+    updateMaintenanceStatus();
+
+    setResult("Режим технічних робіт вимкнено.");
+  }
+
+  function updateMaintenanceStatus() {
+    const element =
+      document.getElementById("maintenanceStatus");
+
+    if (typeof getMaintenanceState !== "function") {
+      element.textContent = "Стан недоступний.";
+      return;
+    }
+
+    const state = getMaintenanceState();
+
+    if (!state?.enabled) {
+      element.textContent =
+        "Статус: технічні роботи вимкнені.";
+      return;
+    }
+
+    let text =
+      "Статус: технічні роботи увімкнені.";
+
+    if (state.reason) {
+      text += " Причина: " + state.reason;
+    }
+
+    if (state.endTime) {
+      text +=
+        " До: " +
+        new Date(state.endTime).toLocaleString("uk-UA");
+    }
+
+    element.textContent = text;
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function escapeJs(value) {
+    return String(value ?? "")
+      .replaceAll("\\", "\\\\")
+      .replaceAll("'", "\\'")
+      .replaceAll("\n", "\\n")
+      .replaceAll("\r", "\\r");
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadStats();
+    await loadUsers();
+    updateMaintenanceStatus();
+  });
+</script></body>
 </html>
