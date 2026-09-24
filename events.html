@@ -2,350 +2,423 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Події — Ліцей №2</title><link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#07111f"><title>Події — Ліцей №2</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 <script src="app.js" defer></script>
 
-<style>
-    body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: Arial, sans-serif;
-        background:
-            radial-gradient(circle at 15% 10%, rgba(80,120,255,.18), transparent 30%),
-            radial-gradient(circle at 85% 20%, rgba(0,220,255,.12), transparent 28%),
-            #070b14;
-        color: #fff;
+</head><body><header class="site-header">
+    <div class="container header-inner">    <a href="dashboard.html" class="brand">
+        <span class="brand-mark">Л2</span>
+
+        <span class="brand-text">
+            <strong>Ліцей №2</strong>
+            <small>Події</small>
+        </span>
+    </a>
+
+    <button
+        type="button"
+        class="mobile-menu-button"
+        id="mobileMenuButton"
+        aria-label="Відкрити меню"
+        aria-expanded="false">
+        ☰
+    </button>
+
+    <nav class="main-nav" id="mainNav">
+        <a href="dashboard.html">Кабінет</a>
+        <a href="schedule.html">Розклад</a>
+        <a href="events.html" class="active">Події</a>
+        <a href="messages.html">Повідомлення</a>
+    </nav>
+
+</div>
+
+</header><main class="container page-content"><section class="page-hero">
+    <div>
+        <span class="eyebrow">Шкільне життя</span>
+        <h1>Події</h1>
+        <p>Найближчі заходи, зустрічі та події ліцею.</p>
+    </div>
+</section>
+
+<section id="eventsStatus" class="status-box">
+    Завантаження подій...
+</section>
+
+<section id="eventsList" class="events-list"></section>
+
+</main><footer class="site-footer">
+    <div class="container">
+        <p>© <span id="currentYear"></span> Ліцей №2</p>
+    </div>
+</footer><style>
+    .page-content {
+        padding-top: 28px;
+        padding-bottom: 48px;
     }
 
-    .events-page {
-        width: min(1100px, calc(100% - 28px));
-        margin: auto;
-        padding: 24px 0 50px;
-    }
-
-    .events-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 22px;
-    }
-
-    .back-button {
-        color: #fff;
-        text-decoration: none;
-        padding: 11px 16px;
-        border-radius: 14px;
-        background: rgba(255,255,255,.07);
-        border: 1px solid rgba(255,255,255,.1);
-    }
-
-    .hero {
-        padding: 28px;
-        border-radius: 28px;
-        background: linear-gradient(135deg, rgba(45,105,255,.2), rgba(0,220,255,.08));
-        border: 1px solid rgba(255,255,255,.1);
-        margin-bottom: 22px;
-    }
-
-    .hero h1 {
-        margin: 0 0 8px;
-        font-size: clamp(28px, 6vw, 44px);
-    }
-
-    .hero p {
-        margin: 0;
-        color: #aebbd1;
-        line-height: 1.5;
-    }
-
-    .filters {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
+    .page-hero {
         margin-bottom: 20px;
+        padding: 26px;
+        border: 1px solid var(--border-color);
+        border-radius: 22px;
+        background:
+            radial-gradient(circle at top right, rgba(70, 130, 255, .18), transparent 35%),
+            var(--surface-color);
     }
 
-    .filter-button {
-        border: 1px solid rgba(255,255,255,.1);
-        background: rgba(255,255,255,.06);
-        color: #fff;
-        padding: 11px 16px;
-        border-radius: 13px;
-        cursor: pointer;
+    .page-hero h1 {
+        margin: 6px 0 8px;
+        font-size: clamp(27px, 5vw, 38px);
     }
 
-    .filter-button.active {
-        background: #2777ff;
-        border-color: #2777ff;
+    .page-hero p {
+        margin: 0;
+        color: var(--muted-text);
+    }
+
+    .eyebrow {
+        color: var(--primary-color);
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+    }
+
+    .status-box {
+        padding: 18px;
+        margin-bottom: 14px;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        background: var(--surface-color);
+        color: var(--muted-text);
+        text-align: center;
+    }
+
+    .status-box.error-state {
+        color: #ff9d9d;
+        border-color: rgba(255, 90, 90, .35);
     }
 
     .events-list {
         display: grid;
-        gap: 16px;
+        gap: 14px;
     }
 
     .event-card {
-        padding: 22px;
-        border-radius: 22px;
-        background: rgba(255,255,255,.055);
-        border: 1px solid rgba(255,255,255,.09);
-        box-shadow: 0 12px 40px rgba(0,0,0,.18);
+        display: grid;
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 17px;
+        padding: 18px;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        background: var(--surface-color);
+        transition: transform .18s ease, border-color .18s ease;
+    }
+
+    .event-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(100, 150, 255, .35);
     }
 
     .event-date {
-        display: inline-flex;
-        padding: 8px 11px;
-        border-radius: 10px;
-        background: rgba(39,119,255,.15);
-        color: #70b9ff;
-        font-size: 13px;
-        font-weight: 700;
-        margin-bottom: 12px;
+        min-height: 78px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        background: rgba(70, 130, 255, .1);
+        text-align: center;
+    }
+
+    .event-day {
+        font-size: 27px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .event-month {
+        margin-top: 5px;
+        color: var(--muted-text);
+        font-size: 12px;
+        text-transform: uppercase;
     }
 
     .event-title {
-        font-size: 23px;
-        font-weight: 800;
-        margin-bottom: 9px;
+        margin: 0;
+        font-size: 19px;
+        font-weight: 750;
     }
 
     .event-description {
-        color: #b5bfd0;
-        line-height: 1.55;
+        margin: 8px 0 0;
+        color: var(--muted-text);
+        line-height: 1.5;
         white-space: pre-wrap;
+        overflow-wrap: anywhere;
     }
 
-    .event-info {
+    .event-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 17px;
+        gap: 7px;
+        margin-top: 13px;
     }
 
-    .info-tag {
-        padding: 8px 11px;
-        border-radius: 10px;
-        background: rgba(255,255,255,.06);
-        color: #c8d2e2;
-        font-size: 13px;
+    .event-meta span {
+        padding: 6px 9px;
+        border-radius: 8px;
+        background: rgba(255,255,255,.05);
+        color: var(--muted-text);
+        font-size: 12px;
     }
 
-    .empty,
-    .loading,
-    .error {
-        padding: 35px 20px;
+    .empty-state {
+        padding: 36px 18px;
+        border: 1px dashed var(--border-color);
+        border-radius: 18px;
+        color: var(--muted-text);
         text-align: center;
-        border-radius: 22px;
-        background: rgba(255,255,255,.045);
-        border: 1px solid rgba(255,255,255,.08);
-        color: #aeb9ca;
     }
 
-    .error {
-        color: #ff9e9e;
+    .error-state {
+        color: #ff9d9d;
     }
 
     @media (max-width: 650px) {
-        .events-page {
-            width: calc(100% - 18px);
-            padding-top: 14px;
+        .page-content {
+            padding-top: 18px;
         }
 
-        .events-header {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .hero {
-            padding: 22px;
-            border-radius: 22px;
+        .page-hero {
+            padding: 21px 17px;
+            border-radius: 19px;
         }
 
         .event-card {
-            padding: 18px;
+            grid-template-columns: 58px minmax(0, 1fr);
+            gap: 12px;
+            padding: 14px;
+            border-radius: 17px;
+        }
+
+        .event-date {
+            min-height: 64px;
+            border-radius: 13px;
+        }
+
+        .event-day {
+            font-size: 22px;
+        }
+
+        .event-month {
+            font-size: 10px;
+        }
+
+        .event-title {
+            font-size: 17px;
         }
     }
-</style>
+</style><script>
+(function () {
+    "use strict";
 
-</head><body>
-    <main class="events-page">    <div class="events-header">
-        <a class="back-button" href="dashboard.html">← Назад</a>
-        <div data-user-name>Користувач</div>
-    </div>
-
-    <section class="hero">
-        <h1>📅 Події</h1>
-        <p>Шкільні заходи, зустрічі, свята та інші важливі події ліцею.</p>
-    </section>
-
-    <div class="filters">
-        <button class="filter-button active" data-filter="all">Усі</button>
-        <button class="filter-button" data-filter="upcoming">Майбутні</button>
-        <button class="filter-button" data-filter="past">Минулі</button>
-    </div>
-
-    <section id="eventsList" class="events-list">
-        <div class="loading">Завантаження подій...</div>
-    </section>
-
-</main>
-
-<script>
-    let allEvents = [];
-    let currentFilter = 'all';
+    const statusElement = document.getElementById("eventsStatus");
+    const listElement = document.getElementById("eventsList");
 
     function escapeHtml(value) {
-        return String(value ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
-    function getDateValue(event) {
-        return event.event_date || event.date || event.start_date || null;
+    function showStatus(message, isError) {
+        statusElement.textContent = message;
+        statusElement.classList.toggle("error-state", Boolean(isError));
+        statusElement.style.display = "block";
     }
 
-    function formatDate(value) {
-        if (!value) return 'Дата не вказана';
+    function parseDate(value) {
+        if (!value) return null;
 
         const date = new Date(value);
 
         if (Number.isNaN(date.getTime())) {
-            return value;
+            return null;
         }
 
-        return date.toLocaleDateString('uk-UA', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric'
+        return date;
+    }
+
+    function renderDate(value) {
+        const date = parseDate(value);
+
+        if (!date) {
+            return {
+                day: "—",
+                month: "Дата"
+            };
+        }
+
+        return {
+            day: date.toLocaleDateString("uk-UA", {
+                day: "2-digit"
+            }),
+            month: date.toLocaleDateString("uk-UA", {
+                month: "short"
+            })
+        };
+    }
+
+    function formatFullDate(value) {
+        const date = parseDate(value);
+
+        if (!date) {
+            return "Дата не вказана";
+        }
+
+        return date.toLocaleDateString("uk-UA", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
         });
     }
 
-    function isPast(event) {
-        const value = getDateValue(event);
-
-        if (!value) return false;
-
-        const eventDate = new Date(value);
-        const today = new Date();
-
-        eventDate.setHours(23, 59, 59, 999);
-        today.setHours(0, 0, 0, 0);
-
-        return eventDate < today;
-    }
-
-    function renderEvents() {
-        const container = document.getElementById('eventsList');
-
-        let events = [...allEvents];
-
-        if (currentFilter === 'upcoming') {
-            events = events.filter(event => !isPast(event));
-        }
-
-        if (currentFilter === 'past') {
-            events = events.filter(isPast);
-        }
+    function renderEvents(events) {
+        listElement.innerHTML = "";
 
         if (!events.length) {
-            container.innerHTML = `
-                <div class="empty">
-                    <div style="font-size:36px;margin-bottom:10px;">📭</div>
-                    <div>Подій у цьому розділі поки немає.</div>
+            statusElement.style.display = "none";
+
+            listElement.innerHTML = `
+                <div class="empty-state">
+                    📅 Запланованих подій поки немає.
                 </div>
             `;
+
             return;
         }
 
-        container.innerHTML = events.map(event => {
-            const date = getDateValue(event);
+        statusElement.style.display = "none";
 
-            return `
-                <article class="event-card">
+        events.forEach(item => {
+            const dateInfo = renderDate(item.event_date);
 
-                    <div class="event-date">
-                        📅 ${escapeHtml(formatDate(date))}
+            const card = document.createElement("article");
+            card.className = "event-card";
+
+            const timeText = item.start_time
+                ? `<span>🕐 ${escapeHtml(item.start_time)}</span>`
+                : "";
+
+            const locationText = item.location
+                ? `<span>📍 ${escapeHtml(item.location)}</span>`
+                : "";
+
+            const classText = item.class_name
+                ? `<span>👥 ${escapeHtml(item.class_name)}</span>`
+                : "";
+
+            card.innerHTML = `
+                <div class="event-date">
+                    <div class="event-day">
+                        ${escapeHtml(dateInfo.day)}
                     </div>
 
-                    <div class="event-title">
-                        ${escapeHtml(event.title || event.name || 'Подія')}
+                    <div class="event-month">
+                        ${escapeHtml(dateInfo.month)}
                     </div>
+                </div>
+
+                <div>
+                    <h2 class="event-title">
+                        ${escapeHtml(item.title || "Подія")}
+                    </h2>
 
                     <div class="event-description">
-                        ${escapeHtml(event.description || event.content || 'Опис події відсутній.')}
+                        ${escapeHtml(item.description || "")}
                     </div>
 
-                    <div class="event-info">
-
-                        ${event.location
-                            ? `<span class="info-tag">📍 ${escapeHtml(event.location)}</span>`
-                            : ''}
-
-                        ${event.class_name
-                            ? `<span class="info-tag">👥 ${escapeHtml(event.class_name)}</span>`
-                            : ''}
-
-                        ${event.start_time
-                            ? `<span class="info-tag">🕐 ${escapeHtml(event.start_time)}</span>`
-                            : ''}
-
+                    <div class="event-meta">
+                        <span>📅 ${escapeHtml(formatFullDate(item.event_date))}</span>
+                        ${timeText}
+                        ${locationText}
+                        ${classText}
                     </div>
-
-                </article>
+                </div>
             `;
-        }).join('');
+
+            listElement.appendChild(card);
+        });
     }
 
     async function loadEvents() {
-        const container = document.getElementById('eventsList');
+        listElement.innerHTML = "";
+
+        if (
+            typeof window.supabaseClient === "undefined" ||
+            !window.supabaseClient
+        ) {
+            showStatus(
+                "Не вдалося підключити Supabase. Перевір файл supabase.js.",
+                true
+            );
+            return;
+        }
+
+        showStatus("Завантаження подій...", false);
 
         try {
-            if (typeof supabaseClient === 'undefined') {
-                throw new Error('Supabase не підключено.');
+            const { data, error } = await window.supabaseClient
+                .from("events")
+                .select("*")
+                .order("event_date", { ascending: true });
+
+            if (error) {
+                console.error("Events Supabase error:", error);
+
+                showStatus(
+                    "Не вдалося завантажити події. Перевір таблицю events у Supabase.",
+                    true
+                );
+
+                listElement.innerHTML = `
+                    <div class="empty-state error-state">
+                        ⚠️ Supabase не дозволив отримати дані з таблиці events.
+                    </div>
+                `;
+
+                return;
             }
 
-            const { data, error } = await supabaseClient
-                .from('events')
-                .select('*')
-                .order('event_date', { ascending: true });
-
-            if (error) throw error;
-
-            allEvents = data || [];
-            renderEvents();
+            renderEvents(Array.isArray(data) ? data : []);
 
         } catch (error) {
-            console.error('Events loading error:', error);
+            console.error("Events loading error:", error);
 
-            container.innerHTML = `
-                <div class="error">
-                    Не вдалося завантажити події.<br>
-                    Перевір таблицю events у Supabase.
-                </div>
-            `;
+            showStatus(
+                "Сталася помилка під час завантаження подій.",
+                true
+            );
         }
     }
 
-    document.querySelectorAll('[data-filter]').forEach(button => {
-        button.addEventListener('click', () => {
-            document.querySelectorAll('[data-filter]').forEach(item => {
-                item.classList.remove('active');
-            });
-
-            button.classList.add('active');
-            currentFilter = button.dataset.filter;
-
-            renderEvents();
-        });
+    document.addEventListener("DOMContentLoaded", function () {
+        loadEvents();
     });
 
-    document.addEventListener('DOMContentLoaded', loadEvents);
-</script>
-
-</body>
+    if (document.readyState !== "loading") {
+        loadEvents();
+    }
+})();
+</script></body>
 </html>
