@@ -1,412 +1,151 @@
-<!DOCTYPE html>
-<html lang="uk">
+<!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#07111f">
 
-    <title>Технічні роботи — Ліцей №2</title>
+<title>Технічні роботи — Ліцей №2</title>
 
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 
-    <style>
-        .maintenance-page {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background:
-                radial-gradient(
-                    circle at top,
-                    rgba(79, 70, 229, 0.12),
-                    transparent 45%
-                ),
-                var(--background);
-        }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="app.js" defer></script>
 
-        .maintenance-container {
-            width: 100%;
-            max-width: 680px;
-        }
+</head><body class="maintenance-page"><div class="page-background"></div>
 
-        .maintenance-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 28px;
-            padding: 42px 32px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            animation: maintenanceAppear 0.5s ease;
-        }
+<main class="maintenance-container">
 
-        .maintenance-icon {
-            width: 92px;
-            height: 92px;
-            margin: 0 auto 24px;
+    <div class="maintenance-logo">
+        <span class="maintenance-logo-mark">Л2</span>
+        <span class="maintenance-logo-text">Ліцей №2</span>
+    </div>
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    <section class="maintenance-card">
 
-            border-radius: 28px;
+        <div class="maintenance-icon">
+            🔧
+        </div>
 
-            background: rgba(79, 70, 229, 0.1);
+        <span class="eyebrow">
+            ТЕХНІЧНІ РОБОТИ
+        </span>
 
-            font-size: 46px;
+        <h1>
+            Система тимчасово недоступна
+        </h1>
 
-            animation: maintenanceFloat 2.5s ease-in-out infinite;
-        }
+        <p class="maintenance-description">
+            Зараз виконуються технічні роботи.
+            Ми працюємо над оновленням цифрової системи ліцею.
+        </p>
 
-        .maintenance-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        <div class="maintenance-status">
+            <span class="status-dot"></span>
+            <span>Технічні роботи тривають</span>
+        </div>
 
-            margin-bottom: 18px;
-            padding: 8px 14px;
+        <div class="maintenance-info">
 
-            border-radius: 999px;
+            <div class="maintenance-info-row">
+                <span>Причина</span>
+                <strong id="maintenanceReason">
+                    Оновлення системи
+                </strong>
+            </div>
 
-            background: rgba(245, 158, 11, 0.12);
-            color: #b45309;
-
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .maintenance-dot {
-            width: 8px;
-            height: 8px;
-
-            border-radius: 50%;
-
-            background: #f59e0b;
-
-            animation: maintenancePulse 1.5s infinite;
-        }
-
-        .maintenance-card h1 {
-            margin: 0 0 14px;
-
-            font-size: clamp(28px, 5vw, 42px);
-            line-height: 1.15;
-
-            color: var(--text);
-        }
-
-        .maintenance-card > p {
-            margin: 0 auto;
-
-            max-width: 540px;
-
-            color: var(--muted);
-            font-size: 17px;
-            line-height: 1.7;
-        }
-
-        .maintenance-reason {
-            display: none;
-
-            margin-top: 26px;
-            padding: 18px;
-
-            border-radius: 16px;
-
-            background: var(--background);
-            border: 1px solid var(--border);
-
-            text-align: left;
-        }
-
-        .maintenance-reason.visible {
-            display: block;
-        }
-
-        .maintenance-reason-title {
-            margin-bottom: 7px;
-
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--muted);
-        }
-
-        .maintenance-reason-text {
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        .maintenance-end {
-            display: none;
-
-            margin-top: 16px;
-
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .maintenance-end.visible {
-            display: block;
-        }
-
-        .maintenance-actions {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-
-            margin-top: 30px;
-        }
-
-        .maintenance-footer {
-            margin-top: 24px;
-
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        @keyframes maintenanceAppear {
-            from {
-                opacity: 0;
-                transform: translateY(18px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes maintenanceFloat {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-7px);
-            }
-        }
-
-        @keyframes maintenancePulse {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.45;
-                transform: scale(0.75);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .maintenance-page {
-                padding: 16px;
-            }
-
-            .maintenance-card {
-                padding: 32px 20px;
-                border-radius: 22px;
-            }
-
-            .maintenance-icon {
-                width: 78px;
-                height: 78px;
-                font-size: 38px;
-            }
-
-            .maintenance-card > p {
-                font-size: 15px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <main class="maintenance-page">
-
-        <div class="maintenance-container">
-
-            <section class="maintenance-card">
-
-                <div class="maintenance-icon">
-                    🔧
-                </div>
-
-                <div class="maintenance-badge">
-                    <span class="maintenance-dot"></span>
-                    Технічні роботи
-                </div>
-
-                <h1>
-                    Система тимчасово недоступна
-                </h1>
-
-                <p>
-                    Зараз проводяться технічні роботи.
-                    Будь ласка, спробуйте зайти пізніше.
-                </p>
-
-                <div
-                    class="maintenance-reason"
-                    id="maintenanceReason"
-                >
-                    <div class="maintenance-reason-title">
-                        Причина
-                    </div>
-
-                    <div
-                        class="maintenance-reason-text"
-                        id="maintenanceReasonText"
-                    ></div>
-                </div>
-
-                <div
-                    class="maintenance-end"
-                    id="maintenanceEnd"
-                >
-                    Очікуване завершення:
-                    <strong id="maintenanceEndText"></strong>
-                </div>
-
-                <div class="maintenance-actions">
-
-                    <button
-                        class="btn btn-primary"
-                        onclick="location.reload()"
-                    >
-                        🔄 Оновити сторінку
-                    </button>
-
-                    <a
-                        href="index.html"
-                        class="btn btn-secondary"
-                    >
-                        На головну
-                    </a>
-
-                </div>
-
-                <div class="maintenance-footer">
-                    Ліцей №2 · Електронна система
-                </div>
-
-            </section>
+            <div class="maintenance-info-row">
+                <span>Орієнтовне завершення</span>
+                <strong id="maintenanceEnd">
+                    Інформація уточнюється
+                </strong>
+            </div>
 
         </div>
 
-    </main>
+        <button
+            type="button"
+            class="secondary-button"
+            id="refreshButton"
+        >
+            Перевірити ще раз
+        </button>
 
+        <a href="index.html" class="maintenance-home">
+            ← На головну
+        </a>
 
-    <script src="app.js"></script>
+    </section>
 
-    <script>
-        "use strict";
+    <p class="maintenance-footer">
+        © <span id="currentYear"></span> Ліцей №2
+    </p>
 
-        function loadMaintenanceInformation() {
+</main>
 
-            try {
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
 
-                const saved =
-                    localStorage.getItem(
-                        "lyceum2_maintenance"
-                    );
+        const reasonElement =
+            document.getElementById('maintenanceReason');
 
-                if (!saved) {
-                    return;
-                }
+        const endElement =
+            document.getElementById('maintenanceEnd');
 
-                const state = JSON.parse(saved);
+        const refreshButton =
+            document.getElementById('refreshButton');
 
-                if (!state || !state.enabled) {
-                    return;
-                }
+        function formatEndTime(value) {
 
+            if (!value) {
+                return 'Інформація уточнюється';
+            }
 
-                /* Причина */
+            const date = new Date(value);
 
-                if (state.reason) {
+            if (Number.isNaN(date.getTime())) {
+                return value;
+            }
 
-                    const reasonBox =
-                        document.getElementById(
-                            "maintenanceReason"
-                        );
+            return date.toLocaleString('uk-UA', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
 
-                    const reasonText =
-                        document.getElementById(
-                            "maintenanceReasonText"
-                        );
+        function loadMaintenanceInfo() {
 
-                    reasonText.textContent =
-                        state.reason;
+            if (typeof getMaintenanceState !== 'function') {
+                return;
+            }
 
-                    reasonBox.classList.add(
-                        "visible"
-                    );
-                }
+            const state = getMaintenanceState();
 
+            if (!state?.enabled) {
+                location.href = 'index.html';
+                return;
+            }
 
-                /* Время окончания */
+            if (state.reason) {
+                reasonElement.textContent = state.reason;
+            }
 
-                if (state.endAt) {
-
-                    const endDate =
-                        new Date(state.endAt);
-
-                    if (
-                        !Number.isNaN(
-                            endDate.getTime()
-                        )
-                    ) {
-
-                        const endElement =
-                            document.getElementById(
-                                "maintenanceEnd"
-                            );
-
-                        const endText =
-                            document.getElementById(
-                                "maintenanceEndText"
-                            );
-
-                        endText.textContent =
-                            endDate.toLocaleString(
-                                "uk-UA",
-                                {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit"
-                                }
-                            );
-
-                        endElement.classList.add(
-                            "visible"
-                        );
-                    }
-                }
-
-            } catch (error) {
-
-                console.error(
-                    "Не вдалося завантажити інформацію:",
-                    error
-                );
+            if (state.endTime) {
+                endElement.textContent =
+                    formatEndTime(state.endTime);
             }
         }
 
-        loadMaintenanceInformation();
-    </script>
+        refreshButton.addEventListener('click', () => {
+            location.reload();
+        });
+
+        loadMaintenanceInfo();
+
+    });
+</script>
 
 </body>
 </html>
