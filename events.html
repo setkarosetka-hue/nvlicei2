@@ -1,8 +1,7 @@
 <!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#07111f"><title>Події — Ліцей №2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Події — Ліцей №2</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -10,99 +9,50 @@
 <script src="supabase.js"></script>
 <script src="app.js" defer></script>
 
-</head><body><header class="site-header">
-    <div class="container header-inner">    <a href="dashboard.html" class="brand">
-        <span class="brand-mark">Л2</span>
-
-        <span class="brand-text">
-            <strong>Ліцей №2</strong>
-            <small>Події</small>
-        </span>
-    </a>
-
-    <button
-        type="button"
-        class="mobile-menu-button"
-        id="mobileMenuButton"
-        aria-label="Відкрити меню"
-        aria-expanded="false">
-        ☰
-    </button>
-
-    <nav class="main-nav" id="mainNav">
-        <a href="dashboard.html">Кабінет</a>
-        <a href="schedule.html">Розклад</a>
-        <a href="events.html" class="active">Події</a>
-        <a href="messages.html">Повідомлення</a>
-    </nav>
-
-</div>
-
-</header><main class="container page-content"><section class="page-hero">
-    <div>
-        <span class="eyebrow">Шкільне життя</span>
-        <h1>Події</h1>
-        <p>Найближчі заходи, зустрічі та події ліцею.</p>
-    </div>
-</section>
-
-<section id="eventsStatus" class="status-box">
-    Завантаження подій...
-</section>
-
-<section id="eventsList" class="events-list"></section>
-
-</main><footer class="site-footer">
-    <div class="container">
-        <p>© <span id="currentYear"></span> Ліцей №2</p>
-    </div>
-</footer><style>
-    .page-content {
-        padding-top: 28px;
-        padding-bottom: 48px;
+<style>
+    .events-page {
+        width: min(1100px, calc(100% - 24px));
+        margin: auto;
+        padding: 20px 0 40px;
     }
 
-    .page-hero {
-        margin-bottom: 20px;
-        padding: 26px;
-        border: 1px solid var(--border-color);
+    .events-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 20px;
+        margin-bottom: 18px;
         border-radius: 22px;
-        background:
-            radial-gradient(circle at top right, rgba(70, 130, 255, .18), transparent 35%),
-            var(--surface-color);
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.1);
     }
 
-    .page-hero h1 {
-        margin: 6px 0 8px;
-        font-size: clamp(27px, 5vw, 38px);
+    .events-header h1 {
+        margin: 0 0 5px;
     }
 
-    .page-hero p {
+    .events-header p {
         margin: 0;
-        color: var(--muted-text);
+        opacity: .65;
     }
 
-    .eyebrow {
-        color: var(--primary-color);
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .08em;
+    .back-btn {
+        padding: 10px 15px;
+        border-radius: 13px;
+        text-decoration: none;
+        color: inherit;
+        background: rgba(255,255,255,.09);
+        border: 1px solid rgba(255,255,255,.1);
+        white-space: nowrap;
     }
 
-    .status-box {
-        padding: 18px;
-        margin-bottom: 14px;
-        border: 1px solid var(--border-color);
+    .events-status {
+        padding: 14px 17px;
+        margin-bottom: 16px;
         border-radius: 16px;
-        background: var(--surface-color);
-        color: var(--muted-text);
-        text-align: center;
-    }
-
-    .status-box.error-state {
-        color: #ff9d9d;
-        border-color: rgba(255, 90, 90, .35);
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.08);
     }
 
     .events-list {
@@ -112,160 +62,178 @@
 
     .event-card {
         display: grid;
-        grid-template-columns: 82px minmax(0, 1fr);
-        gap: 17px;
-        padding: 18px;
-        border: 1px solid var(--border-color);
-        border-radius: 20px;
-        background: var(--surface-color);
-        transition: transform .18s ease, border-color .18s ease;
+        grid-template-columns: 90px 1fr;
+        gap: 18px;
+        padding: 20px;
+        border-radius: 21px;
+        background: rgba(255,255,255,.065);
+        border: 1px solid rgba(255,255,255,.09);
+        transition: transform .2s ease, background .2s ease;
     }
 
     .event-card:hover {
         transform: translateY(-2px);
-        border-color: rgba(100, 150, 255, .35);
+        background: rgba(255,255,255,.09);
     }
 
-    .event-date {
-        min-height: 78px;
+    .event-date-box {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        border-radius: 16px;
-        background: rgba(70, 130, 255, .1);
+        min-height: 90px;
+        border-radius: 17px;
+        background: rgba(0,170,255,.12);
+        border: 1px solid rgba(0,170,255,.15);
         text-align: center;
     }
 
     .event-day {
-        font-size: 27px;
+        font-size: 29px;
         font-weight: 800;
-        line-height: 1;
     }
 
     .event-month {
-        margin-top: 5px;
-        color: var(--muted-text);
         font-size: 12px;
-        text-transform: uppercase;
+        opacity: .7;
     }
 
-    .event-title {
-        margin: 0;
-        font-size: 19px;
-        font-weight: 750;
+    .event-content h2 {
+        margin: 0 0 8px;
+        font-size: 20px;
     }
 
     .event-description {
-        margin: 8px 0 0;
-        color: var(--muted-text);
-        line-height: 1.5;
+        margin: 0;
+        line-height: 1.55;
+        opacity: .76;
         white-space: pre-wrap;
-        overflow-wrap: anywhere;
     }
 
     .event-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 7px;
-        margin-top: 13px;
+        gap: 8px;
+        margin-top: 15px;
     }
 
-    .event-meta span {
-        padding: 6px 9px;
-        border-radius: 8px;
-        background: rgba(255,255,255,.05);
-        color: var(--muted-text);
+    .meta {
+        padding: 7px 10px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.06);
         font-size: 12px;
+        opacity: .75;
     }
 
-    .empty-state {
-        padding: 36px 18px;
-        border: 1px dashed var(--border-color);
-        border-radius: 18px;
-        color: var(--muted-text);
+    .empty {
+        padding: 42px 20px;
         text-align: center;
+        border-radius: 20px;
+        background: rgba(255,255,255,.05);
+        border: 1px dashed rgba(255,255,255,.12);
     }
 
-    .error-state {
-        color: #ff9d9d;
+    .empty-icon {
+        font-size: 42px;
+        margin-bottom: 10px;
     }
 
-    @media (max-width: 650px) {
-        .page-content {
-            padding-top: 18px;
+    .empty p {
+        margin: 0;
+        opacity: .65;
+    }
+
+    .error {
+        color: #ffb4b4;
+    }
+
+    @media (max-width: 600px) {
+        .events-page {
+            width: min(100% - 16px, 1100px);
         }
 
-        .page-hero {
-            padding: 21px 17px;
-            border-radius: 19px;
+        .events-header {
+            padding: 16px;
+        }
+
+        .events-header h1 {
+            font-size: 24px;
+        }
+
+        .back-btn {
+            padding: 9px 11px;
+            font-size: 13px;
         }
 
         .event-card {
-            grid-template-columns: 58px minmax(0, 1fr);
-            gap: 12px;
-            padding: 14px;
-            border-radius: 17px;
+            grid-template-columns: 1fr;
+            gap: 13px;
+            padding: 17px;
         }
 
-        .event-date {
-            min-height: 64px;
-            border-radius: 13px;
+        .event-date-box {
+            min-height: 70px;
+            flex-direction: row;
+            gap: 8px;
+            justify-content: flex-start;
+            padding: 0 15px;
         }
 
         .event-day {
-            font-size: 22px;
-        }
-
-        .event-month {
-            font-size: 10px;
-        }
-
-        .event-title {
-            font-size: 17px;
+            font-size: 25px;
         }
     }
-</style><script>
-(function () {
-    "use strict";
+</style>
 
-    const statusElement = document.getElementById("eventsStatus");
-    const listElement = document.getElementById("eventsList");
+</head><body><main class="events-page"><header class="events-header">
+    <div>
+        <h1>🎉 Події</h1>
+        <p>Заходи та події Ліцею №2</p>
+    </div>
 
-    function escapeHtml(value) {
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+    <a href="dashboard.html" class="back-btn">
+        🏠 Головна
+    </a>
+</header>
+
+<div id="eventsStatus" class="events-status">
+    Завантаження подій...
+</div>
+
+<section id="eventsList" class="events-list"></section>
+
+</main><script>
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const status = document.getElementById("eventsStatus");
+    const list = document.getElementById("eventsList");
+
+    function escapeHTML(value) {
+        if (value === null || value === undefined) return "";
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
     }
 
-    function showStatus(message, isError) {
-        statusElement.textContent = message;
-        statusElement.classList.toggle("error-state", Boolean(isError));
-        statusElement.style.display = "block";
-    }
+    function getDateParts(value) {
 
-    function parseDate(value) {
-        if (!value) return null;
+        if (!value) {
+            return {
+                day: "—",
+                month: "Дата"
+            };
+        }
 
         const date = new Date(value);
 
         if (Number.isNaN(date.getTime())) {
-            return null;
-        }
-
-        return date;
-    }
-
-    function renderDate(value) {
-        const date = parseDate(value);
-
-        if (!date) {
             return {
                 day: "—",
-                month: "Дата"
+                month: escapeHTML(value)
             };
         }
 
@@ -279,146 +247,153 @@
         };
     }
 
-    function formatFullDate(value) {
-        const date = parseDate(value);
+    function formatTime(value) {
+        if (!value) return "";
 
-        if (!date) {
-            return "Дата не вказана";
-        }
-
-        return date.toLocaleDateString("uk-UA", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric"
-        });
+        return escapeHTML(value);
     }
 
     function renderEvents(events) {
-        listElement.innerHTML = "";
 
-        if (!events.length) {
-            statusElement.style.display = "none";
+        if (!events || events.length === 0) {
 
-            listElement.innerHTML = `
-                <div class="empty-state">
-                    📅 Запланованих подій поки немає.
+            status.textContent =
+                "Запланованих подій поки немає.";
+
+            list.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">🎉</div>
+                    <p>Коли буде додано нову подію, вона з'явиться тут.</p>
                 </div>
             `;
 
             return;
         }
 
-        statusElement.style.display = "none";
+        status.textContent =
+            `Подій: ${events.length}`;
 
-        events.forEach(item => {
-            const dateInfo = renderDate(item.event_date);
+        list.innerHTML = events.map(event => {
 
-            const card = document.createElement("article");
-            card.className = "event-card";
+            const date = getDateParts(event.event_date);
 
-            const timeText = item.start_time
-                ? `<span>🕐 ${escapeHtml(item.start_time)}</span>`
-                : "";
+            const title =
+                escapeHTML(event.title || "Подія");
 
-            const locationText = item.location
-                ? `<span>📍 ${escapeHtml(item.location)}</span>`
-                : "";
+            const description =
+                escapeHTML(event.description || "Опис відсутній.");
 
-            const classText = item.class_name
-                ? `<span>👥 ${escapeHtml(item.class_name)}</span>`
-                : "";
+            const location =
+                event.location
+                    ? `📍 ${escapeHTML(event.location)}`
+                    : "";
 
-            card.innerHTML = `
-                <div class="event-date">
-                    <div class="event-day">
-                        ${escapeHtml(dateInfo.day)}
+            const time =
+                event.start_time
+                    ? `🕐 ${formatTime(event.start_time)}`
+                    : "";
+
+            const className =
+                event.class_name
+                    ? `👥 ${escapeHTML(event.class_name)}`
+                    : "";
+
+            return `
+                <article class="event-card">
+
+                    <div class="event-date-box">
+                        <div class="event-day">
+                            ${date.day}
+                        </div>
+
+                        <div class="event-month">
+                            ${date.month}
+                        </div>
                     </div>
 
-                    <div class="event-month">
-                        ${escapeHtml(dateInfo.month)}
-                    </div>
-                </div>
+                    <div class="event-content">
 
-                <div>
-                    <h2 class="event-title">
-                        ${escapeHtml(item.title || "Подія")}
-                    </h2>
+                        <h2>${title}</h2>
 
-                    <div class="event-description">
-                        ${escapeHtml(item.description || "")}
+                        <p class="event-description">
+                            ${description}
+                        </p>
+
+                        <div class="event-meta">
+
+                            ${time
+                                ? `<span class="meta">${time}</span>`
+                                : ""
+                            }
+
+                            ${location
+                                ? `<span class="meta">${location}</span>`
+                                : ""
+                            }
+
+                            ${className
+                                ? `<span class="meta">${className}</span>`
+                                : ""
+                            }
+
+                        </div>
+
                     </div>
 
-                    <div class="event-meta">
-                        <span>📅 ${escapeHtml(formatFullDate(item.event_date))}</span>
-                        ${timeText}
-                        ${locationText}
-                        ${classText}
-                    </div>
-                </div>
+                </article>
             `;
 
-            listElement.appendChild(card);
-        });
+        }).join("");
     }
 
-    async function loadEvents() {
-        listElement.innerHTML = "";
+    try {
 
-        if (
-            typeof window.supabaseClient === "undefined" ||
-            !window.supabaseClient
-        ) {
-            showStatus(
-                "Не вдалося підключити Supabase. Перевір файл supabase.js.",
-                true
-            );
+        if (!window.supabaseClient) {
+
+            status.innerHTML =
+                '<span class="error">Не вдалося підключити Supabase. Перевір supabase.js.</span>';
+
             return;
         }
 
-        showStatus("Завантаження подій...", false);
+        const {
+            data: events,
+            error
+        } = await window.supabaseClient
+            .from("events")
+            .select("*")
+            .order("event_date", {
+                ascending: true,
+                nullsFirst: false
+            });
 
-        try {
-            const { data, error } = await window.supabaseClient
-                .from("events")
-                .select("*")
-                .order("event_date", { ascending: true });
+        if (error) {
 
-            if (error) {
-                console.error("Events Supabase error:", error);
+            console.error("Supabase events error:", error);
 
-                showStatus(
-                    "Не вдалося завантажити події. Перевір таблицю events у Supabase.",
-                    true
-                );
+            status.innerHTML =
+                '<span class="error">Не вдалося завантажити події. Перевір таблицю events та RLS.</span>';
 
-                listElement.innerHTML = `
-                    <div class="empty-state error-state">
-                        ⚠️ Supabase не дозволив отримати дані з таблиці events.
-                    </div>
-                `;
+            list.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">⚠️</div>
+                    <p>Supabase повернув помилку під час отримання подій.</p>
+                </div>
+            `;
 
-                return;
-            }
-
-            renderEvents(Array.isArray(data) ? data : []);
-
-        } catch (error) {
-            console.error("Events loading error:", error);
-
-            showStatus(
-                "Сталася помилка під час завантаження подій.",
-                true
-            );
+            return;
         }
+
+        renderEvents(events);
+
+    } catch (error) {
+
+        console.error("Events loading error:", error);
+
+        status.innerHTML =
+            '<span class="error">Помилка під час завантаження подій.</span>';
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        loadEvents();
-    });
-
-    if (document.readyState !== "loading") {
-        loadEvents();
-    }
-})();
+});
 </script></body>
 </html>
