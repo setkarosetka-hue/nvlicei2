@@ -1,1102 +1,235 @@
-<!DOCTYPE html>
-<html lang="uk">
+<!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Кабінет учня — Ліцей №2</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <style>
-        .student-page {
-            max-width: 1250px;
-            margin: 0 auto;
-            padding: 30px 20px 60px;
-        }
-
-        .student-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .student-title h1 {
-            margin: 0 0 8px;
-            font-size: 32px;
-        }
-
-        .student-title p {
-            margin: 0;
-            color: #6b7280;
-        }
-
-        .student-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 10px 15px;
-        }
-
-        .student-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #2563eb, #4f46e5);
-            color: white;
-            font-weight: 700;
-        }
-
-        .student-profile strong {
-            display: block;
-            margin-bottom: 3px;
-        }
-
-        .student-profile span {
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .student-notice {
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-            color: #9a3412;
-            border-radius: 16px;
-            padding: 14px 18px;
-            margin-bottom: 25px;
-        }
-
-        .student-notice strong {
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .student-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            margin-bottom: 25px;
-        }
-
-        .student-stat {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 18px;
-            padding: 20px;
-            transition: .25s;
-        }
-
-        .student-stat:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,.06);
-        }
-
-        .student-stat-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #eef2ff;
-            font-size: 20px;
-            margin-bottom: 14px;
-        }
-
-        .student-stat h3 {
-            margin: 0 0 5px;
-            font-size: 28px;
-        }
-
-        .student-stat p {
-            margin: 0;
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-        .student-grid {
-            display: grid;
-            grid-template-columns: 1.35fr 1fr;
-            gap: 22px;
-            margin-bottom: 22px;
-        }
-
-        .student-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 20px;
-            padding: 22px;
-        }
-
-        .student-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 18px;
-        }
-
-        .student-card-header h2 {
-            margin: 0;
-            font-size: 20px;
-        }
-
-        .student-link {
-            color: #4f46e5;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .today-date {
-            color: #6b7280;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .lesson-list {
-            display: flex;
-            flex-direction: column;
-            gap: 11px;
-        }
-
-        .lesson-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 13px;
-            border-radius: 14px;
-            background: #f9fafb;
-            border: 1px solid #f0f0f0;
-        }
-
-        .lesson-item.current {
-            background: #eef2ff;
-            border-color: #c7d2fe;
-        }
-
-        .lesson-number {
-            width: 30px;
-            height: 30px;
-            border-radius: 9px;
-            background: #e5e7eb;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .lesson-item.current .lesson-number {
-            background: #4f46e5;
-            color: white;
-        }
-
-        .lesson-info {
-            flex: 1;
-        }
-
-        .lesson-info strong {
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .lesson-info span {
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .lesson-time {
-            font-size: 13px;
-            font-weight: 600;
-            color: #4f46e5;
-        }
-
-        .lesson-status {
-            padding: 5px 9px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 700;
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .lesson-status.next {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .homework-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .homework-item {
-            padding: 15px;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-        }
-
-        .homework-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 7px;
-        }
-
-        .homework-top strong {
-            font-size: 15px;
-        }
-
-        .homework-item p {
-            margin: 0 0 10px;
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .homework-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-        }
-
-        .subject-name {
-            color: #6b7280;
-        }
-
-        .deadline {
-            padding: 5px 8px;
-            border-radius: 8px;
-            background: #fef3c7;
-            color: #92400e;
-            font-weight: 600;
-        }
-
-        .deadline.green {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .grade-list {
-            display: flex;
-            flex-direction: column;
-            gap: 11px;
-        }
-
-        .grade-item {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 15px;
-            align-items: center;
-            padding: 13px;
-            border-radius: 13px;
-            background: #f9fafb;
-        }
-
-        .grade-subject strong {
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .grade-subject span {
-            color: #6b7280;
-            font-size: 12px;
-        }
-
-        .grade-value {
-            min-width: 38px;
-            height: 38px;
-            border-radius: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #eef2ff;
-            color: #4338ca;
-            font-size: 17px;
-            font-weight: 800;
-        }
-
-        .attendance-box {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .attendance-circle {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            background: conic-gradient(
-                #4f46e5 0deg 331deg,
-                #e5e7eb 331deg 360deg
-            );
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .attendance-inner {
-            width: 82px;
-            height: 82px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 21px;
-            font-weight: 800;
-        }
-
-        .attendance-info strong {
-            display: block;
-            margin-bottom: 7px;
-        }
-
-        .attendance-info p {
-            margin: 0;
-            color: #6b7280;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-        }
-
-        .quick-action {
-            display: block;
-            padding: 18px;
-            border-radius: 15px;
-            border: 1px solid #e5e7eb;
-            text-decoration: none;
-            color: inherit;
-            background: #fff;
-            transition: .25s;
-        }
-
-        .quick-action:hover {
-            transform: translateY(-3px);
-            border-color: #c7d2fe;
-            box-shadow: 0 8px 20px rgba(0,0,0,.05);
-        }
-
-        .quick-icon {
-            font-size: 25px;
-            margin-bottom: 10px;
-        }
-
-        .quick-action strong {
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .quick-action span {
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .student-footer {
-            margin-top: 25px;
-            text-align: center;
-            color: #9ca3af;
-            font-size: 13px;
-        }
-
-        @media (max-width: 900px) {
-            .student-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .student-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .quick-actions {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .student-page {
-                padding: 20px 14px 40px;
-            }
-
-            .student-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .student-title h1 {
-                font-size: 26px;
-            }
-
-            .student-profile {
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .student-stats {
-                gap: 10px;
-            }
-
-            .student-stat {
-                padding: 15px;
-            }
-
-            .student-stat h3 {
-                font-size: 24px;
-            }
-
-            .lesson-item {
-                flex-wrap: wrap;
-            }
-
-            .lesson-time {
-                width: 100%;
-                margin-left: 44px;
-            }
-
-            .attendance-box {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .quick-actions {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<header class="site-header">
-
-    <div class="header-container">
-
-        <a href="dashboard.html" class="logo">
-            <span class="logo-mark">Л2</span>
-            <span>Ліцей №2</span>
-        </a>
-
-        <nav class="navigation">
-            <a href="dashboard.html">Головна</a>
-            <a href="schedule.html">Розклад</a>
-            <a href="homework.html">Завдання</a>
-            <a href="tests.html">Тести</a>
-            <a href="messages.html">Повідомлення</a>
-        </nav>
-
-        <button class="mobile-menu" onclick="toggleMenu()">
-            ☰
-        </button>
-
-    </div>
-
+    <meta name="theme-color" content="#07111f">
+    <title>Кабінет учня — Ліцей №2</title><link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="app.js" defer></script>
+
+</head><body class="dashboard-page">
+    <div class="page-background"></div><header class="topbar">
+    <a href="dashboard.html" class="brand">
+        <span class="brand-mark">Л2</span>
+        <span>
+            <strong>Ліцей №2</strong>
+            <small>Кабінет учня</small>
+        </span>
+    </a>
+
+    <button class="mobile-menu-btn" type="button" aria-label="Меню">
+        ☰
+    </button>
+
+    <nav class="main-nav">
+        <a href="dashboard.html">Головна</a>
+        <a href="student.html" class="active">Кабінет</a>
+        <a href="schedule.html">Розклад</a>
+        <a href="homework.html">Домашні завдання</a>
+        <a href="tests.html">Тести</a>
+        <a href="messages.html">Повідомлення</a>
+        <button class="logout-button" type="button">Вийти</button>
+    </nav>
 </header>
 
-<main class="student-page">
+<main class="dashboard-container">
 
-    <!-- ЗАГОЛОВОК -->
+    <section class="dashboard-hero">
+        <div>
+            <span class="eyebrow">КАБІНЕТ УЧНЯ</span>
 
-    <div class="student-header">
+            <h1>
+                Привіт, <span data-user-name>учню</span> 👋
+            </h1>
 
-        <div class="student-title">
-            <h1>Кабінет учня</h1>
-            <p>Твій розклад, завдання, оцінки та шкільні події</p>
+            <p>
+                Тут зібрані твої розклад, домашні завдання,
+                тести, події та повідомлення.
+            </p>
         </div>
 
-        <div class="student-profile">
+        <div class="hero-status">
+            <span class="status-dot"></span>
+            <span>Акаунт активний</span>
+        </div>
+    </section>
 
-            <div class="student-avatar">
-                СШ
+    <section class="quick-grid">
+
+        <a href="schedule.html" class="feature-card">
+            <div class="feature-icon">📅</div>
+
+            <h2>Розклад</h2>
+
+            <p>
+                Переглядай заняття на сьогодні та інші дні.
+            </p>
+
+            <span class="card-link">
+                Відкрити →
+            </span>
+        </a>
+
+        <a href="homework.html" class="feature-card">
+            <div class="feature-icon">📚</div>
+
+            <h2>Домашні завдання</h2>
+
+            <p>
+                Перевіряй актуальні завдання та терміни виконання.
+            </p>
+
+            <span class="card-link">
+                Відкрити →
+            </span>
+        </a>
+
+        <a href="tests.html" class="feature-card">
+            <div class="feature-icon">📝</div>
+
+            <h2>Тести</h2>
+
+            <p>
+                Переглядай доступні тести та навчальні матеріали.
+            </p>
+
+            <span class="card-link">
+                Відкрити →
+            </span>
+        </a>
+
+        <a href="attendance.html" class="feature-card">
+            <div class="feature-icon">✅</div>
+
+            <h2>Відвідування</h2>
+
+            <p>
+                Переглядай інформацію про свою присутність на заняттях.
+            </p>
+
+            <span class="card-link">
+                Відкрити →
+            </span>
+        </a>
+
+        <a href="events.html" class="feature-card">
+            <div class="feature-icon">🎓</div>
+
+            <h2>Події</h2>
+
+            <p>
+                Не пропускай шкільні заходи та важливі події.
+            </p>
+
+            <span class="card-link">
+                Відкрити →
+            </span>
+        </a>
+
+        <a href="announcements.html" class="feature-card">
+            <div class="feature-icon">📢</div>
+
+            <h2>Оголошення</h2>
+
+            <p>
+                Переглядай важливі повідомлення від ліцею.
+            </p>
+
+            <span class="card-link">
+                Відкрити →
+            </span>
+        </a>
+
+        <a href="messages.html" class="feature-card">
+            <div class="feature-icon">💬</div>
+
+            <h2>Повідомлення</h2>
+
+            <p>
+                Переглядай свої повідомлення та відповіді.
+            </p>
+
+            <span class="card-link">
+                Відкрити →
+            </span>
+        </a>
+
+    </section>
+
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">АКАУНТ</span>
+                <h2>Мій профіль</h2>
+            </div>
+        </div>
+
+        <div class="profile-panel">
+
+            <div class="profile-row">
+                <span>Ім'я</span>
+                <strong data-user-name>—</strong>
+            </div>
+
+            <div class="profile-row">
+                <span>Email</span>
+                <strong data-user-email>—</strong>
+            </div>
+
+            <div class="profile-row">
+                <span>Роль</span>
+                <strong data-user-role>Учень</strong>
+            </div>
+
+            <div class="profile-row">
+                <span>Статус</span>
+                <strong class="success-text">
+                    Активний
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="dashboard-section">
+
+        <div class="info-banner">
+
+            <div class="info-banner-icon">
+                💡
             </div>
 
             <div>
-                <strong>Самуїл Шапошников</strong>
-                <span>Учень • 6-А клас</span>
+                <h3>Все в одному місці</h3>
+
+                <p>
+                    Використовуй меню вище, щоб швидко перейти
+                    до потрібного розділу навчальної системи.
+                </p>
             </div>
-
-        </div>
-
-    </div>
-
-    <!-- ПОПЕРЕДЖЕННЯ -->
-
-    <div class="student-notice">
-
-        <strong>⚠️ Тестовий режим</strong>
-
-        Дані кабінету демонстраційні. Оцінки, завдання та відвідування
-        ще не підключені до реальної бази даних.
-
-    </div>
-
-    <!-- СТАТИСТИКА -->
-
-    <section class="student-stats">
-
-        <div class="student-stat">
-
-            <div class="student-stat-icon">
-                📚
-            </div>
-
-            <h3>6</h3>
-
-            <p>
-                Уроків сьогодні
-            </p>
-
-        </div>
-
-        <div class="student-stat">
-
-            <div class="student-stat-icon">
-                📝
-            </div>
-
-            <h3>3</h3>
-
-            <p>
-                Нових завдання
-            </p>
-
-        </div>
-
-        <div class="student-stat">
-
-            <div class="student-stat-icon">
-                ⭐
-            </div>
-
-            <h3>9.2</h3>
-
-            <p>
-                Середній бал
-            </p>
-
-        </div>
-
-        <div class="student-stat">
-
-            <div class="student-stat-icon">
-                💬
-            </div>
-
-            <h3>2</h3>
-
-            <p>
-                Нових повідомлення
-            </p>
 
         </div>
 
     </section>
-
-    <div class="student-grid">
-
-        <!-- РОЗКЛАД -->
-
-        <section class="student-card">
-
-            <div class="student-card-header">
-
-                <h2>
-                    📅 Сьогодні
-                </h2>
-
-                <a href="schedule.html" class="student-link">
-                    Повний розклад →
-                </a>
-
-            </div>
-
-            <div class="today-date">
-                Понеділок, 21 вересня 2026
-            </div>
-
-            <div class="lesson-list">
-
-                <div class="lesson-item">
-
-                    <div class="lesson-number">
-                        1
-                    </div>
-
-                    <div class="lesson-info">
-                        <strong>Математика</strong>
-                        <span>Кабінет 201</span>
-                    </div>
-
-                    <div class="lesson-time">
-                        08:00
-                    </div>
-
-                    <div class="lesson-status">
-                        Завершено
-                    </div>
-
-                </div>
-
-                <div class="lesson-item current">
-
-                    <div class="lesson-number">
-                        2
-                    </div>
-
-                    <div class="lesson-info">
-                        <strong>Українська мова</strong>
-                        <span>Кабінет 105</span>
-                    </div>
-
-                    <div class="lesson-time">
-                        08:55
-                    </div>
-
-                    <div class="lesson-status next">
-                        Наступний
-                    </div>
-
-                </div>
-
-                <div class="lesson-item">
-
-                    <div class="lesson-number">
-                        3
-                    </div>
-
-                    <div class="lesson-info">
-                        <strong>Географія</strong>
-                        <span>Кабінет 204</span>
-                    </div>
-
-                    <div class="lesson-time">
-                        09:50
-                    </div>
-
-                </div>
-
-                <div class="lesson-item">
-
-                    <div class="lesson-number">
-                        4
-                    </div>
-
-                    <div class="lesson-info">
-                        <strong>Біологія</strong>
-                        <span>Кабінет 301</span>
-                    </div>
-
-                    <div class="lesson-time">
-                        10:55
-                    </div>
-
-                </div>
-
-                <div class="lesson-item">
-
-                    <div class="lesson-number">
-                        5
-                    </div>
-
-                    <div class="lesson-info">
-                        <strong>Англійська мова</strong>
-                        <span>Кабінет 107</span>
-                    </div>
-
-                    <div class="lesson-time">
-                        11:50
-                    </div>
-
-                </div>
-
-                <div class="lesson-item">
-
-                    <div class="lesson-number">
-                        6
-                    </div>
-
-                    <div class="lesson-info">
-                        <strong>Фізична культура</strong>
-                        <span>Спортивна зала</span>
-                    </div>
-
-                    <div class="lesson-time">
-                        12:45
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- ДОМАШНІ ЗАВДАННЯ -->
-
-        <section class="student-card">
-
-            <div class="student-card-header">
-
-                <h2>
-                    📝 Домашні завдання
-                </h2>
-
-                <a href="homework.html" class="student-link">
-                    Усі →
-                </a>
-
-            </div>
-
-            <div class="homework-list">
-
-                <div class="homework-item">
-
-                    <div class="homework-top">
-                        <strong>Математика</strong>
-
-                        <span class="deadline">
-                            До завтра
-                        </span>
-                    </div>
-
-                    <p>
-                        Вправи 245–247. Повторити правила роботи з дробами.
-                    </p>
-
-                    <div class="homework-bottom">
-
-                        <span class="subject-name">
-                            6-А • Урок 1
-                        </span>
-
-                        <span>
-                            ⏳ Не виконано
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div class="homework-item">
-
-                    <div class="homework-top">
-                        <strong>Українська мова</strong>
-
-                        <span class="deadline">
-                            До завтра
-                        </span>
-                    </div>
-
-                    <p>
-                        Вправа 86, записати та пояснити правила.
-                    </p>
-
-                    <div class="homework-bottom">
-
-                        <span class="subject-name">
-                            6-А • Урок 2
-                        </span>
-
-                        <span>
-                            ⏳ Не виконано
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div class="homework-item">
-
-                    <div class="homework-top">
-                        <strong>Географія</strong>
-
-                        <span class="deadline green">
-                            Виконано
-                        </span>
-                    </div>
-
-                    <p>
-                        Підготувати коротке повідомлення про материки.
-                    </p>
-
-                    <div class="homework-bottom">
-
-                        <span class="subject-name">
-                            6-А • Урок 3
-                        </span>
-
-                        <span>
-                            ✓ Готово
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </div>
-
-    <div class="student-grid">
-
-        <!-- ОЦІНКИ -->
-
-        <section class="student-card">
-
-            <div class="student-card-header">
-
-                <h2>
-                    ⭐ Останні оцінки
-                </h2>
-
-                <a href="#" class="student-link"
-                   onclick="showGrades(); return false;">
-                    Усі оцінки →
-                </a>
-
-            </div>
-
-            <div class="grade-list">
-
-                <div class="grade-item">
-
-                    <div class="grade-subject">
-                        <strong>Математика</strong>
-                        <span>Самостійна робота</span>
-                    </div>
-
-                    <div class="grade-value">
-                        10
-                    </div>
-
-                </div>
-
-                <div class="grade-item">
-
-                    <div class="grade-subject">
-                        <strong>Українська мова</strong>
-                        <span>Вправа на уроці</span>
-                    </div>
-
-                    <div class="grade-value">
-                        9
-                    </div>
-
-                </div>
-
-                <div class="grade-item">
-
-                    <div class="grade-subject">
-                        <strong>Біологія</strong>
-                        <span>Тест</span>
-                    </div>
-
-                    <div class="grade-value">
-                        11
-                    </div>
-
-                </div>
-
-                <div class="grade-item">
-
-                    <div class="grade-subject">
-                        <strong>Англійська мова</strong>
-                        <span>Vocabulary</span>
-                    </div>
-
-                    <div class="grade-value">
-                        8
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- ВІДВІДУВАННЯ -->
-
-        <section class="student-card">
-
-            <div class="student-card-header">
-
-                <h2>
-                    ✅ Відвідування
-                </h2>
-
-                <a href="attendance.html" class="student-link">
-                    Детальніше →
-                </a>
-
-            </div>
-
-            <div class="attendance-box">
-
-                <div class="attendance-circle">
-
-                    <div class="attendance-inner">
-                        92%
-                    </div>
-
-                </div>
-
-                <div class="attendance-info">
-
-                    <strong>
-                        Хороша відвідуваність
-                    </strong>
-
-                    <p>
-                        Відвідано 46 із 50 уроків.
-                        <br>
-                        Пропущено: 3.
-                        <br>
-                        Запізнень: 1.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </div>
-
-    <!-- ШВИДКІ ДІЇ -->
-
-    <section class="student-card">
-
-        <div class="student-card-header">
-
-            <h2>
-                ⚡ Швидкий доступ
-            </h2>
-
-        </div>
-
-        <div class="quick-actions">
-
-            <a href="schedule.html" class="quick-action">
-
-                <div class="quick-icon">
-                    📅
-                </div>
-
-                <strong>
-                    Розклад
-                </strong>
-
-                <span>
-                    Переглянути всі уроки
-                </span>
-
-            </a>
-
-            <a href="homework.html" class="quick-action">
-
-                <div class="quick-icon">
-                    📝
-                </div>
-
-                <strong>
-                    Завдання
-                </strong>
-
-                <span>
-                    Домашня робота
-                </span>
-
-            </a>
-
-            <a href="tests.html" class="quick-action">
-
-                <div class="quick-icon">
-                    📋
-                </div>
-
-                <strong>
-                    Тести
-                </strong>
-
-                <span>
-                    Доступні та завершені
-                </span>
-
-            </a>
-
-            <a href="messages.html" class="quick-action">
-
-                <div class="quick-icon">
-                    💬
-                </div>
-
-                <strong>
-                    Повідомлення
-                </strong>
-
-                <span>
-                    Чати та повідомлення
-                </span>
-
-            </a>
-
-        </div>
-
-    </section>
-
-    <div class="student-footer">
-        Ліцей №2 • Електронна система • Тестовий режим
-    </div>
 
 </main>
 
-<script src="app.js"></script>
+<footer class="site-footer">
 
-<script>
-    const savedUser = localStorage.getItem("lyceum2_user");
+    <div>
+        <strong>Ліцей №2</strong>
+        <span>Цифрова система ліцею</span>
+    </div>
 
-    if (!savedUser) {
-        window.location.href = "login.html";
-    } else {
-        try {
-            const user = JSON.parse(savedUser);
+    <span>
+        © <span id="currentYear"></span> Ліцей №2
+    </span>
 
-            if (user.role !== "student" && user.role !== "admin") {
-                alert("Ця сторінка доступна лише для учнів.");
-                window.location.href = "dashboard.html";
-            }
-
-        } catch (error) {
-            localStorage.removeItem("lyceum2_user");
-            window.location.href = "login.html";
-        }
-    }
-
-    function showGrades() {
-        alert(
-            "Розділ усіх оцінок буде підключено пізніше.\n\n" +
-            "Зараз відображаються демонстраційні оцінки."
-        );
-    }
-</script>
+</footer>
 
 </body>
 </html>
