@@ -1,500 +1,324 @@
 <!DOCTYPE html><html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#07111f">
-    <title>Кабінет — Ліцей №2</title><link rel="stylesheet" href="style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
-<script src="app.js" defer></script>
-
-<style>
-    .dashboard-page {
-        min-height: 100vh;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Панель — Ліцей №2</title>  <link rel="stylesheet" href="style.css">  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <script src="supabase.js"></script>  <script src="app.js" defer></script>  <style>
+    body {
+      background:
+        radial-gradient(circle at 10% 0%, rgba(59,130,246,.2), transparent 32%),
+        radial-gradient(circle at 90% 100%, rgba(14,165,233,.14), transparent 35%),
+        #07111f;
     }
 
-    .dashboard-main {
-        width: min(1180px, calc(100% - 32px));
-        margin: 0 auto;
-        padding: 32px 0 48px;
+    .dashboard {
+      width: min(1150px, calc(100% - 28px));
+      margin: auto;
+      padding: 25px 0 50px;
     }
 
-    .dashboard-hero {
-        position: relative;
-        overflow: hidden;
-        padding: 28px;
-        margin-bottom: 24px;
-        border: 1px solid var(--border-color);
-        border-radius: 24px;
-        background:
-            radial-gradient(circle at top right, rgba(70, 130, 255, .20), transparent 35%),
-            radial-gradient(circle at bottom left, rgba(90, 70, 220, .14), transparent 35%),
-            var(--surface-color);
-        box-shadow: 0 18px 50px rgba(0, 0, 0, .20);
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
     }
 
-    .dashboard-hero h1 {
-        margin: 0 0 8px;
-        font-size: clamp(28px, 5vw, 42px);
-        line-height: 1.1;
+    .top h1 {
+      margin: 0;
+      font-size: clamp(27px, 7vw, 44px);
     }
 
-    .dashboard-hero p {
-        margin: 0;
-        color: var(--muted-text);
-        font-size: 16px;
+    .top p {
+      margin: 7px 0 0;
+      opacity: .65;
     }
 
-    .dashboard-user {
-        margin-top: 18px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
+    .user-box {
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      font-size: 14px;
+      word-break: break-word;
     }
 
-    .dashboard-user-badge {
-        display: inline-flex;
-        align-items: center;
-        min-height: 38px;
-        padding: 8px 14px;
-        border: 1px solid var(--border-color);
-        border-radius: 999px;
-        background: rgba(255, 255, 255, .04);
-        color: var(--text-color);
-        font-size: 14px;
+    .hero {
+      padding: 25px;
+      border-radius: 25px;
+      margin-bottom: 22px;
+      background: linear-gradient(
+        135deg,
+        rgba(59,130,246,.2),
+        rgba(14,165,233,.07)
+      );
+      border: 1px solid rgba(96,165,250,.18);
+      box-shadow: 0 18px 50px rgba(0,0,0,.18);
     }
 
-    .dashboard-section-title {
-        margin: 28px 0 14px;
-        font-size: 21px;
-        font-weight: 750;
+    .hero h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
     }
 
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
+    .hero p {
+      margin: 0;
+      opacity: .72;
+      line-height: 1.55;
     }
 
-    .dashboard-button {
-        width: 100%;
-        min-width: 0;
-        min-height: 112px;
+    .section-title {
+      margin: 28px 0 13px;
+      font-size: 19px;
+    }
+
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
+    }
+
+    .module {
+      min-height: 125px;
+      padding: 19px;
+      box-sizing: border-box;
+      border-radius: 21px;
+      text-decoration: none;
+      color: inherit;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.09);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+      backdrop-filter: blur(14px);
+    }
+
+    .module:hover {
+      transform: translateY(-3px);
+      border-color: rgba(96,165,250,.35);
+      background: rgba(255,255,255,.08);
+    }
+
+    .icon {
+      font-size: 29px;
+      margin-bottom: 11px;
+    }
+
+    .module strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 5px;
+    }
+
+    .module span {
+      font-size: 13px;
+      opacity: .6;
+      line-height: 1.4;
+    }
+
+    .quick {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 13px;
+    }
+
+    .quick a {
+      padding: 15px;
+      border-radius: 17px;
+      text-decoration: none;
+      color: white;
+      text-align: center;
+      background: rgba(59,130,246,.12);
+      border: 1px solid rgba(96,165,250,.16);
+    }
+
+    .admin-box {
+      display: none;
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 22px;
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.18);
+    }
+
+    .admin-box a {
+      display: inline-flex;
+      margin-top: 10px;
+      padding: 11px 15px;
+      border-radius: 13px;
+      background: rgba(239,68,68,.15);
+      color: white;
+      text-decoration: none;
+    }
+
+    .logout {
+      margin-top: 25px;
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 16px;
+      color: white;
+      background: rgba(255,255,255,.07);
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    @media (max-width: 800px) {
+      .modules {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .modules,
+      .quick {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
         padding: 20px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        box-sizing: border-box;
-
-        border: 1px solid var(--border-color);
-        border-radius: 20px;
-        background: var(--surface-color);
-        color: var(--text-color);
-        text-decoration: none;
-
-        overflow: hidden;
-        position: relative;
-
-        transition:
-            transform .18s ease,
-            border-color .18s ease,
-            background .18s ease,
-            box-shadow .18s ease;
+      }
     }
+  </style></head><body>
+  <main class="dashboard"><header class="top">
+  <div>
+    <h1>Ліцей №2</h1>
+    <p>Особистий кабінет</p>
+  </div>
 
-    .dashboard-button:hover {
-        transform: translateY(-3px);
-        border-color: rgba(100, 150, 255, .45);
-        background: var(--surface-hover, rgba(255,255,255,.07));
-        box-shadow: 0 12px 30px rgba(0, 0, 0, .18);
-    }
+  <div class="user-box">
+    <span id="userEmail">Завантаження…</span>
+  </div>
+</header>
 
-    .dashboard-button:active {
-        transform: scale(.985);
-    }
-
-    .dashboard-icon {
-        flex: 0 0 54px;
-        width: 54px;
-        height: 54px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 16px;
-        background: rgba(80, 130, 255, .13);
-        border: 1px solid rgba(100, 150, 255, .18);
-
-        font-size: 27px;
-        line-height: 1;
-    }
-
-    .dashboard-button-content {
-        min-width: 0;
-        flex: 1;
-    }
-
-    .dashboard-button-title {
-        display: block;
-        margin-bottom: 5px;
-
-        font-size: 17px;
-        font-weight: 750;
-        line-height: 1.2;
-
-        overflow-wrap: anywhere;
-    }
-
-    .dashboard-button-description {
-        display: block;
-
-        color: var(--muted-text);
-        font-size: 13px;
-        line-height: 1.4;
-
-        overflow-wrap: anywhere;
-    }
-
-    .dashboard-arrow {
-        flex: 0 0 auto;
-        font-size: 20px;
-        opacity: .55;
-    }
-
-    .dashboard-account {
-        margin-top: 28px;
-        padding: 20px;
-        border: 1px solid var(--border-color);
-        border-radius: 20px;
-        background: var(--surface-color);
-    }
-
-    .dashboard-account-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-    }
-
-    .dashboard-account-info {
-        min-width: 0;
-    }
-
-    .dashboard-account-name {
-        font-weight: 750;
-        margin-bottom: 4px;
-    }
-
-    .dashboard-account-email {
-        color: var(--muted-text);
-        font-size: 14px;
-        overflow-wrap: anywhere;
-    }
-
-    .dashboard-logout {
-        flex: 0 0 auto;
-    }
-
-    @media (max-width: 720px) {
-        .dashboard-main {
-            width: min(100% - 20px, 600px);
-            padding: 18px 0 32px;
-        }
-
-        .dashboard-hero {
-            padding: 22px 18px;
-            border-radius: 20px;
-        }
-
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-
-        .dashboard-button {
-            min-height: 92px;
-            padding: 16px;
-            border-radius: 17px;
-            gap: 13px;
-        }
-
-        .dashboard-icon {
-            flex-basis: 48px;
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            font-size: 24px;
-        }
-
-        .dashboard-button-title {
-            font-size: 16px;
-        }
-
-        .dashboard-button-description {
-            font-size: 12px;
-        }
-
-        .dashboard-arrow {
-            font-size: 18px;
-        }
-
-        .dashboard-account-row {
-            align-items: stretch;
-            flex-direction: column;
-        }
-
-        .dashboard-logout {
-            width: 100%;
-        }
-    }
-
-    @media (max-width: 420px) {
-        .dashboard-main {
-            width: min(100% - 14px, 600px);
-        }
-
-        .dashboard-hero {
-            padding: 19px 15px;
-        }
-
-        .dashboard-button {
-            min-height: 86px;
-            padding: 13px;
-            gap: 10px;
-        }
-
-        .dashboard-icon {
-            flex-basis: 43px;
-            width: 43px;
-            height: 43px;
-            font-size: 21px;
-        }
-
-        .dashboard-button-title {
-            font-size: 15px;
-        }
-
-        .dashboard-button-description {
-            display: none;
-        }
-    }
-</style>
-
-</head><body class="dashboard-page"><header class="site-header">
-    <div class="container header-inner">
-        <a href="index.html" class="brand">
-            <span class="brand-mark">Л2</span>
-            <span class="brand-text">
-                <strong>Ліцей №2</strong>
-                <small>Особистий кабінет</small>
-            </span>
-        </a>    <button
-        type="button"
-        class="mobile-menu-button"
-        id="mobileMenuButton"
-        aria-label="Відкрити меню"
-        aria-expanded="false">
-        ☰
-    </button>
-
-    <nav class="main-nav" id="mainNav">
-        <a href="dashboard.html" class="active">Кабінет</a>
-        <a href="schedule.html">Розклад</a>
-        <a href="homework.html">Домашні завдання</a>
-        <a href="messages.html">Повідомлення</a>
-    </nav>
-</div>
-
-</header><main class="dashboard-main"><section class="dashboard-hero">
-    <h1>Вітаємо в кабінеті 👋</h1>
-    <p>Усе необхідне для навчання та спілкування — в одному місці.</p>
-
-    <div class="dashboard-user">
-        <span class="dashboard-user-badge" id="dashboardUserName">
-            Користувач
-        </span>
-
-        <span class="dashboard-user-badge" id="dashboardUserRole">
-            Завантаження...
-        </span>
-    </div>
+<section class="hero">
+  <h2 id="welcome">Вітаємо! 👋</h2>
+  <p>
+    Усі основні розділи ліцею зібрані в одному місці.
+    Оберіть потрібний розділ нижче.
+  </p>
 </section>
 
-<h2 class="dashboard-section-title">Навчання</h2>
+<h2 class="section-title">Основні розділи</h2>
 
-<section class="dashboard-grid">
+<section class="modules">
 
-    <a class="dashboard-button" href="schedule.html">
-        <span class="dashboard-icon">📅</span>
-        <span class="dashboard-button-content">
-            <span class="dashboard-button-title">Розклад</span>
-            <span class="dashboard-button-description">
-                Переглянути розклад уроків
-            </span>
-        </span>
-        <span class="dashboard-arrow">›</span>
-    </a>
+  <a class="module" href="schedule.html">
+    <div class="icon">📚</div>
+    <strong>Розклад</strong>
+    <span>Перегляд розкладу занять.</span>
+  </a>
 
-    <a class="dashboard-button" href="homework.html">
-        <span class="dashboard-icon">📚</span>
-        <span class="dashboard-button-content">
-            <span class="dashboard-button-title">Домашні завдання</span>
-            <span class="dashboard-button-description">
-                Переглянути поточні завдання
-            </span>
-        </span>
-        <span class="dashboard-arrow">›</span>
-    </a>
+  <a class="module" href="homework.html">
+    <div class="icon">📝</div>
+    <strong>Домашні завдання</strong>
+    <span>Завдання та терміни виконання.</span>
+  </a>
 
-    <a class="dashboard-button" href="tests.html">
-        <span class="dashboard-icon">📝</span>
-        <span class="dashboard-button-content">
-            <span class="dashboard-button-title">Тести</span>
-            <span class="dashboard-button-description">
-                Перевірки знань та навчальні тести
-            </span>
-        </span>
-        <span class="dashboard-arrow">›</span>
-    </a>
+  <a class="module" href="tests.html">
+    <div class="icon">🧪</div>
+    <strong>Тести</strong>
+    <span>Контрольні та онлайн-тести.</span>
+  </a>
 
-    <a class="dashboard-button" href="attendance.html">
-        <span class="dashboard-icon">✅</span>
-        <span class="dashboard-button-content">
-            <span class="dashboard-button-title">Відвідуваність</span>
-            <span class="dashboard-button-description">
-                Перегляд інформації про відвідування
-            </span>
-        </span>
-        <span class="dashboard-arrow">›</span>
-    </a>
+  <a class="module" href="messages.html">
+    <div class="icon">💬</div>
+    <strong>Повідомлення</strong>
+    <span>Особисті повідомлення та звернення.</span>
+  </a>
+
+  <a class="module" href="announcements.html">
+    <div class="icon">📢</div>
+    <strong>Оголошення</strong>
+    <span>Важлива інформація від ліцею.</span>
+  </a>
+
+  <a class="module" href="events.html">
+    <div class="icon">📅</div>
+    <strong>Події</strong>
+    <span>Заходи та події ліцею.</span>
+  </a>
+
+  <a class="module" href="attendance.html">
+    <div class="icon">✅</div>
+    <strong>Відвідування</strong>
+    <span>Інформація про присутність.</span>
+  </a>
+
+  <a class="module" href="student.html">
+    <div class="icon">🎓</div>
+    <strong>Кабінет учня</strong>
+    <span>Особистий розділ учня.</span>
+  </a>
+
+  <a class="module" href="teacher.html">
+    <div class="icon">👨‍🏫</div>
+    <strong>Кабінет учителя</strong>
+    <span>Розділ для педагогів.</span>
+  </a>
 
 </section>
 
-<h2 class="dashboard-section-title">Спілкування</h2>
+<h2 class="section-title">Швидкий доступ</h2>
 
-<section class="dashboard-grid">
-
-    <a class="dashboard-button" href="messages.html">
-        <span class="dashboard-icon">💬</span>
-        <span class="dashboard-button-content">
-            <span class="dashboard-button-title">Повідомлення</span>
-            <span class="dashboard-button-description">
-                Особисті та службові повідомлення
-            </span>
-        </span>
-        <span class="dashboard-arrow">›</span>
-    </a>
-
-    <a class="dashboard-button" href="announcements.html">
-        <span class="dashboard-icon">📢</span>
-        <span class="dashboard-button-content">
-            <span class="dashboard-button-title">Оголошення</span>
-            <span class="dashboard-button-description">
-                Важливі новини ліцею
-            </span>
-        </span>
-        <span class="dashboard-arrow">›</span>
-    </a>
-
-    <a class="dashboard-button" href="events.html">
-        <span class="dashboard-icon">🎉</span>
-        <span class="dashboard-button-content">
-            <span class="dashboard-button-title">Події</span>
-            <span class="dashboard-button-description">
-                Заходи та події ліцею
-            </span>
-        </span>
-        <span class="dashboard-arrow">›</span>
-    </a>
-
+<section class="quick">
+  <a href="announcements.html">📢 Оголошення</a>
+  <a href="messages.html">💬 Повідомлення</a>
 </section>
 
-<section class="dashboard-account">
-    <div class="dashboard-account-row">
-        <div class="dashboard-account-info">
-            <div class="dashboard-account-name" id="dashboardAccountName">
-                Користувач
-            </div>
-
-            <div class="dashboard-account-email" id="dashboardAccountEmail">
-                Завантаження...
-            </div>
-        </div>
-
-        <button
-            type="button"
-            class="secondary-button dashboard-logout"
-            id="logoutButton">
-            Вийти з акаунта
-        </button>
-    </div>
+<section id="adminBox" class="admin-box">
+  <strong>⚙️ Адміністрування</strong>
+  <div style="opacity:.7;margin-top:6px;">
+    Вам доступна адміністративна панель.
+  </div>
+  <a href="admin.html">Відкрити адмін-панель</a>
 </section>
 
-</main><footer class="site-footer">
-    <div class="container">
-        <p>© <span id="currentYear"></span> Ліцей №2</p>
-    </div>
-</footer><script>
-document.addEventListener("DOMContentLoaded", async function () {
-    const nameElement = document.getElementById("dashboardUserName");
-    const roleElement = document.getElementById("dashboardUserRole");
-    const accountNameElement = document.getElementById("dashboardAccountName");
-    const emailElement = document.getElementById("dashboardAccountEmail");
-    const logoutButton = document.getElementById("logoutButton");
+<button class="logout" onclick="logout()">
+  Вийти з акаунта
+</button>
 
-    const roleNames = {
-        admin: "Адміністратор",
-        teacher: "Учитель",
-        student: "Учень",
-        parent: "Батько / мати",
-        pending: "Очікує підтвердження"
-    };
+  </main>  <script>
+    async function loadDashboardUser() {
+      if (!window.supabaseClient) {
+        document.getElementById("userEmail").textContent =
+          "Supabase не підключено";
+        return;
+      }
 
-    try {
-        if (typeof getCurrentUser === "function") {
-            const user = await getCurrentUser();
+      try {
+        const {
+          data: { user },
+          error
+        } = await window.supabaseClient.auth.getUser();
 
-            if (user) {
-                emailElement.textContent = user.email || "Email не вказано";
+        if (error || !user) return;
 
-                if (typeof getCurrentProfile === "function") {
-                    const profile = await getCurrentProfile();
+        document.getElementById("userEmail").textContent =
+          user.email || "Користувач";
 
-                    if (profile) {
-                        const name = profile.full_name || "Користувач";
-                        const role = roleNames[profile.role] || profile.role || "Користувач";
+        const profileResult = await window.supabaseClient
+          .from("profiles")
+          .select("full_name,role")
+          .eq("id", user.id)
+          .maybeSingle();
 
-                        nameElement.textContent = name;
-                        roleElement.textContent = role;
-                        accountNameElement.textContent = name;
-                    }
-                }
-            }
+        const profile = profileResult.data;
+
+        if (profile && profile.full_name) {
+          document.getElementById("welcome").textContent =
+            `Вітаємо, ${profile.full_name}! 👋`;
         }
-    } catch (error) {
-        console.error("Dashboard profile error:", error);
+
+        if (profile && profile.role === "admin") {
+          document.getElementById("adminBox").style.display = "block";
+        }
+
+      } catch (error) {
+        console.error("Dashboard user error:", error);
+      }
     }
 
-    if (logoutButton) {
-        logoutButton.addEventListener("click", async function () {
-            logoutButton.disabled = true;
-            logoutButton.textContent = "Вихід...";
-
-            try {
-                if (typeof logout === "function") {
-                    await logout();
-                } else if (window.supabaseClient) {
-                    await supabaseClient.auth.signOut({ scope: "global" });
-                    window.location.replace("login.html");
-                }
-            } catch (error) {
-                console.error("Logout error:", error);
-                window.location.replace("login.html");
-            }
-        });
-    }
-});
-</script></body>
+    document.addEventListener("DOMContentLoaded", loadDashboardUser);
+  </script></body>
 </html>
