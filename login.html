@@ -5,7 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Вхід — Ліцей №2</title>
-  <link rel="stylesheet" href="style.css" />  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <script src="supabase.js"></script>  <style>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>  <style>
     .auth-tabs {
       position: relative;
       display: grid;
@@ -30,9 +32,7 @@
       font: inherit;
       font-weight: 800;
       cursor: pointer;
-      transition:
-        color .25s ease,
-        transform .2s ease;
+      transition: color .25s ease, transform .2s ease;
     }
 
     .auth-tab:hover {
@@ -59,9 +59,7 @@
       box-shadow:
         0 8px 24px rgba(40,104,255,.30),
         inset 0 1px 0 rgba(255,255,255,.18);
-      transition:
-        transform .32s cubic-bezier(.22,1,.36,1),
-        background .25s ease;
+      transition: transform .32s cubic-bezier(.22,1,.36,1);
     }
 
     .auth-tabs.register-active .auth-tab-slider {
@@ -123,9 +121,8 @@
         transform: translateY(0);
       }
     }
-  </style></head><body class="auth-page">  <main class="auth-container"><section class="auth-card">
-
-  <div class="auth-logo">
+  </style></head><body class="auth-page">  <main class="auth-container">
+    <section class="auth-card">  <div class="auth-logo">
     <div class="logo-mark">Л2</div>
 
     <div>
@@ -167,10 +164,7 @@
 
   <div class="auth-form-wrap">
 
-    <div
-      id="loginPanel"
-      class="auth-form-panel"
-    >
+    <div id="loginPanel" class="auth-form-panel">
 
       <form id="loginForm">
 
@@ -267,10 +261,7 @@
           Ваша роль
         </label>
 
-        <select
-          id="registerRole"
-          required
-        >
+        <select id="registerRole" required>
           <option value="">
             Оберіть роль
           </option>
@@ -326,195 +317,399 @@
 
 </section>
 
-  </main><script>
-document.addEventListener("DOMContentLoaded", async () => {
+  </main>  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
 
-  const loginForm =
-    document.getElementById("loginForm");
+      const loginForm = document.getElementById("loginForm");
+      const registerForm = document.getElementById("registerForm");
 
-  const registerForm =
-    document.getElementById("registerForm");
+      const loginPanel = document.getElementById("loginPanel");
+      const registerPanel = document.getElementById("registerPanel");
 
-  const loginPanel =
-    document.getElementById("loginPanel");
+      const loginTab = document.getElementById("loginTab");
+      const registerTab = document.getElementById("registerTab");
+      const authTabs = document.getElementById("authTabs");
 
-  const registerPanel =
-    document.getElementById("registerPanel");
+      const message = document.getElementById("message");
 
-  const loginTab =
-    document.getElementById("loginTab");
+      const show = (text, type = "info") => {
+        message.textContent = text;
+        message.className = "auth-message " + type;
+        message.style.display = "block";
+      };
 
-  const registerTab =
-    document.getElementById("registerTab");
+      const switchTab = async (login) => {
 
-  const authTabs =
-    document.getElementById("authTabs");
+        const currentPanel = login
+          ? registerPanel
+          : loginPanel;
 
-  const message =
-    document.getElementById("message");
+        const nextPanel = login
+          ? loginPanel
+          : registerPanel;
 
+        loginTab.classList.toggle("active", login);
+        registerTab.classList.toggle("active", !login);
 
-  const show = (
-    text,
-    type = "info"
-  ) => {
-
-    message.textContent = text;
-
-    message.className =
-      "auth-message " + type;
-
-    message.style.display =
-      "block";
-  };
-
-
-  const switchTab = async (login) => {
-
-    const currentPanel =
-      login
-        ? registerPanel
-        : loginPanel;
-
-    const nextPanel =
-      login
-        ? loginPanel
-        : registerPanel;
-
-
-    loginTab.classList.toggle(
-      "active",
-      login
-    );
-
-    registerTab.classList.toggle(
-      "active",
-      !login
-    );
-
-    authTabs.classList.toggle(
-      "register-active",
-      !login
-    );
-
-
-    currentPanel.classList.add(
-      "switching"
-    );
-
-
-    await new Promise(resolve =>
-      setTimeout(resolve, 140)
-    );
-
-
-    currentPanel.style.display =
-      "none";
-
-    currentPanel.classList.remove(
-      "switching"
-    );
-
-
-    nextPanel.style.display =
-      "block";
-
-
-    nextPanel.classList.remove(
-      "auth-form-panel"
-    );
-
-    void nextPanel.offsetWidth;
-
-    nextPanel.classList.add(
-      "auth-form-panel"
-    );
-
-
-    message.style.display =
-      "none";
-  };
-
-
-  loginTab.onclick = () =>
-    switchTab(true);
-
-  registerTab.onclick = () =>
-    switchTab(false);
-
-
-  async function getSupabaseClient() {
-
-    if (
-      window.supabaseClient &&
-      window.supabaseClient.auth
-    ) {
-      return window.supabaseClient;
-    }
-
-    for (
-      let attempt = 0;
-      attempt < 50;
-      attempt++
-    ) {
-
-      if (
-        window.supabaseClient &&
-        window.supabaseClient.auth
-      ) {
-        return window.supabaseClient;
-      }
-
-      await new Promise(resolve =>
-        setTimeout(resolve, 100)
-      );
-    }
-
-    return null;
-  }
-
-
-  const client =
-    await getSupabaseClient();
-
-
-  if (!client) {
-
-    show(
-      "Supabase не підключився. Оновіть сторінку.",
-      "error"
-    );
-
-    console.error(
-      "LOGIN: window.supabaseClient не знайдено."
-    );
-
-    return;
-  }
-
-
-  console.log(
-    "LOGIN: Supabase успішно підключено."
-  );
-
-
-  loginForm.onsubmit =
-    async (event) => {
-
-      event.preventDefault();
-
-      const button =
-        document.getElementById(
-          "loginButton"
+        authTabs.classList.toggle(
+          "register-active",
+          !login
         );
 
-      button.disabled = true;
+        currentPanel.classList.add("switching");
 
-      button.textContent =
-        "Вхід...";
+        await new Promise(resolve =>
+          setTimeout(resolve, 140)
+        );
 
+        currentPanel.style.display = "none";
+        currentPanel.classList.remove("switching");
 
-      try {
+        nextPanel.style.display = "block";
+
+        nextPanel.classList.remove("auth-form-panel");
+
+        void nextPanel.offsetWidth;
+
+        nextPanel.classList.add("auth-form-panel");
+
+        message.style.display = "none";
+      };
+
+      loginTab.onclick = () => switchTab(true);
+      registerTab.onclick = () => switchTab(false);
+
+      async function getSupabaseClient() {
+
+        if (
+          window.supabaseClient &&
+          window.supabaseClient.auth
+        ) {
+          return window.supabaseClient;
+        }
+
+        for (let attempt = 0; attempt < 50; attempt++) {
+
+          if (
+            window.supabaseClient &&
+            window.supabaseClient.auth
+          ) {
+            return window.supabaseClient;
+          }
+
+          await new Promise(resolve =>
+            setTimeout(resolve, 100)
+          );
+        }
+
+        return null;
+      }
+
+      const client = await getSupabaseClient();
+
+      if (!client) {
+
+        show(
+          "Supabase не підключився. Оновіть сторінку.",
+          "error"
+        );
+
+        console.error(
+          "LOGIN: window.supabaseClient не знайдено."
+        );
+
+        return;
+      }
+
+      console.log(
+        "LOGIN: Supabase успішно підключено."
+      );
+
+      loginForm.onsubmit = async (event) => {
+
+        event.preventDefault();
+
+        const button =
+          document.getElementById("loginButton");
+
+        button.disabled = true;
+        button.textContent = "Вхід...";
+
+        try {
+
+          const email =
+            document
+              .getElementById("loginEmail")
+              .value
+              .trim()
+              .toLowerCase();
+
+          const password =
+            document
+              .getElementById("loginPassword")
+              .value;
+
+          const {
+            data,
+            error
+          } = await client.auth.signInWithPassword({
+            email,
+            password
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          if (!data?.user) {
+            throw new Error(
+              "Користувача не знайдено."
+            );
+          }
+
+          const {
+            data: profile,
+            error: profileError
+          } = await client
+            .from("profiles")
+            .select(
+              "id,full_name,role,approval_status"
+            )
+            .eq("id", data.user.id)
+            .maybeSingle();
+
+          if (profileError) {
+            throw profileError;
+          }
+
+          if (!profile) {
+            throw new Error(
+              "Профіль користувача не знайдено."
+            );
+          }
+
+          const role =
+            String(profile.role || "pending")
+              .trim()
+              .toLowerCase();
+
+          const approvalStatus =
+            String(
+              profile.approval_status || ""
+            )
+              .trim()
+              .toLowerCase();
+
+          console.log(
+            "LOGIN PROFILE:",
+            {
+              id: data.user.id,
+              email: data.user.email,
+              role,
+              approvalStatus
+            }
+          );
+
+          if (
+            ![
+              "admin",
+              "teacher",
+              "student",
+              "parent",
+              "pending"
+            ].includes(role)
+          ) {
+            throw new Error(
+              "Невідома роль профілю."
+            );
+          }
+
+          if (
+            role !== "admin" &&
+            (
+              role === "pending" ||
+              (
+                approvalStatus &&
+                approvalStatus !== "approved"
+              )
+            )
+          ) {
+
+            show(
+              "Профіль очікує підтвердження адміністрацією.",
+              "info"
+            );
+
+            return;
+          }
+
+          localStorage.setItem(
+            "licei2_user",
+            JSON.stringify({
+              id: data.user.id,
+              email: data.user.email
+            })
+          );
+
+          const destinations = {
+            admin: "admin.html",
+            teacher: "teacher.html",
+            student: "student.html",
+            parent: "parent.html"
+          };
+
+          const destination =
+            destinations[role];
+
+          if (!destination) {
+            throw new Error(
+              "Для цього профілю не визначено сторінку."
+            );
+          }
+
+          window.location.replace(
+            destination
+          );
+
+        } catch (error) {
+
+          console.error(
+            "LOGIN ERROR:",
+            error
+          );
+
+          const errorMessage =
+            error?.message || "";
+
+          show(
+            errorMessage.includes("Invalid login")
+              ? "Неправильна електронна пошта або пароль."
+              : errorMessage ||
+                "Не вдалося виконати вхід.",
+            "error"
+          );
+
+        } finally {
+
+          button.disabled = false;
+          button.textContent = "Увійти";
+        }
+      };
+
+      registerForm.onsubmit = async (event) => {
+
+        event.preventDefault();
+
+        const name =
+          document
+            .getElementById("registerName")
+            .value
+            .trim();
+
+        const email =
+          document
+            .getElementById("registerEmail")
+            .value
+            .trim()
+            .toLowerCase();
+
+        const password =
+          document
+            .getElementById("registerPassword")
+            .value;
+
+        const requestedRole =
+          document
+            .getElementById("registerRole")
+            .value;
+
+        if (
+          !document
+            .getElementById("registerConsent")
+            .checked
+        ) {
+
+          show(
+            "Потрібно погодитися з правилами.",
+            "error"
+          );
+
+          return;
+        }
+
+        try {
+
+          const {
+            data,
+            error
+          } = await client.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: name,
+                requested_role: requestedRole
+              },
+
+              emailRedirectTo:
+                "https://licei2.pntr.dev/verify-email.html"
+            }
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          if (data?.user) {
+
+            const {
+              error: profileError
+            } = await client
+              .from("profiles")
+              .upsert({
+                id: data.user.id,
+                email,
+                full_name: name,
+                role: "pending",
+                requested_role: requestedRole,
+                approval_status: "pending",
+                updated_at:
+                  new Date().toISOString()
+              });
+
+            if (profileError) {
+              console.warn(
+                "Profile upsert:",
+                profileError
+              );
+            }
+          }
+
+          show(
+            "Реєстрацію завершено. Перевірте електронну пошту.",
+            "success"
+          );
+
+          registerForm.reset();
+
+        } catch (error) {
+
+          console.error(
+            "REGISTER ERROR:",
+            error
+          );
+
+          show(
+            error.message ||
+            "Помилка реєстрації.",
+            "error"
+          );
+        }
+      };
+
+      document.getElementById(
+        "forgotPassword"
+      ).onclick = async () => {
 
         const email =
           document
@@ -523,321 +718,36 @@ document.addEventListener("DOMContentLoaded", async () => {
             .trim()
             .toLowerCase();
 
-        const password =
-          document
-            .getElementById("loginPassword")
-            .value;
-
-
-        const {
-          data,
-          error
-        } =
-          await client.auth.signInWithPassword({
-            email,
-            password
-          });
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        if (!data?.user) {
-          throw new Error(
-            "Користувача не знайдено."
-          );
-        }
-
-
-        const {
-          data: profile,
-          error: profileError
-        } =
-          await client
-            .from("profiles")
-            .select(
-              "id,email,full_name,role"
-            )
-            .eq(
-              "id",
-              data.user.id
-            )
-            .maybeSingle();
-
-
-        if (profileError) {
-          throw profileError;
-        }
-
-
-        const role =
-          profile?.role ||
-          "pending";
-
-
-        if (
-          ![
-            "admin",
-            "teacher",
-            "student",
-            "parent",
-            "pending"
-          ].includes(role)
-        ) {
-          throw new Error(
-            "Невідома роль профілю."
-          );
-        }
-
-
-        if (role === "pending") {
+        if (!email) {
 
           show(
-            "Профіль очікує підтвердження адміністрацією.",
-            "info"
+            "Введіть електронну пошту.",
+            "error"
           );
 
           return;
         }
 
-
-        localStorage.setItem(
-          "licei2_user",
-          JSON.stringify({
-            id: data.user.id,
-            email: data.user.email
-          })
-        );
-
-
-        const destinations = {
-          admin: "admin.html",
-          teacher: "teacher.html",
-          student: "student.html",
-          parent: "parent.html"
-        };
-
-
-        window.location.replace(
-          destinations[role]
-        );
-
-      } catch (error) {
-
-        console.error(
-          "LOGIN ERROR:",
-          error
-        );
-
-        const errorMessage =
-          error?.message || "";
-
-        show(
-          errorMessage.includes(
-            "Invalid login"
-          )
-            ? "Неправильна електронна пошта або пароль."
-            : errorMessage ||
-              "Не вдалося виконати вхід.",
-          "error"
-        );
-
-      } finally {
-
-        button.disabled =
-          false;
-
-        button.textContent =
-          "Увійти";
-      }
-    };
-
-
-  registerForm.onsubmit =
-    async (event) => {
-
-      event.preventDefault();
-
-
-      const name =
-        document
-          .getElementById(
-            "registerName"
-          )
-          .value
-          .trim();
-
-      const email =
-        document
-          .getElementById(
-            "registerEmail"
-          )
-          .value
-          .trim()
-          .toLowerCase();
-
-      const password =
-        document
-          .getElementById(
-            "registerPassword"
-          )
-          .value;
-
-      const requestedRole =
-        document
-          .getElementById(
-            "registerRole"
-          )
-          .value;
-
-
-      if (
-        !document
-          .getElementById(
-            "registerConsent"
-          )
-          .checked
-      ) {
-
-        show(
-          "Потрібно погодитися з правилами.",
-          "error"
-        );
-
-        return;
-      }
-
-
-      try {
-
         const {
-          data,
           error
-        } =
-          await client.auth.signUp({
-            email,
-            password,
-            options: {
-              data: {
-                full_name: name,
-                requested_role:
-                  requestedRole
-              },
-
-              emailRedirectTo:
-                "https://licei2.pntr.dev/verify-email.html"
-            }
-          });
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        if (data?.user) {
-
-          const {
-            error: profileError
-          } =
-            await client
-              .from("profiles")
-              .upsert({
-                id: data.user.id,
-                email,
-                full_name: name,
-                role: "pending",
-                updated_at:
-                  new Date().toISOString()
-              });
-
-
-          if (profileError) {
-
-            console.warn(
-              "Profile upsert:",
-              profileError
-            );
+        } = await client.auth.resetPasswordForEmail(
+          email,
+          {
+            redirectTo:
+              "https://licei2.pntr.dev/reset-password.html"
           }
-        }
-
-
-        show(
-          "Реєстрацію завершено. Перевірте електронну пошту.",
-          "success"
         );
 
-        registerForm.reset();
-
-      } catch (error) {
-
-        console.error(
-          "REGISTER ERROR:",
+        show(
           error
+            ? error.message
+            : "Лист для відновлення пароля надіслано.",
+          error
+            ? "error"
+            : "success"
         );
+      };
 
-        show(
-          error.message ||
-          "Помилка реєстрації.",
-          "error"
-        );
-      }
-    };
-
-
-  document
-    .getElementById(
-      "forgotPassword"
-    )
-    .onclick =
-    async () => {
-
-      const email =
-        document
-          .getElementById(
-            "loginEmail"
-          )
-          .value
-          .trim()
-          .toLowerCase();
-
-
-      if (!email) {
-
-        show(
-          "Введіть електронну пошту.",
-          "error"
-        );
-
-        return;
-      }
-
-
-      const {
-        error
-      } =
-        await client.auth
-          .resetPasswordForEmail(
-            email,
-            {
-              redirectTo:
-                "https://licei2.pntr.dev/reset-password.html"
-            }
-          );
-
-
-      show(
-        error
-          ? error.message
-          : "Лист для відновлення пароля надіслано.",
-        error
-          ? "error"
-          : "success"
-      );
-    };
-
-});
-</script></body>
+    });
+  </script></body>
 </html>
