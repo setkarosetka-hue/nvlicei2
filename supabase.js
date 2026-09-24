@@ -1,18 +1,13 @@
 const SUPABASE_URL = "https://atfhyyarjqiwlaxixbrd.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_2rtmu-1UkcDR4D35qkGwgw_AQDBR8Lw";
 
-const SUPABASE_ANON_KEY =
-"sb_publishable_2rtmu-1UkcDR4D35qkGwgw_AQDBR8Lw";
-
-(function initializeSupabase() {
-"use strict";
-
-function createClient() {
-    if (!window.supabase) {
-        console.error(
-            "Supabase CDN не завантажився. Перевір підключення @supabase/supabase-js."
-        );
-        return false;
-    }
+(function () {
+function connectSupabase() {
+if (!window.supabase || typeof window.supabase.createClient !== "function") {
+console.error("Supabase CDN не завантажився.");
+window.supabaseClient = null;
+return false;
+}
 
     try {
         window.supabaseClient = window.supabase.createClient(
@@ -20,23 +15,19 @@ function createClient() {
             SUPABASE_ANON_KEY
         );
 
-        console.log("Supabase успішно підключено.");
-
+        console.log("Supabase підключено успішно.");
         return true;
     } catch (error) {
-        console.error(
-            "Помилка створення Supabase client:",
-            error
-        );
-
+        console.error("Помилка створення Supabase client:", error);
         window.supabaseClient = null;
-
         return false;
     }
 }
 
-if (!window.supabaseClient) {
-    createClient();
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", connectSupabase);
+} else {
+    connectSupabase();
 }
 
 })();
