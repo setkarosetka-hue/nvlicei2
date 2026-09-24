@@ -1,5 +1,5 @@
 const SYSTEM_CONFIG = {
-version: "1.3.2-debug",
+version: "1.4.0",
 officiallyApproved: false,
 rulesVersion: "1.0",
 testMode: false
@@ -54,7 +54,7 @@ async function getCurrentUser() {
 const client = getSupabase();
 
 if (!client?.auth) {
-console.error("DEBUG: supabaseClient або auth не знайдено");
+console.error("Supabase client не знайдено.");
 return null;
 }
 
@@ -62,21 +62,14 @@ try {
 const { data, error } = await client.auth.getUser();
 
 if (error) {
-  console.error("DEBUG AUTH ERROR:", error);
+  console.error("Помилка Supabase Auth:", error);
   return null;
 }
 
-const user = data?.user || null;
-
-console.log("========== ЛІЦЕЙ №2 DEBUG ==========");
-console.log("AUTH USER ID:", user?.id);
-console.log("AUTH USER EMAIL:", user?.email);
-console.log("====================================");
-
-return user;
+return data?.user || null;
 
 } catch (error) {
-console.error("DEBUG auth.getUser():", error);
+console.error("Помилка auth.getUser():", error);
 return null;
 }
 }
@@ -86,37 +79,25 @@ const client = getSupabase();
 const user = await getCurrentUser();
 
 if (!client || !user) {
-console.error("DEBUG: немає client або user");
 return null;
 }
-
-console.log("DEBUG: запит profiles для ID:", user.id);
 
 try {
 const { data, error } = await client
 .from("profiles")
-.select("id, email, full_name, role, created_at, updated_at")
+.select("id, login, email, full_name, role, class_name, created_at, requested_role, approval_status, approved_at")
 .eq("id", user.id)
 .maybeSingle();
 
 if (error) {
-  console.error("========== PROFILE ERROR ==========");
-  console.error(error);
-  console.error("===================================");
+  console.error("Помилка завантаження profiles:", error);
   return null;
 }
-
-console.log("========== PROFILE ==========");
-console.log("PROFILE ID:", data?.id);
-console.log("PROFILE EMAIL:", data?.email);
-console.log("PROFILE NAME:", data?.full_name);
-console.log("PROFILE ROLE:", data?.role);
-console.log("==============================");
 
 return data || null;
 
 } catch (error) {
-console.error("DEBUG profile exception:", error);
+console.error("Помилка профілю:", error);
 return null;
 }
 }
@@ -143,9 +124,15 @@ function getRoleName(role) {
 return ROLE_NAMES[role] || "Користувач";
 }
 
+function isPublicPage() {
+return PUBLIC_PAGES.includes(getCurrentPage());
+}
+
 function getConsent() {
 try {
-return JSON.parse(localStorage.getItem(CONSENT_STORAGE_KEY));
+return JSON.parse(
+localStorage.getItem(CONSENT_STORAGE_KEY)
+);
 } catch {
 return null;
 }
@@ -185,7 +172,7 @@ place-items:center;
 padding:24px;
 background:#071a33;
 color:#fff;
-font-family:Manrope,Arial,sans-serif
+font-family:Manrope,Arial,sans-serif;
 ">
 <section style="
 width:min(520px,100%);
@@ -194,7 +181,7 @@ border:1px solid rgba(255,255,255,.14);
 border-radius:24px;
 background:rgba(255,255,255,.08);
 text-align:center;
-box-shadow:0 24px 60px rgba(0,0,0,.22)
+box-shadow:0 24px 60px rgba(0,0,0,.22);
 ">
 <div style="font-size:42px;margin-bottom:16px">⌛</div>
 
@@ -204,9 +191,9 @@ box-shadow:0 24px 60px rgba(0,0,0,.22)
 
     <p style="
       color:rgba(255,255,255,.72);
-      line-height:1.6
+      line-height:1.6;
     ">
-      Ваш профіль створено, але роль ще не підтверджена адміністрацією ліцею.
+      Ваш профіль створено, але доступ ще не підтверджений адміністрацією ліцею.
     </p>
 
     <button
@@ -219,7 +206,7 @@ box-shadow:0 24px 60px rgba(0,0,0,.22)
         background:#2868ff;
         color:#fff;
         font-weight:800;
-        cursor:pointer
+        cursor:pointer;
       "
       onclick="logout()"
     >
@@ -270,7 +257,6 @@ return true;
 const user = await getCurrentUser();
 
 if (!user) {
-console.log("DEBUG: пользователь не авторизован");
 window.location.replace("login.html");
 return false;
 }
@@ -288,26 +274,42 @@ return true;
 
 const { user, profile } = await getAuthenticatedProfile();
 
-console.log("========== ROLE CHECK ==========");
-console.log("PAGE:", page);
-console.log("USER ID:", user?.id);
-console.log("USER EMAIL:", user?.email);
-console.log("PROFILE ID:", profile?.id);
-console.log("PROFILE EMAIL:", profile?.email);
-console.log("PROFILE ROLE:", profile?.role);
-console.log("ALLOWED ROLES:", allowedRoles);
-console.log("================================");
+if (!user) {
+window.location.replace("login.html");
+return false;
+}
 
-const role = profile?.role || "pending";
-
-if (role === "pending") {
+if (!profile) {
 console.error(
-"DEBUG: роль получена как pending или profile не найден"
+"Для користувача немає профілю profiles:",
+user.id
 );
 
 showPendingAccess();
 return false;
 
+}
+
+const role = String(profile.role || "pending").toLowerCase();
+
+console.log("Ліцей №2: поточний користувач:", {
+id: user.id,
+email: user.email,
+profileEmail: profile.email,
+role: role,
+approvalStatus: profile.approval_status
+});
+
+if (role === "admin") {
+return true;
+}
+
+if (
+role === "pending" ||
+profile.approval_status === "pending"
+) {
+showPendingAccess();
+return false;
 }
 
 if (!allowedRoles.includes(role)) {
@@ -318,16 +320,6 @@ student: "student.html",
 parent: "parent.html"
 };
 
-console.error(
-  "DEBUG: роль не разрешена для этой страницы:",
-  role
-);
-
-console.error(
-  "DEBUG: переход на:",
-  destinations[role] || "dashboard.html"
-);
-
 window.location.replace(
   destinations[role] || "dashboard.html"
 );
@@ -336,19 +328,19 @@ return false;
 
 }
 
-console.log(
-"DEBUG: доступ разрешён. Роль:",
-role
-);
-
 return true;
 }
 
 async function logout() {
 try {
-await getSupabase()?.auth?.signOut({
-scope: "global"
-});
+const client = getSupabase();
+
+if (client?.auth) {
+  await client.auth.signOut({
+    scope: "global"
+  });
+}
+
 } catch (error) {
 console.error("Помилка виходу:", error);
 }
@@ -512,18 +504,15 @@ if (button) {
 });
 }
 
-function updateUserElements(
-user,
-profile
-) {
+function updateUserElements(user, profile) {
 document
 .querySelectorAll(
 "[data-user-email]"
 )
 .forEach(element => {
 element.textContent =
-user?.email ||
 profile?.email ||
+user?.email ||
 "Не вказано";
 });
 
@@ -534,6 +523,7 @@ document
 .forEach(element => {
 element.textContent =
 profile?.full_name ||
+profile?.login ||
 user?.email?.split("@")[0] ||
 "Користувач";
 });
@@ -564,7 +554,9 @@ element.dataset.roleLink ||
   const allowed =
     value
       .split(",")
-      .map(item => item.trim());
+      .map(item =>
+        item.trim()
+      );
 
   if (!allowed.includes(role)) {
     element.remove();
@@ -605,7 +597,7 @@ document
 .forEach(
 (element, index) => {
 element.style.animationDelay =
-"${Math.min(index * 0.05, 0.5)}s";
+"${Math.min( index * 0.05, 0.5 )}s";
 }
 );
 }
@@ -626,7 +618,9 @@ profile
 );
 
 updateRoleLinks(
+String(
 profile.role || "pending"
+).toLowerCase()
 );
 }
 
@@ -638,19 +632,27 @@ updateYear();
 setupSystemStatus();
 setupAnimations();
 
-if (!(await checkConsentAccess())) {
+if (
+!(await checkConsentAccess())
+) {
 return;
 }
 
-if (!(await checkMaintenance())) {
+if (
+!(await checkMaintenance())
+) {
 return;
 }
 
-if (!(await checkAuthentication())) {
+if (
+!(await checkAuthentication())
+) {
 return;
 }
 
-if (!(await checkRoleAccess())) {
+if (
+!(await checkRoleAccess())
+) {
 return;
 }
 
@@ -661,7 +663,8 @@ new CustomEvent(
 "licei2:ready",
 {
 detail: {
-page: getCurrentPage(),
+page:
+getCurrentPage(),
 version:
 SYSTEM_CONFIG.version
 }
@@ -703,3 +706,16 @@ window.getCurrentUser =
 getCurrentUser;
 window.getCurrentProfile =
 getCurrentProfile;
+window.getAuthenticatedProfile =
+getAuthenticatedProfile;
+
+
+**После замены:**
+
+1. Сохрани `app.js` на GitHub.
+2. Подожди примерно минуту.
+3. Открой страницу входа заново.
+4. Войди через **arbeitsamuil@gmail.com**.
+5. Если браузер всё ещё показывает старую ошибку — сделай обновление страницы с очисткой кэша или открой сайт в режиме инкогнито.
+
+Главное: **SQL больше не запускай**. База `profiles` сейчас соответствует коду.
