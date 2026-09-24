@@ -1,373 +1,137 @@
 const SYSTEM_CONFIG = {
-version: '1.2.0',
+version: "1.3.0",
 officiallyApproved: false,
-rulesVersion: '1.0',
+rulesVersion: "1.0",
 testMode: false
 };
 
-const CONSENT_STORAGE_KEY = 'lyceum2_consent';
-const MAINTENANCE_STORAGE_KEY = 'lyceum2_maintenance';
-
 const PUBLIC_PAGES = [
-'',
-'index.html',
-'consent.html',
-'login.html',
-'maintenance.html',
-'verify-email.html',
-'reset-password.html'
+"index.html",
+"consent.html",
+"login.html",
+"maintenance.html",
+"verify-email.html",
+"reset-password.html"
 ];
 
 const PAGE_ROLES = {
-'admin.html': ['admin'],
-'teacher.html': ['teacher', 'admin'],
-'student.html': ['student', 'admin'],
-'parent.html': ['parent', 'admin'],
-
-'messages.html': [
-    'admin',
-    'teacher',
-    'student',
-    'parent'
-],
-
-'announcements.html': [
-    'admin',
-    'teacher',
-    'student',
-    'parent'
-],
-
-'schedule.html': [
-    'admin',
-    'teacher',
-    'student',
-    'parent'
-],
-
-'homework.html': [
-    'admin',
-    'teacher',
-    'student',
-    'parent'
-],
-
-'tests.html': [
-    'admin',
-    'teacher',
-    'student',
-    'parent'
-],
-
-'events.html': [
-    'admin',
-    'teacher',
-    'student',
-    'parent'
-],
-
-'attendance.html': [
-    'admin',
-    'teacher',
-    'student',
-    'parent'
-]
-
+"admin.html": ["admin"],
+"teacher.html": ["teacher", "admin"],
+"student.html": ["student", "admin"],
+"parent.html": ["parent", "admin"],
+"dashboard.html": ["admin", "teacher", "student", "parent"],
+"schedule.html": ["admin", "teacher", "student", "parent"],
+"homework.html": ["admin", "teacher", "student", "parent"],
+"tests.html": ["admin", "teacher", "student", "parent"],
+"events.html": ["admin", "teacher", "student", "parent"],
+"attendance.html": ["admin", "teacher", "student", "parent"],
+"messages.html": ["admin", "teacher", "student", "parent"],
+"announcements.html": ["admin", "teacher", "student", "parent"]
 };
 
 const ROLE_NAMES = {
-admin: 'Адміністратор',
-teacher: 'Вчитель',
-student: 'Учень',
-parent: 'Батьки',
-
-teacher_pending: 'Вчитель — очікує підтвердження',
-student_pending: 'Учень — очікує підтвердження',
-parent_pending: 'Батьки — очікують підтвердження',
-
-pending: 'Очікує підтвердження'
-
+admin: "Директор",
+teacher: "Вчитель",
+student: "Учень",
+parent: "Батько / Мати",
+pending: "Очікує підтвердження"
 };
 
 function getCurrentPage() {
-
-const path = window.location.pathname;
-
-return (
-    path.substring(
-        path.lastIndexOf('/') + 1
-    ) || 'index.html'
-);
-
+const path = window.location.pathname.split("/");
+return path[path.length - 1] || "index.html";
 }
 
-/* =========================
-AUTH
-========================= */
+function getSupabase() {
+if (!window.supabaseClient) {
+console.error("Supabase client не знайдений.");
+return null;
+}
+
+return window.supabaseClient;
+
+}
 
 async function getCurrentUser() {
+const supabase = getSupabase();
 
-if (
-    typeof supabaseClient === 'undefined' ||
-    !supabaseClient?.auth
-) {
-    return null;
-}
+if (!supabase) return null;
 
 try {
-
     const {
-        data,
+        data: { user },
         error
-    } = await supabaseClient.auth.getUser();
+    } = await supabase.auth.getUser();
 
     if (error) {
-        console.error(
-            'Auth error:',
-            error
-        );
-
+        console.error("Помилка отримання користувача:", error);
         return null;
     }
 
-    return data?.user || null;
-
+    return user || null;
 } catch (error) {
-
-    console.error(
-        'Auth error:',
-        error
-    );
-
+    console.error("Помилка auth.getUser:", error);
     return null;
 }
 
 }
 
 async function getCurrentProfile() {
-
+const supabase = getSupabase();
 const user = await getCurrentUser();
 
-if (
-    !user ||
-    typeof supabaseClient === 'undefined'
-) {
-    return null;
-}
+if (!supabase || !user) return null;
 
 try {
-
-    /*
-     * Не запрашиваем profiles.email.
-     * Email берём напрямую из Supabase Auth.
-     */
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from('profiles')
-        .select('id,full_name,role,created_at,updated_at')
-        .eq('id', user.id)
+    const { data, error } = await supabase
+        .from("profiles")
+        .select("id,email,full_name,role,created_at,updated_at")
+        .eq("id", user.id)
         .maybeSingle();
 
     if (error) {
-
-        console.error(
-            'Profile error:',
-            error
-        );
-
+        console.error("Помилка профілю:", error);
         return null;
     }
 
     return data || null;
-
 } catch (error) {
-
-    console.error(
-        'Profile error:',
-        error
-    );
-
+    console.error("Помилка завантаження профілю:", error);
     return null;
 }
 
 }
 
-async function isLoggedIn() {
-return !!(await getCurrentUser());
+function isPublicPage() {
+return PUBLIC_PAGES.includes(getCurrentPage());
 }
 
-function getRoleName(role) {
-return ROLE_NAMES[role] || 'Користувач';
+function hasConsent() {
+return localStorage.getItem("licei2_consent") === SYSTEM_CONFIG.rulesVersion;
 }
 
-function isPendingRole(role) {
-
-return [
-    'pending',
-    'teacher_pending',
-    'student_pending',
-    'parent_pending'
-].includes(role);
-
-}
-
-function getRequestedRole(role) {
-
-if (role === 'teacher_pending') {
-    return 'teacher';
-}
-
-if (role === 'student_pending') {
-    return 'student';
-}
-
-if (role === 'parent_pending') {
-    return 'parent';
-}
-
-return null;
-
-}
-
-function getRequestedRoleName(role) {
-
-const requestedRole =
-    getRequestedRole(role);
-
-const names = {
-    teacher: 'Вчитель',
-    student: 'Учень',
-    parent: 'Батьки'
-};
-
-return names[requestedRole] || 'роль';
-
-}
-
-function getRoleHome(role) {
-
-const pages = {
-    admin: 'admin.html',
-    teacher: 'teacher.html',
-    student: 'student.html',
-    parent: 'parent.html'
-};
-
-return pages[role] || 'login.html';
-
-}
-
-/* =========================
-CONSENT
-========================= */
-
-function getConsent() {
-
-try {
-
-    return JSON.parse(
-        localStorage.getItem(
-            CONSENT_STORAGE_KEY
-        )
-    );
-
-} catch {
-
-    return null;
-}
-
-}
-
-function hasValidConsent() {
-
-const consent = getConsent();
-
-return !!(
-    consent?.accepted &&
-    consent.version ===
-        SYSTEM_CONFIG.rulesVersion
-);
-
-}
-
-function saveConsent(type = 'all') {
-
-localStorage.setItem(
-    CONSENT_STORAGE_KEY,
-    JSON.stringify({
-        accepted: true,
-        type,
-        version:
-            SYSTEM_CONFIG.rulesVersion,
-        acceptedAt:
-            new Date().toISOString()
-    })
-);
-
+function saveConsent() {
+localStorage.setItem("licei2_consent", SYSTEM_CONFIG.rulesVersion);
 }
 
 function clearConsent() {
-localStorage.removeItem(
-CONSENT_STORAGE_KEY
-);
+localStorage.removeItem("licei2_consent");
 }
-
-function setupConsentButtons() {
-
-const button =
-    document.getElementById(
-        'acceptAllRules'
-    );
-
-if (!button) {
-    return;
-}
-
-button.addEventListener(
-    'click',
-    () => {
-
-        saveConsent('all');
-
-        window.location.href =
-            'login.html';
-    }
-);
-
-}
-
-/*
-
-* Перше відкриття сайту:
-* якщо правила ще не прийняті,
-* користувача відправляємо на consent.html.
-  */
 
 function checkConsentAccess() {
-
-const page =
-    getCurrentPage();
-
-if (page === 'consent.html') {
-    return true;
-}
+const page = getCurrentPage();
 
 if (
-    page === 'verify-email.html' ||
-    page === 'reset-password.html' ||
-    page === 'maintenance.html'
+    page === "consent.html" ||
+    page === "verify-email.html" ||
+    page === "reset-password.html" ||
+    page === "maintenance.html"
 ) {
     return true;
 }
 
-if (!hasValidConsent()) {
-
-    window.location.href =
-        'consent.html';
-
+if (!hasConsent()) {
+    window.location.replace("consent.html");
     return false;
 }
 
@@ -375,541 +139,263 @@ return true;
 
 }
 
-/* =========================
-LOGOUT
-========================= */
+async function checkAuthentication() {
+const page = getCurrentPage();
+
+if (
+    PUBLIC_PAGES.includes(page) ||
+    page === "consent.html" ||
+    page === "verify-email.html" ||
+    page === "reset-password.html"
+) {
+    return true;
+}
+
+const user = await getCurrentUser();
+
+if (!user) {
+    window.location.replace("login.html");
+    return false;
+}
+
+return true;
+
+}
+
+async function checkRoleAccess() {
+const page = getCurrentPage();
+const allowedRoles = PAGE_ROLES[page];
+
+if (!allowedRoles) return true;
+
+const profile = await getCurrentProfile();
+
+if (!profile) {
+    window.location.replace("login.html");
+    return false;
+}
+
+const role = profile.role || "pending";
+
+if (role === "pending") {
+    showPendingAccess();
+    return false;
+}
+
+if (!allowedRoles.includes(role)) {
+    window.location.replace("dashboard.html");
+    return false;
+}
+
+return true;
+
+}
+
+function showPendingAccess() {
+document.body.innerHTML = "<div style=" min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; background:#07111f; color:#fff; font-family:Arial,sans-serif; "> <div style=" width:min(520px,100%); padding:32px; border-radius:24px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); text-align:center; "> <div style="font-size:52px;margin-bottom:15px;">⏳</div> <h1 style="margin:0 0 12px;">Очікується підтвердження</h1> <p style="opacity:.75;line-height:1.6;"> Ваш акаунт створено, але роль ще не підтверджена адміністрацією ліцею. </p> <button onclick="logout()" style=" margin-top:20px; border:0; border-radius:14px; padding:13px 20px; cursor:pointer; "> Вийти </button> </div> </div>";
+}
 
 async function logout() {
+const supabase = getSupabase();
 
 try {
-
-    if (
-        typeof supabaseClient !==
-            'undefined' &&
-        supabaseClient?.auth
-    ) {
-
-        /*
-         * Global logout.
-         * Це завершує активну сесію
-         * Supabase, а не тільки локальний стан.
-         */
-
-        const {
-            error
-        } =
-            await supabaseClient.auth.signOut({
-                scope: 'global'
-            });
-
-        if (error) {
-            console.error(
-                'Logout error:',
-                error
-            );
-        }
+    if (supabase) {
+        await supabase.auth.signOut({ scope: "global" });
     }
-
 } catch (error) {
-
-    console.error(
-        'Logout error:',
-        error
-    );
-
-} finally {
-
-    localStorage.removeItem(
-        'lyceum2_user'
-    );
-
-    /*
-     * Замість звичайного переходу
-     * використовуємо replace,
-     * щоб сторінка адмінки не залишалась
-     * доступною через просте повернення назад.
-     */
-
-    window.location.replace(
-        'login.html'
-    );
+    console.error("Помилка виходу:", error);
 }
 
-}
-
-function setupLogoutButtons() {
-
-document
-    .querySelectorAll(
-        '[data-logout], .logout-button, #logoutButton, #logoutBtn'
-    )
-    .forEach(button => {
-
-        button.addEventListener(
-            'click',
-            event => {
-
-                event.preventDefault();
-
-                logout();
-            }
-        );
-
-    });
+localStorage.removeItem("licei2_user");
+window.location.replace("login.html");
 
 }
-
-/* =========================
-MAINTENANCE
-========================= */
 
 function getMaintenanceState() {
-
 try {
+const raw = localStorage.getItem("licei2_maintenance");
 
-    return JSON.parse(
-        localStorage.getItem(
-            MAINTENANCE_STORAGE_KEY
-        )
-    );
+    if (!raw) {
+        return {
+            enabled: false,
+            message: "",
+            endTime: null
+        };
+    }
 
+    const state = JSON.parse(raw);
+
+    if (state.endTime && Date.now() >= Number(state.endTime)) {
+        localStorage.removeItem("licei2_maintenance");
+
+        return {
+            enabled: false,
+            message: "",
+            endTime: null
+        };
+    }
+
+    return {
+        enabled: Boolean(state.enabled),
+        message: state.message || "",
+        endTime: state.endTime || null
+    };
 } catch {
-
-    return null;
+    return {
+        enabled: false,
+        message: "",
+        endTime: null
+    };
 }
 
 }
 
 function isMaintenanceEnabled() {
-
-return !!(
-    getMaintenanceState()?.enabled
-);
-
+return getMaintenanceState().enabled;
 }
 
-function setMaintenanceState(
-enabled,
-reason = '',
-endTime = ''
-) {
+function setMaintenanceState(enabled, message = "", endTime = null) {
+if (!enabled) {
+localStorage.removeItem("licei2_maintenance");
+return;
+}
 
 localStorage.setItem(
-    MAINTENANCE_STORAGE_KEY,
+    "licei2_maintenance",
     JSON.stringify({
-        enabled,
-        reason,
-        endTime,
-        updatedAt:
-            new Date().toISOString()
+        enabled: true,
+        message,
+        endTime
     })
 );
 
 }
 
 async function checkMaintenance() {
-
-const state =
-    getMaintenanceState();
-
-if (!state?.enabled) {
-    return false;
-}
-
-/*
- * Якщо час завершення вже настав,
- * автоматично вимикаємо режим.
- */
-
-if (state.endTime) {
-
-    const end =
-        new Date(state.endTime);
-
-    if (
-        !Number.isNaN(end.getTime()) &&
-        end.getTime() <= Date.now()
-    ) {
-
-        setMaintenanceState(
-            false,
-            '',
-            ''
-        );
-
-        return false;
-    }
-}
-
-const page =
-    getCurrentPage();
+const page = getCurrentPage();
 
 if (
-    page === 'maintenance.html'
+    page === "maintenance.html" ||
+    page === "login.html" ||
+    page === "consent.html" ||
+    page === "verify-email.html" ||
+    page === "reset-password.html"
 ) {
     return true;
 }
 
-/*
- * Сторінки правил, входу,
- * підтвердження пошти та відновлення
- * не блокуються самим maintenance.
- */
+const state = getMaintenanceState();
 
-if (
-    page === 'consent.html' ||
-    page === 'login.html' ||
-    page === 'verify-email.html' ||
-    page === 'reset-password.html'
-) {
-    return false;
-}
+if (!state.enabled) return true;
 
-/*
- * Адміністратор залишається в системі.
- */
+const profile = await getCurrentProfile();
 
-const profile =
-    await getCurrentProfile();
-
-if (profile?.role === 'admin') {
-    return false;
-}
-
-window.location.href =
-    'maintenance.html';
-
-return true;
-
-}
-
-/* =========================
-AUTHENTICATION GUARD
-========================= */
-
-async function checkAuthentication() {
-
-const page =
-    getCurrentPage();
-
-if (
-    PUBLIC_PAGES.includes(page)
-) {
+if (profile && profile.role === "admin") {
     return true;
 }
 
-const loggedIn =
-    await isLoggedIn();
-
-if (!loggedIn) {
-
-    window.location.replace(
-        'login.html'
-    );
-
-    return false;
-}
-
-return true;
+window.location.replace("maintenance.html");
+return false;
 
 }
 
-/* =========================
-ROLE GUARD
-========================= */
+function updateUserElements(user, profile) {
+const emailElements = document.querySelectorAll("[data-user-email]");
+const nameElements = document.querySelectorAll("[data-user-name]");
+const roleElements = document.querySelectorAll("[data-user-role]");
 
-async function checkRoleAccess() {
+emailElements.forEach(element => {
+    element.textContent = user?.email || "Не вказано";
+});
 
-const page =
-    getCurrentPage();
+nameElements.forEach(element => {
+    element.textContent =
+        profile?.full_name ||
+        user?.email?.split("@")[0] ||
+        "Користувач";
+});
 
-if (!PAGE_ROLES[page]) {
-    return true;
-}
-
-const profile =
-    await getCurrentProfile();
-
-if (!profile) {
-
-    /*
-     * Auth існує, але профілю немає.
-     * Не показуємо помилку сторінки —
-     * повертаємо користувача на вхід.
-     */
-
-    window.location.replace(
-        'login.html'
-    );
-
-    return false;
-}
-
-const role =
-    profile.role;
-
-if (isPendingRole(role)) {
-
-    window.location.replace(
-        'login.html'
-    );
-
-    return false;
-}
-
-const allowedRoles =
-    PAGE_ROLES[page];
-
-if (
-    !allowedRoles.includes(role)
-) {
-
-    window.location.replace(
-        getRoleHome(role)
-    );
-
-    return false;
-}
-
-return true;
+roleElements.forEach(element => {
+    element.textContent =
+        ROLE_NAMES[profile?.role] ||
+        profile?.role ||
+        "Очікує підтвердження";
+});
 
 }
 
-/* =========================
-MOBILE MENU
-========================= */
-
-function toggleMenu() {
-
-document
-    .querySelectorAll(
-        '.navigation, .main-nav'
-    )
-    .forEach(nav => {
-
-        nav.classList.toggle(
-            'mobile-open'
-        );
-
-    });
-
+function setupLogoutButtons() {
+document.querySelectorAll("[data-logout]").forEach(button => {
+button.addEventListener("click", event => {
+event.preventDefault();
+logout();
+});
+});
 }
 
 function setupMobileMenu() {
+const toggle = document.querySelector("[data-menu-toggle]");
+const menu = document.querySelector("[data-mobile-menu]");
 
-document
-    .querySelectorAll(
-        '.mobile-menu, .mobile-menu-btn'
-    )
-    .forEach(button => {
+if (!toggle || !menu) return;
 
-        button.addEventListener(
-            'click',
-            toggleMenu
-        );
+toggle.addEventListener("click", () => {
+    menu.classList.toggle("open");
+    toggle.classList.toggle("active");
+});
 
+menu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+        menu.classList.remove("open");
+        toggle.classList.remove("active");
     });
+});
 
 }
 
-/* =========================
-COMMON UI
-========================= */
+function setupAnimations() {
+const elements = document.querySelectorAll(
+".animate-on-load, .fade-in, .card, .dashboard-card, .module-card"
+);
+
+elements.forEach((element, index) => {
+    element.style.animationDelay = `${Math.min(index * 0.05, 0.5)}s`;
+});
+
+}
 
 function updateYear() {
+document.querySelectorAll("[data-year]").forEach(element => {
+element.textContent = new Date().getFullYear();
+});
+}
 
-document
-    .querySelectorAll(
-        '[data-year], #currentYear'
-    )
-    .forEach(element => {
+function setupSystemStatus() {
+document.querySelectorAll("[data-system-status]").forEach(element => {
+element.textContent = "Система працює";
+element.classList.add("online");
+});
+}
 
-        element.textContent =
-            new Date().getFullYear();
+function setupNavigation() {
+document.querySelectorAll("[data-page]").forEach(element => {
+const page = element.dataset.page;
 
+    if (!page) return;
+
+    element.addEventListener("click", event => {
+        event.preventDefault();
+        window.location.href = page;
     });
+});
 
 }
 
-function setupScrollAnimations() {
+function handlePendingLogin(profile) {
+if (!profile) return false;
 
-document
-    .querySelectorAll(
-        '.feature-card, .stat-card, .card, .card-panel, .section, .admin-card'
-    )
-    .forEach(element => {
-
-        element.classList.add(
-            'visible'
-        );
-
-    });
-
-}
-
-function updateSystemStatus() {
-
-document
-    .querySelectorAll(
-        '[data-system-status]'
-    )
-    .forEach(element => {
-
-        element.textContent =
-            SYSTEM_CONFIG.officiallyApproved
-                ? 'Офіційно підтверджено'
-                : 'У розробці';
-
-    });
-
-}
-
-/* =========================
-USER DATA
-========================= */
-
-async function updateUserElements() {
-
-const user =
-    await getCurrentUser();
-
-const profile =
-    await getCurrentProfile();
-
-document
-    .querySelectorAll(
-        '[data-user-name]'
-    )
-    .forEach(element => {
-
-        element.textContent =
-            profile?.full_name ||
-            user?.user_metadata?.full_name ||
-            user?.email ||
-            'Користувач';
-
-    });
-
-document
-    .querySelectorAll(
-        '[data-user-email]'
-    )
-    .forEach(element => {
-
-        /*
-         * Email беремо з Auth,
-         * а не з profiles.email.
-         */
-
-        element.textContent =
-            user?.email || '';
-
-    });
-
-document
-    .querySelectorAll(
-        '[data-user-role]'
-    )
-    .forEach(element => {
-
-        element.textContent =
-            getRoleName(
-                profile?.role
-            );
-
-    });
-
-document
-    .querySelectorAll(
-        '[data-user-requested-role]'
-    )
-    .forEach(element => {
-
-        element.textContent =
-            getRequestedRoleName(
-                profile?.role
-            );
-
-    });
-
-}
-
-/* =========================
-PENDING USER
-========================= */
-
-function showPendingMessage() {
-
-const container =
-    document.querySelector(
-        '[data-pending-user]'
-    );
-
-if (!container) {
-    return;
-}
-
-container.hidden = false;
-
-}
-
-async function handlePendingUser() {
-
-const page =
-    getCurrentPage();
-
-if (
-    page !== 'login.html'
-) {
-    return false;
-}
-
-const user =
-    await getCurrentUser();
-
-if (!user) {
-    return false;
-}
-
-const profile =
-    await getCurrentProfile();
-
-if (!profile) {
-    return false;
-}
-
-if (
-    isPendingRole(
-        profile.role
-    )
-) {
-
-    showPendingMessage();
-
-    document
-        .querySelectorAll(
-            '[data-pending-role]'
-        )
-        .forEach(element => {
-
-            element.textContent =
-                getRequestedRoleName(
-                    profile.role
-                );
-
-        });
-
-    document
-        .querySelectorAll(
-            '[data-pending-email]'
-        )
-        .forEach(element => {
-
-            element.textContent =
-                user.email || '';
-
-        });
-
+if (profile.role === "pending") {
+    showPendingAccess();
     return true;
 }
 
@@ -917,153 +403,128 @@ return false;
 
 }
 
-/* =========================
-AUTH STATE LISTENER
-========================= */
+function setupAuthListener() {
+const supabase = getSupabase();
 
-function setupAuthStateListener() {
+if (!supabase) return;
 
-if (
-    typeof supabaseClient ===
-        'undefined' ||
-    !supabaseClient?.auth
-) {
-    return;
-}
+supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT") {
+        localStorage.removeItem("licei2_user");
 
-supabaseClient.auth.onAuthStateChange(
-    (event, session) => {
-
-        /*
-         * Якщо користувача реально
-         * вивело із системи —
-         * захищені сторінки не повинні
-         * залишатися відкритими.
-         */
-
-        if (
-            event === 'SIGNED_OUT' &&
-            getCurrentPage() !==
-                'login.html'
-        ) {
-
-            window.location.replace(
-                'login.html'
-            );
+        if (!PUBLIC_PAGES.includes(getCurrentPage())) {
+            window.location.replace("login.html");
         }
     }
-);
+
+    if (event === "SIGNED_IN" && session?.user) {
+        localStorage.setItem(
+            "licei2_user",
+            JSON.stringify({
+                id: session.user.id,
+                email: session.user.email
+            })
+        );
+    }
+});
 
 }
 
-/* =========================
-INITIALIZATION
-========================= */
+async function initializeUserInterface() {
+const user = await getCurrentUser();
+
+if (!user) return;
+
+const profile = await getCurrentProfile();
+
+updateUserElements(user, profile);
+
+const role = profile?.role;
+
+document.querySelectorAll("[data-role-only]").forEach(element => {
+    const allowed = element.dataset.roleOnly
+        .split(",")
+        .map(value => value.trim());
+
+    element.style.display = allowed.includes(role) ? "" : "none";
+});
+
+document.querySelectorAll("[data-role-link]").forEach(element => {
+    const allowed = element.dataset.roleLink
+        .split(",")
+        .map(value => value.trim());
+
+    if (!allowed.includes(role)) {
+        element.remove();
+    }
+});
+
+}
 
 async function initializeApp() {
+if (!window.supabaseClient) {
+console.warn("Supabase ще не готовий. Очікуємо...");
+}
 
 setupMobileMenu();
 setupLogoutButtons();
-setupConsentButtons();
-
+setupAnimations();
+setupNavigation();
 updateYear();
-updateSystemStatus();
-setupScrollAnimations();
+setupSystemStatus();
 
-setupAuthStateListener();
+if (!checkConsentAccess()) return;
 
-const page =
-    getCurrentPage();
+if (!(await checkMaintenance())) return;
 
-/*
- * Сторінка правил завжди
- * доступна для прийняття правил.
- */
+if (!(await checkAuthentication())) return;
 
-if (
-    page === 'consent.html'
-) {
-    return;
-}
+if (!(await checkRoleAccess())) return;
 
-/*
- * Перше відкриття сайту:
- * автоматично показуємо правила.
- */
+await initializeUserInterface();
 
-const consentAllowed =
-    checkConsentAccess();
+setupAuthListener();
 
-if (!consentAllowed) {
-    return;
-}
+document.documentElement.dataset.appReady = "true";
 
-/*
- * Технічні роботи перевіряємо
- * до звичайної авторизації.
- */
-
-const maintenanceBlocked =
-    await checkMaintenance();
-
-if (maintenanceBlocked) {
-    return;
-}
-
-/*
- * На login.html окремо
- * обробляємо очікування підтвердження.
- */
-
-if (
-    page === 'login.html'
-) {
-
-    await handlePendingUser();
-    await updateUserElements();
-
-    return;
-}
-
-/*
- * Захищені сторінки.
- */
-
-const authenticated =
-    await checkAuthentication();
-
-if (!authenticated) {
-    return;
-}
-
-const roleAllowed =
-    await checkRoleAccess();
-
-if (!roleAllowed) {
-    return;
-}
-
-await updateUserElements();
-
-}
-
-/*
-
-* Не запускаємо код до завантаження DOM.
-  */
-
-if (
-document.readyState ===
-'loading'
-) {
-
-document.addEventListener(
-    'DOMContentLoaded',
-    initializeApp
+window.dispatchEvent(
+    new CustomEvent("licei2:ready", {
+        detail: {
+            version: SYSTEM_CONFIG.version,
+            page: getCurrentPage()
+        }
+    })
 );
 
-} else {
-
-initializeApp();
-
 }
+
+if (document.readyState === "loading") {
+document.addEventListener("DOMContentLoaded", initializeApp);
+} else {
+initializeApp();
+}
+
+window.Licei2 = {
+SYSTEM_CONFIG,
+PUBLIC_PAGES,
+PAGE_ROLES,
+ROLE_NAMES,
+getCurrentPage,
+getSupabase,
+getCurrentUser,
+getCurrentProfile,
+logout,
+getMaintenanceState,
+isMaintenanceEnabled,
+setMaintenanceState,
+saveConsent,
+clearConsent
+};
+
+window.logout = logout;
+window.getCurrentUser = getCurrentUser;
+window.getCurrentProfile = getCurrentProfile;
+window.getSupabase = getSupabase;
+window.setMaintenanceState = setMaintenanceState;
+window.getMaintenanceState = getMaintenanceState;
+window.isMaintenanceEnabled = isMaintenanceEnabled;
