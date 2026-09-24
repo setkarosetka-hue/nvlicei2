@@ -1,8 +1,7 @@
 <!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#07111f"><title>Відвідуваність — Ліцей №2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Відвідування — Ліцей №2</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -10,155 +9,75 @@
 <script src="supabase.js"></script>
 <script src="app.js" defer></script>
 
-</head><body><header class="site-header">
-    <div class="container header-inner">    <a href="dashboard.html" class="brand">
-        <span class="brand-mark">Л2</span>
-
-        <span class="brand-text">
-            <strong>Ліцей №2</strong>
-            <small>Відвідуваність</small>
-        </span>
-    </a>
-
-    <button
-        type="button"
-        class="mobile-menu-button"
-        id="mobileMenuButton"
-        aria-label="Відкрити меню"
-        aria-expanded="false">
-        ☰
-    </button>
-
-    <nav class="main-nav" id="mainNav">
-        <a href="dashboard.html">Кабінет</a>
-        <a href="schedule.html">Розклад</a>
-        <a href="homework.html">Домашні завдання</a>
-        <a href="attendance.html" class="active">Відвідуваність</a>
-    </nav>
-
-</div>
-
-</header><main class="container page-content"><section class="page-hero">
-    <div>
-        <span class="eyebrow">Навчання</span>
-        <h1>Відвідуваність</h1>
-        <p>Інформація про присутність, запізнення та відсутність.</p>
-    </div>
-</section>
-
-<section class="attendance-summary">
-
-    <div class="summary-card">
-        <span class="summary-icon">✅</span>
-        <strong id="presentCount">0</strong>
-        <small>Присутній</small>
-    </div>
-
-    <div class="summary-card">
-        <span class="summary-icon">⏰</span>
-        <strong id="lateCount">0</strong>
-        <small>Запізнення</small>
-    </div>
-
-    <div class="summary-card">
-        <span class="summary-icon">❌</span>
-        <strong id="absentCount">0</strong>
-        <small>Відсутній</small>
-    </div>
-
-</section>
-
-<section id="attendanceStatus" class="status-box">
-    Завантаження відвідуваності...
-</section>
-
-<section id="attendanceList" class="attendance-list"></section>
-
-</main><footer class="site-footer">
-    <div class="container">
-        <p>© <span id="currentYear"></span> Ліцей №2</p>
-    </div>
-</footer><style>
-    .page-content {
-        padding-top: 28px;
-        padding-bottom: 48px;
+<style>
+    .attendance-page {
+        width: min(1100px, calc(100% - 24px));
+        margin: auto;
+        padding: 20px 0 40px;
     }
 
-    .page-hero {
-        margin-bottom: 20px;
-        padding: 26px;
-        border: 1px solid var(--border-color);
-        border-radius: 22px;
-        background:
-            radial-gradient(circle at top right, rgba(70, 130, 255, .18), transparent 35%),
-            var(--surface-color);
-    }
-
-    .page-hero h1 {
-        margin: 6px 0 8px;
-        font-size: clamp(27px, 5vw, 38px);
-    }
-
-    .page-hero p {
-        margin: 0;
-        color: var(--muted-text);
-    }
-
-    .eyebrow {
-        color: var(--primary-color);
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .08em;
-    }
-
-    .attendance-summary {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
-        margin-bottom: 18px;
-    }
-
-    .summary-card {
-        min-width: 0;
-        padding: 17px;
+    .attendance-header {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        text-align: center;
-        border: 1px solid var(--border-color);
-        border-radius: 18px;
-        background: var(--surface-color);
+        justify-content: space-between;
+        gap: 14px;
+        padding: 20px;
+        margin-bottom: 18px;
+        border-radius: 22px;
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.1);
     }
 
-    .summary-icon {
-        font-size: 24px;
-        margin-bottom: 7px;
+    .attendance-header h1 {
+        margin: 0 0 5px;
     }
 
-    .summary-card strong {
-        font-size: 25px;
+    .attendance-header p {
+        margin: 0;
+        opacity: .65;
     }
 
-    .summary-card small {
-        margin-top: 3px;
-        color: var(--muted-text);
-        font-size: 12px;
+    .back-btn {
+        padding: 10px 15px;
+        border-radius: 13px;
+        text-decoration: none;
+        color: inherit;
+        background: rgba(255,255,255,.09);
+        border: 1px solid rgba(255,255,255,.1);
+        white-space: nowrap;
     }
 
-    .status-box {
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .stat {
         padding: 18px;
-        margin-bottom: 14px;
-        border: 1px solid var(--border-color);
-        border-radius: 16px;
-        background: var(--surface-color);
-        color: var(--muted-text);
-        text-align: center;
+        border-radius: 19px;
+        background: rgba(255,255,255,.065);
+        border: 1px solid rgba(255,255,255,.09);
     }
 
-    .status-box.error-state {
-        color: #ff9d9d;
-        border-color: rgba(255, 90, 90, .35);
+    .stat-number {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        opacity: .62;
+        font-size: 13px;
+    }
+
+    .attendance-status {
+        padding: 14px 17px;
+        margin-bottom: 16px;
+        border-radius: 16px;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.08);
     }
 
     .attendance-list {
@@ -167,157 +86,193 @@
     }
 
     .attendance-card {
-        display: grid;
-        grid-template-columns: 52px minmax(0, 1fr) auto;
-        align-items: center;
-        gap: 14px;
-        padding: 16px;
-        border: 1px solid var(--border-color);
-        border-radius: 18px;
-        background: var(--surface-color);
-    }
-
-    .attendance-icon {
-        width: 48px;
-        height: 48px;
         display: flex;
         align-items: center;
-        justify-content: center;
-        border-radius: 14px;
-        background: rgba(255,255,255,.05);
-        font-size: 22px;
-    }
-
-    .attendance-main {
-        min-width: 0;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 18px;
+        border-radius: 19px;
+        background: rgba(255,255,255,.065);
+        border: 1px solid rgba(255,255,255,.09);
     }
 
     .attendance-date {
-        font-weight: 750;
+        font-weight: 700;
+        margin-bottom: 6px;
     }
 
     .attendance-details {
-        margin-top: 5px;
         display: flex;
         flex-wrap: wrap;
-        gap: 6px;
-        color: var(--muted-text);
+        gap: 7px;
+    }
+
+    .meta {
+        padding: 6px 9px;
+        border-radius: 9px;
+        background: rgba(255,255,255,.06);
+        font-size: 12px;
+        opacity: .72;
+    }
+
+    .status-badge {
+        min-width: 95px;
+        text-align: center;
+        padding: 9px 12px;
+        border-radius: 11px;
+        font-weight: 700;
         font-size: 13px;
     }
 
-    .attendance-details span {
-        padding: 4px 7px;
-        border-radius: 7px;
-        background: rgba(255,255,255,.04);
+    .present {
+        background: rgba(60,200,120,.13);
     }
 
-    .attendance-status {
-        padding: 7px 10px;
-        border-radius: 9px;
-        font-size: 12px;
-        font-weight: 700;
-        white-space: nowrap;
+    .absent {
+        background: rgba(255,80,80,.13);
     }
 
-    .status-present {
-        background: rgba(60, 200, 120, .12);
+    .late {
+        background: rgba(255,180,50,.14);
     }
 
-    .status-late {
-        background: rgba(255, 180, 50, .13);
+    .unknown {
+        background: rgba(255,255,255,.08);
     }
 
-    .status-absent {
-        background: rgba(255, 70, 70, .12);
-        color: #ff9d9d;
-    }
-
-    .empty-state {
-        padding: 34px 18px;
-        border: 1px dashed var(--border-color);
-        border-radius: 18px;
-        color: var(--muted-text);
+    .empty {
+        padding: 42px 20px;
         text-align: center;
+        border-radius: 20px;
+        background: rgba(255,255,255,.05);
+        border: 1px dashed rgba(255,255,255,.12);
     }
 
-    .error-state {
-        color: #ff9d9d;
+    .empty-icon {
+        font-size: 42px;
+        margin-bottom: 10px;
     }
 
-    @media (max-width: 650px) {
-        .page-content {
-            padding-top: 18px;
+    .empty p {
+        margin: 0;
+        opacity: .65;
+    }
+
+    .error {
+        color: #ffb4b4;
+    }
+
+    @media (max-width: 600px) {
+        .attendance-page {
+            width: min(100% - 16px, 1100px);
         }
 
-        .page-hero {
-            padding: 21px 17px;
-            border-radius: 19px;
+        .attendance-header {
+            padding: 16px;
         }
 
-        .attendance-summary {
-            gap: 7px;
+        .attendance-header h1 {
+            font-size: 24px;
         }
 
-        .summary-card {
-            padding: 13px 7px;
-            border-radius: 15px;
+        .back-btn {
+            padding: 9px 11px;
+            font-size: 13px;
         }
 
-        .summary-icon {
-            font-size: 20px;
+        .stats {
+            gap: 8px;
         }
 
-        .summary-card strong {
-            font-size: 21px;
+        .stat {
+            padding: 14px 10px;
+        }
+
+        .stat-number {
+            font-size: 23px;
+        }
+
+        .stat-label {
+            font-size: 11px;
         }
 
         .attendance-card {
-            grid-template-columns: 44px minmax(0, 1fr);
-            gap: 11px;
+            align-items: flex-start;
+            flex-direction: column;
         }
 
-        .attendance-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-        }
-
-        .attendance-status {
-            grid-column: 2;
-            justify-self: start;
+        .status-badge {
+            width: 100%;
+            box-sizing: border-box;
         }
     }
-</style><script>
-(function () {
-    "use strict";
+</style>
 
-    let attendanceData = [];
+</head><body><main class="attendance-page"><header class="attendance-header">
+    <div>
+        <h1>✅ Відвідування</h1>
+        <p>Історія присутності та запізнень</p>
+    </div>
 
-    const statusElement = document.getElementById("attendanceStatus");
-    const listElement = document.getElementById("attendanceList");
+    <a href="dashboard.html" class="back-btn">
+        🏠 Головна
+    </a>
+</header>
 
-    function escapeHtml(value) {
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
+<section class="stats">
 
-    function showStatus(message, isError) {
-        statusElement.textContent = message;
-        statusElement.classList.toggle("error-state", Boolean(isError));
-        statusElement.style.display = "block";
+    <div class="stat">
+        <div class="stat-number" id="presentCount">—</div>
+        <div class="stat-label">Присутні</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-number" id="lateCount">—</div>
+        <div class="stat-label">Запізнення</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-number" id="absentCount">—</div>
+        <div class="stat-label">Відсутні</div>
+    </div>
+
+</section>
+
+<div id="attendanceStatus" class="attendance-status">
+    Завантаження відвідування...
+</div>
+
+<section id="attendanceList" class="attendance-list"></section>
+
+</main><script>
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const status = document.getElementById("attendanceStatus");
+    const list = document.getElementById("attendanceList");
+
+    const presentCount = document.getElementById("presentCount");
+    const lateCount = document.getElementById("lateCount");
+    const absentCount = document.getElementById("absentCount");
+
+    function escapeHTML(value) {
+        if (value === null || value === undefined) return "";
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
     }
 
     function formatDate(value) {
+
         if (!value) return "Дата не вказана";
 
         const date = new Date(value);
 
         if (Number.isNaN(date.getTime())) {
-            return "Дата не вказана";
+            return escapeHTML(value);
         }
 
         return date.toLocaleDateString("uk-UA", {
@@ -328,208 +283,234 @@
     }
 
     function getStatus(value) {
-        const status = String(value || "").toLowerCase().trim();
+
+        const normalized = String(value || "")
+            .toLowerCase()
+            .trim();
 
         if (
-            status === "late" ||
-            status === "запізнився" ||
-            status === "запізнення"
+            normalized === "present" ||
+            normalized === "присутній" ||
+            normalized === "присутня"
         ) {
             return {
-                text: "Запізнення",
-                icon: "⏰",
-                className: "status-late"
+                text: "Присутній",
+                className: "present"
             };
         }
 
         if (
-            status === "absent" ||
-            status === "відсутній" ||
-            status === "відсутня"
+            normalized === "absent" ||
+            normalized === "відсутній" ||
+            normalized === "відсутня"
         ) {
             return {
                 text: "Відсутній",
-                icon: "❌",
-                className: "status-absent"
+                className: "absent"
+            };
+        }
+
+        if (
+            normalized === "late" ||
+            normalized === "запізнення"
+        ) {
+            return {
+                text: "Запізнення",
+                className: "late"
             };
         }
 
         return {
-            text: "Присутній",
-            icon: "✅",
-            className: "status-present"
+            text: value || "Не вказано",
+            className: "unknown"
         };
     }
 
-    function updateSummary() {
+    function renderAttendance(records) {
+
+        if (!records || records.length === 0) {
+
+            presentCount.textContent = "0";
+            lateCount.textContent = "0";
+            absentCount.textContent = "0";
+
+            status.textContent =
+                "Даних про відвідування поки немає.";
+
+            list.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">✅</div>
+                    <p>Інформація про відвідування з'явиться після внесення даних.</p>
+                </div>
+            `;
+
+            return;
+        }
+
         let present = 0;
         let late = 0;
         let absent = 0;
 
-        attendanceData.forEach(item => {
-            const status = String(item.status || "").toLowerCase().trim();
+        records.forEach(record => {
+
+            const value = String(record.status || "")
+                .toLowerCase()
+                .trim();
 
             if (
-                status === "late" ||
-                status === "запізнився" ||
-                status === "запізнення"
+                value === "present" ||
+                value === "присутній" ||
+                value === "присутня"
             ) {
-                late++;
-            } else if (
-                status === "absent" ||
-                status === "відсутній" ||
-                status === "відсутня"
-            ) {
-                absent++;
-            } else {
                 present++;
             }
+
+            if (
+                value === "late" ||
+                value === "запізнення"
+            ) {
+                late++;
+            }
+
+            if (
+                value === "absent" ||
+                value === "відсутній" ||
+                value === "відсутня"
+            ) {
+                absent++;
+            }
+
         });
 
-        document.getElementById("presentCount").textContent = present;
-        document.getElementById("lateCount").textContent = late;
-        document.getElementById("absentCount").textContent = absent;
-    }
+        presentCount.textContent = present;
+        lateCount.textContent = late;
+        absentCount.textContent = absent;
 
-    function renderAttendance() {
-        listElement.innerHTML = "";
+        status.textContent =
+            `Записів відвідування: ${records.length}`;
 
-        if (!attendanceData.length) {
-            statusElement.style.display = "none";
+        list.innerHTML = records.map(record => {
 
-            listElement.innerHTML = `
-                <div class="empty-state">
-                    📭 Даних про відвідуваність поки немає.
-                </div>
-            `;
+            const state = getStatus(record.status);
 
-            return;
-        }
-
-        statusElement.style.display = "none";
-
-        attendanceData.forEach(item => {
-            const status = getStatus(item.status);
-
-            const card = document.createElement("article");
-            card.className = "attendance-card";
-
-            const lateMinutes = Number(item.late_minutes || 0);
-
-            const lateText =
-                status.text === "Запізнення" && lateMinutes > 0
-                    ? `<span>⏱ ${lateMinutes} хв.</span>`
+            const className =
+                record.class_name
+                    ? `👥 ${escapeHTML(record.class_name)}`
                     : "";
 
-            const classText = item.class_name
-                ? `<span>👥 ${escapeHtml(item.class_name)}</span>`
-                : "";
+            const lateMinutes =
+                record.late_minutes
+                    ? `⏱ ${escapeHTML(record.late_minutes)} хв.`
+                    : "";
 
-            const reasonText = item.reason
-                ? `<span>💬 ${escapeHtml(item.reason)}</span>`
-                : "";
+            const reason =
+                record.reason
+                    ? `💬 ${escapeHTML(record.reason)}`
+                    : "";
 
-            card.innerHTML = `
-                <div class="attendance-icon">
-                    ${status.icon}
-                </div>
+            return `
+                <article class="attendance-card">
 
-                <div class="attendance-main">
-                    <div class="attendance-date">
-                        ${escapeHtml(formatDate(item.attendance_date))}
+                    <div>
+
+                        <div class="attendance-date">
+                            ${formatDate(record.attendance_date)}
+                        </div>
+
+                        <div class="attendance-details">
+
+                            ${className
+                                ? `<span class="meta">${className}</span>`
+                                : ""
+                            }
+
+                            ${lateMinutes
+                                ? `<span class="meta">${lateMinutes}</span>`
+                                : ""
+                            }
+
+                            ${reason
+                                ? `<span class="meta">${reason}</span>`
+                                : ""
+                            }
+
+                        </div>
+
                     </div>
 
-                    <div class="attendance-details">
-                        ${classText}
-                        ${lateText}
-                        ${reasonText}
+                    <div class="status-badge ${state.className}">
+                        ${escapeHTML(state.text)}
                     </div>
-                </div>
 
-                <div class="attendance-status ${status.className}">
-                    ${escapeHtml(status.text)}
-                </div>
+                </article>
             `;
 
-            listElement.appendChild(card);
-        });
+        }).join("");
     }
 
-    async function loadAttendance() {
-        listElement.innerHTML = "";
+    try {
 
-        if (
-            typeof window.supabaseClient === "undefined" ||
-            !window.supabaseClient
-        ) {
-            showStatus(
-                "Не вдалося підключити Supabase. Перевір файл supabase.js.",
-                true
-            );
+        if (!window.supabaseClient) {
+
+            status.innerHTML =
+                '<span class="error">Не вдалося підключити Supabase. Перевір supabase.js.</span>';
+
             return;
         }
 
-        showStatus("Завантаження відвідуваності...", false);
+        const {
+            data: userData,
+            error: userError
+        } = await window.supabaseClient.auth.getUser();
 
-        try {
-            const { data: userData, error: userError } =
-                await window.supabaseClient.auth.getUser();
+        if (userError || !userData || !userData.user) {
 
-            if (userError || !userData || !userData.user) {
-                showStatus(
-                    "Не вдалося визначити поточного користувача.",
-                    true
-                );
-                return;
-            }
+            status.innerHTML =
+                '<span class="error">Не вдалося визначити користувача.</span>';
 
-            const userId = userData.user.id;
-
-            const { data, error } = await window.supabaseClient
-                .from("attendance")
-                .select("*")
-                .eq("student_id", userId)
-                .order("attendance_date", { ascending: false });
-
-            if (error) {
-                console.error("Attendance Supabase error:", error);
-
-                showStatus(
-                    "Не вдалося завантажити відвідування. Перевір таблицю attendance у Supabase та права доступу.",
-                    true
-                );
-
-                listElement.innerHTML = `
-                    <div class="empty-state error-state">
-                        ⚠️ Supabase не дозволив отримати дані з таблиці attendance.
-                    </div>
-                `;
-
-                return;
-            }
-
-            attendanceData = Array.isArray(data) ? data : [];
-
-            updateSummary();
-            renderAttendance();
-
-        } catch (error) {
-            console.error("Attendance loading error:", error);
-
-            showStatus(
-                "Сталася помилка під час завантаження відвідуваності.",
-                true
-            );
+            return;
         }
+
+        const userId = userData.user.id;
+
+        const {
+            data: records,
+            error
+        } = await window.supabaseClient
+            .from("attendance")
+            .select("*")
+            .eq("student_id", userId)
+            .order("attendance_date", {
+                ascending: false
+            });
+
+        if (error) {
+
+            console.error("Supabase attendance error:", error);
+
+            status.innerHTML =
+                '<span class="error">Не вдалося завантажити відвідування. Перевір таблицю attendance та RLS.</span>';
+
+            list.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">⚠️</div>
+                    <p>Supabase повернув помилку під час отримання відвідування.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        renderAttendance(records);
+
+    } catch (error) {
+
+        console.error("Attendance loading error:", error);
+
+        status.innerHTML =
+            '<span class="error">Помилка під час завантаження відвідування.</span>';
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        loadAttendance();
-    });
-
-    if (document.readyState !== "loading") {
-        loadAttendance();
-    }
-})();
+});
 </script></body>
 </html>
