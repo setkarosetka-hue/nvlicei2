@@ -1,0 +1,522 @@
+<!DOCTYPE html><html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07111f">
+    <meta name="description" content="Особистий кабінет — Ліцей №2">
+    <title>Кабінет — Ліцей №2</title><link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="app.js" defer></script>
+
+</head><body class="dashboard-page"><div class="page-background">
+    <div class="background-orb orb-one"></div>
+    <div class="background-orb orb-two"></div>
+    <div class="background-grid"></div>
+</div>
+
+<header class="site-header dashboard-header">
+
+    <a href="dashboard.html" class="brand">
+        <span class="brand-icon">Л2</span>
+
+        <span class="brand-text">
+            <strong>Ліцей №2</strong>
+            <small>Особистий кабінет</small>
+        </span>
+    </a>
+
+    <nav class="main-nav">
+
+        <a href="dashboard.html" class="active">
+            Головна
+        </a>
+
+        <a href="schedule.html">
+            Розклад
+        </a>
+
+        <a href="homework.html">
+            Завдання
+        </a>
+
+        <a href="announcements.html">
+            Оголошення
+        </a>
+
+        <button
+            type="button"
+            class="nav-logout logout-button"
+        >
+            Вийти
+        </button>
+
+    </nav>
+
+    <button
+        type="button"
+        class="mobile-menu-btn"
+        aria-label="Відкрити меню"
+    >
+        ☰
+    </button>
+
+</header>
+
+<main class="dashboard-main">
+
+    <section class="dashboard-welcome">
+
+        <div>
+
+            <span class="section-label">
+                ОСОБИСТИЙ КАБІНЕТ
+            </span>
+
+            <h1>
+                Вітаємо,
+                <span data-user-name>Користувач</span>!
+            </h1>
+
+            <p>
+                Тут зібрані основні функції цифрового простору
+                Ліцею №2.
+            </p>
+
+        </div>
+
+        <div class="user-status-card">
+
+            <div class="user-avatar">
+                Л2
+            </div>
+
+            <div>
+                <strong data-user-name>
+                    Користувач
+                </strong>
+
+                <span data-user-role>
+                    Користувач
+                </span>
+
+                <small data-user-email>
+                </small>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="dashboard-grid">
+
+        <a href="schedule.html" class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                📅
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    НАВЧАННЯ
+                </span>
+
+                <h2>Розклад</h2>
+
+                <p>
+                    Переглядайте актуальний розклад
+                    занять.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+        <a href="homework.html" class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                📚
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    НАВЧАННЯ
+                </span>
+
+                <h2>Домашні завдання</h2>
+
+                <p>
+                    Переглядайте завдання та терміни
+                    виконання.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+        <a href="tests.html" class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                📝
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    НАВЧАННЯ
+                </span>
+
+                <h2>Тести</h2>
+
+                <p>
+                    Доступ до навчальних тестів.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+        <a href="events.html" class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                🗓️
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    ЛІЦЕЙ
+                </span>
+
+                <h2>Події</h2>
+
+                <p>
+                    Переглядайте події та заходи ліцею.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+        <a href="announcements.html" class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                📢
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    ІНФОРМАЦІЯ
+                </span>
+
+                <h2>Оголошення</h2>
+
+                <p>
+                    Важливі новини та повідомлення.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+        <a href="messages.html" class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                💬
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    СПІЛКУВАННЯ
+                </span>
+
+                <h2>Повідомлення</h2>
+
+                <p>
+                    Переглядайте та надсилайте повідомлення.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+        <a href="attendance.html" class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                📊
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    НАВЧАННЯ
+                </span>
+
+                <h2>Відвідування</h2>
+
+                <p>
+                    Інформація про присутність
+                    та запізнення.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+        <a
+            href="teacher.html"
+            class="dashboard-card"
+            data-role-card="teacher"
+        >
+
+            <div class="dashboard-card-icon">
+                👨‍🏫
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    РОБОТА
+                </span>
+
+                <h2>Кабінет вчителя</h2>
+
+                <p>
+                    Інструменти для роботи вчителя.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+        <a
+            href="student.html"
+            class="dashboard-card"
+            data-role-card="student"
+        >
+
+            <div class="dashboard-card-icon">
+                🎓
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    УЧЕНЬ
+                </span>
+
+                <h2>Кабінет учня</h2>
+
+                <p>
+                    Особистий навчальний простір.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+        <a
+            href="parent.html"
+            class="dashboard-card"
+            data-role-card="parent"
+        >
+
+            <div class="dashboard-card-icon">
+                👨‍👩‍👧
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    БАТЬКИ
+                </span>
+
+                <h2>Кабінет батьків</h2>
+
+                <p>
+                    Інформація про навчання дитини.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+        <a
+            href="admin.html"
+            class="dashboard-card admin-dashboard-card"
+            data-role-card="admin"
+            hidden
+        >
+
+            <div class="dashboard-card-icon">
+                ⚙️
+            </div>
+
+            <div class="dashboard-card-content">
+
+                <span class="card-label">
+                    АДМІНІСТРАЦІЯ
+                </span>
+
+                <h2>Адмін-панель</h2>
+
+                <p>
+                    Керування користувачами та системою.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">→</span>
+
+        </a>
+
+    </section>
+
+    <section class="quick-actions-section">
+
+        <div class="section-heading compact">
+
+            <span class="section-label">
+                ШВИДКИЙ ДОСТУП
+            </span>
+
+            <h2>
+                Часто використовуване
+            </h2>
+
+        </div>
+
+        <div class="quick-actions">
+
+            <a href="schedule.html" class="quick-action">
+                <span>📅</span>
+                <strong>Розклад</strong>
+            </a>
+
+            <a href="homework.html" class="quick-action">
+                <span>📚</span>
+                <strong>Завдання</strong>
+            </a>
+
+            <a href="messages.html" class="quick-action">
+                <span>💬</span>
+                <strong>Повідомлення</strong>
+            </a>
+
+            <a href="announcements.html" class="quick-action">
+                <span>📢</span>
+                <strong>Оголошення</strong>
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="site-footer dashboard-footer">
+
+    <div class="footer-bottom">
+
+        <span>
+            © <span id="currentYear"></span> Ліцей №2
+        </span>
+
+        <a href="index.html">
+            На головну
+        </a>
+
+        <a href="consent.html">
+            Правила
+        </a>
+
+    </div>
+
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+
+        if (
+            typeof supabaseClient === 'undefined' ||
+            !supabaseClient?.auth
+        ) {
+            return;
+        }
+
+        try {
+
+            const { data } =
+                await supabaseClient.auth.getUser();
+
+            const user = data?.user;
+
+            if (!user) return;
+
+            const { data: profile } =
+                await supabaseClient
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', user.id)
+                    .maybeSingle();
+
+            const role = profile?.role;
+
+            document
+                .querySelectorAll('[data-role-card]')
+                .forEach(card => {
+
+                    const cardRole =
+                        card.getAttribute('data-role-card');
+
+                    if (cardRole === role) {
+                        card.hidden = false;
+                    }
+
+                    if (
+                        cardRole === 'admin' &&
+                        role === 'admin'
+                    ) {
+                        card.hidden = false;
+                    }
+
+                });
+
+        } catch (error) {
+
+            console.error(
+                'Dashboard role error:',
+                error
+            );
+        }
+
+    });
+</script>
+
+</body>
+</html>
