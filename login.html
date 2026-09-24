@@ -6,448 +6,754 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
-<script src="app.js" defer></script>
 
-</head><body class="auth-page"><main class="auth-container"><section class="auth-card">
+</head><body class="auth-page"><main class="auth-container">
+<section class="auth-card"><div class="auth-logo">
+    <div class="logo-mark">Л2</div>
 
-    <div class="auth-logo">
-        <div class="logo-mark">Л2</div>
-        <div>
-            <h1>Ліцей №2</h1>
-            <p>Єдина система ліцею</p>
-        </div>
+    <div>
+        <h1>Ліцей №2</h1>
+        <p>Єдина система ліцею</p>
+    </div>
+</div>
+
+<div class="auth-tabs">
+    <button class="auth-tab active" id="loginTab" type="button">
+        Вхід
+    </button>
+
+    <button class="auth-tab" id="registerTab" type="button">
+        Реєстрація
+    </button>
+</div>
+
+<div id="message" class="auth-message" style="display:none;"></div>
+
+<form id="loginForm">
+
+    <label for="loginEmail">Електронна пошта</label>
+
+    <input
+        id="loginEmail"
+        type="email"
+        placeholder="example@email.com"
+        autocomplete="email"
+        required
+    >
+
+    <label for="loginPassword">Пароль</label>
+
+    <input
+        id="loginPassword"
+        type="password"
+        placeholder="Введіть пароль"
+        autocomplete="current-password"
+        required
+    >
+
+    <button class="primary-button" id="loginButton" type="submit">
+        Увійти
+    </button>
+
+    <button
+        class="text-button"
+        id="forgotPassword"
+        type="button"
+    >
+        Забули пароль?
+    </button>
+
+</form>
+
+
+<form id="registerForm" style="display:none;">
+
+    <label for="registerName">Ім'я та прізвище</label>
+
+    <input
+        id="registerName"
+        type="text"
+        placeholder="Наприклад: Іван Петренко"
+        autocomplete="name"
+        required
+    >
+
+    <label for="registerEmail">Електронна пошта</label>
+
+    <input
+        id="registerEmail"
+        type="email"
+        placeholder="example@email.com"
+        autocomplete="email"
+        required
+    >
+
+    <label for="registerPassword">Пароль</label>
+
+    <input
+        id="registerPassword"
+        type="password"
+        placeholder="Мінімум 6 символів"
+        autocomplete="new-password"
+        minlength="6"
+        required
+    >
+
+    <label for="registerRole">Ваша роль</label>
+
+    <select id="registerRole" required>
+        <option value="">Оберіть роль</option>
+        <option value="student">Учень</option>
+        <option value="teacher">Вчитель</option>
+        <option value="parent">Батько / Мати</option>
+    </select>
+
+    <div class="role-info">
+        <strong>Важливо</strong>
+
+        <span>
+            Після реєстрації роль має бути підтверджена адміністрацією.
+        </span>
     </div>
 
-    <div class="auth-tabs">
-        <button class="auth-tab active" id="loginTab" type="button">
-            Вхід
-        </button>
+    <label class="checkbox-row">
+        <input id="registerConsent" type="checkbox" required>
 
-        <button class="auth-tab" id="registerTab" type="button">
-            Реєстрація
-        </button>
-    </div>
+        <span>
+            Я погоджуюся з правилами використання системи.
+        </span>
+    </label>
 
-    <div id="message" class="auth-message"></div>
+    <button
+        class="primary-button"
+        id="registerButton"
+        type="submit"
+    >
+        Створити акаунт
+    </button>
 
-    <form id="loginForm">
+</form>
 
-        <label for="loginEmail">Електронна пошта</label>
-        <input
-            id="loginEmail"
-            type="email"
-            placeholder="example@email.com"
-            autocomplete="email"
-            required
-        >
 
-        <label for="loginPassword">Пароль</label>
-        <input
-            id="loginPassword"
-            type="password"
-            placeholder="Введіть пароль"
-            autocomplete="current-password"
-            required
-        >
-
-        <button class="primary-button" type="submit">
-            Увійти
-        </button>
-
-        <button
-            class="text-button"
-            id="forgotPassword"
-            type="button"
-        >
-            Забули пароль?
-        </button>
-
-    </form>
-
-    <form id="registerForm" style="display:none;">
-
-        <label for="registerName">Ім'я та прізвище</label>
-        <input
-            id="registerName"
-            type="text"
-            placeholder="Наприклад: Іван Петренко"
-            autocomplete="name"
-            required
-        >
-
-        <label for="registerEmail">Електронна пошта</label>
-        <input
-            id="registerEmail"
-            type="email"
-            placeholder="example@email.com"
-            autocomplete="email"
-            required
-        >
-
-        <label for="registerPassword">Пароль</label>
-        <input
-            id="registerPassword"
-            type="password"
-            placeholder="Мінімум 6 символів"
-            autocomplete="new-password"
-            minlength="6"
-            required
-        >
-
-        <label for="registerRole">Ваша роль</label>
-
-        <select id="registerRole" required>
-            <option value="">Оберіть роль</option>
-            <option value="student">Учень</option>
-            <option value="teacher">Вчитель</option>
-            <option value="parent">Батько / Мати</option>
-        </select>
-
-        <div class="role-info">
-            <strong>Важливо</strong>
-            <span>
-                Після реєстрації роль має бути підтверджена адміністрацією.
-            </span>
-        </div>
-
-        <label class="checkbox-row">
-            <input id="registerConsent" type="checkbox" required>
-            <span>
-                Я погоджуюся з правилами використання системи.
-            </span>
-        </label>
-
-        <button class="primary-button" type="submit">
-            Створити акаунт
-        </button>
-
-    </form>
-
-    <div class="auth-footer">
-        <a href="index.html">← На головну</a>
-        <a href="consent.html">Правила системи</a>
-    </div>
+<div class="auth-footer">
+    <a href="index.html">← На головну</a>
+    <a href="consent.html">Правила системи</a>
+</div>
 
 </section>
-
 </main><script>
-document.addEventListener("DOMContentLoaded", () => {
 
-    const supabase = window.supabaseClient;
+const SUPABASE_URL =
+    "https://atfhyyarjqiwlaxixbrd.supabase.co";
 
-    const loginTab = document.getElementById("loginTab");
-    const registerTab = document.getElementById("registerTab");
+const SUPABASE_KEY =
+    "sb_publishable_2rtmu-1UkcDR4D35qkGwgw_AQDBR8Lw";
 
-    const loginForm = document.getElementById("loginForm");
-    const registerForm = document.getElementById("registerForm");
+
+let client = null;
+
+
+function showMessage(text, type = "info") {
 
     const message = document.getElementById("message");
 
-    const showMessage = (text, type = "info") => {
-        message.textContent = text;
-        message.className = "auth-message " + type;
-        message.style.display = "block";
-    };
+    message.textContent = text;
 
-    const hideMessage = () => {
-        message.textContent = "";
-        message.className = "auth-message";
-        message.style.display = "none";
-    };
+    message.className =
+        "auth-message " + type;
 
-    if (!supabase) {
-        showMessage(
-            "Не вдалося підключити Supabase. Перевір файл supabase.js.",
-            "error"
-        );
-        return;
+    message.style.display = "block";
+}
+
+
+function hideMessage() {
+
+    const message = document.getElementById("message");
+
+    message.textContent = "";
+
+    message.className = "auth-message";
+
+    message.style.display = "none";
+}
+
+
+async function getSupabaseClient() {
+
+    if (window.supabaseClient) {
+        return window.supabaseClient;
     }
 
-    const switchMode = mode => {
-        hideMessage();
+    if (
+        window.supabase &&
+        typeof window.supabase.createClient === "function"
+    ) {
 
-        if (mode === "login") {
-            loginTab.classList.add("active");
-            registerTab.classList.remove("active");
+        if (!client) {
 
-            loginForm.style.display = "block";
-            registerForm.style.display = "none";
-        } else {
-            registerTab.classList.add("active");
-            loginTab.classList.remove("active");
+            client =
+                window.supabase.createClient(
+                    SUPABASE_URL,
+                    SUPABASE_KEY
+                );
 
-            loginForm.style.display = "none";
-            registerForm.style.display = "block";
-        }
-    };
-
-    loginTab.addEventListener("click", () => switchMode("login"));
-    registerTab.addEventListener("click", () => switchMode("register"));
-
-    loginForm.addEventListener("submit", async event => {
-        event.preventDefault();
-
-        const email = document
-            .getElementById("loginEmail")
-            .value
-            .trim()
-            .toLowerCase();
-
-        const password = document.getElementById("loginPassword").value;
-
-        if (!email || !password) {
-            showMessage("Заповніть усі поля.", "error");
-            return;
         }
 
-        const button = loginForm.querySelector("button[type='submit']");
-        button.disabled = true;
-        button.textContent = "Вхід...";
+        return client;
+    }
+
+    throw new Error(
+        "Supabase не завантажився."
+    );
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        const loginTab =
+            document.getElementById("loginTab");
+
+        const registerTab =
+            document.getElementById("registerTab");
+
+        const loginForm =
+            document.getElementById("loginForm");
+
+        const registerForm =
+            document.getElementById("registerForm");
+
 
         try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
 
-            if (error) {
-                showMessage(
-                    "Не вдалося виконати вхід: " + error.message,
-                    "error"
+            client =
+                await getSupabaseClient();
+
+            if (!client) {
+                throw new Error(
+                    "Не вдалося створити Supabase client."
                 );
-                return;
             }
-
-            if (!data.user) {
-                showMessage("Користувача не знайдено.", "error");
-                return;
-            }
-
-            localStorage.setItem(
-                "licei2_user",
-                JSON.stringify({
-                    id: data.user.id,
-                    email: data.user.email
-                })
-            );
-
-            showMessage("Вхід виконано. Завантаження...", "success");
-
-            const { data: profile, error: profileError } = await supabase
-                .from("profiles")
-                .select("role")
-                .eq("id", data.user.id)
-                .maybeSingle();
-
-            if (profileError) {
-                console.error(profileError);
-            }
-
-            if (!profile || profile.role === "pending") {
-                window.location.replace("dashboard.html");
-                return;
-            }
-
-            if (profile.role === "admin") {
-                window.location.replace("admin.html");
-                return;
-            }
-
-            if (profile.role === "teacher") {
-                window.location.replace("teacher.html");
-                return;
-            }
-
-            if (profile.role === "student") {
-                window.location.replace("student.html");
-                return;
-            }
-
-            if (profile.role === "parent") {
-                window.location.replace("parent.html");
-                return;
-            }
-
-            window.location.replace("dashboard.html");
 
         } catch (error) {
-            console.error(error);
+
+            console.error(
+                "Supabase login error:",
+                error
+            );
+
             showMessage(
-                "Сталася помилка під час входу.",
+                "Не вдалося підключити систему входу. Оновіть сторінку та спробуйте ще раз.",
                 "error"
             );
-        } finally {
-            button.disabled = false;
-            button.textContent = "Увійти";
-        }
-    });
 
-    registerForm.addEventListener("submit", async event => {
-        event.preventDefault();
-
-        const name = document
-            .getElementById("registerName")
-            .value
-            .trim();
-
-        const email = document
-            .getElementById("registerEmail")
-            .value
-            .trim()
-            .toLowerCase();
-
-        const password =
-            document.getElementById("registerPassword").value;
-
-        const role =
-            document.getElementById("registerRole").value;
-
-        const consent =
-            document.getElementById("registerConsent").checked;
-
-        if (!name || !email || !password || !role) {
-            showMessage("Заповніть усі поля.", "error");
             return;
         }
 
-        if (!consent) {
-            showMessage(
-                "Потрібно погодитися з правилами системи.",
-                "error"
-            );
-            return;
+
+        function switchMode(mode) {
+
+            hideMessage();
+
+            if (mode === "login") {
+
+                loginTab.classList.add("active");
+                registerTab.classList.remove("active");
+
+                loginForm.style.display = "block";
+                registerForm.style.display = "none";
+
+            } else {
+
+                registerTab.classList.add("active");
+                loginTab.classList.remove("active");
+
+                loginForm.style.display = "none";
+                registerForm.style.display = "block";
+            }
         }
 
-        if (password.length < 6) {
-            showMessage(
-                "Пароль повинен містити щонайменше 6 символів.",
-                "error"
-            );
-            return;
-        }
 
-        const button =
-            registerForm.querySelector("button[type='submit']");
+        loginTab.addEventListener(
+            "click",
+            () => switchMode("login")
+        );
 
-        button.disabled = true;
-        button.textContent = "Створення...";
 
-        try {
-            const redirectUrl =
-                "https://licei2.pntr.dev/verify-email.html";
+        registerTab.addEventListener(
+            "click",
+            () => switchMode("register")
+        );
 
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    emailRedirectTo: redirectUrl,
-                    data: {
-                        full_name: name,
-                        requested_role: role
-                    }
-                }
-            });
 
-            if (error) {
-                showMessage(
-                    "Не вдалося зареєструватися: " + error.message,
-                    "error"
-                );
-                return;
-            }
+        loginForm.addEventListener(
+            "submit",
+            async event => {
 
-            if (data.user) {
+                event.preventDefault();
 
-                const { error: profileError } = await supabase
-                    .from("profiles")
-                    .upsert({
-                        id: data.user.id,
-                        email,
-                        full_name: name,
-                        role: "pending",
-                        updated_at: new Date().toISOString()
-                    });
+                hideMessage();
 
-                if (profileError) {
-                    console.error(
-                        "Помилка створення профілю:",
-                        profileError
-                    );
-                }
-            }
+                const email =
+                    document
+                        .getElementById("loginEmail")
+                        .value
+                        .trim()
+                        .toLowerCase();
 
-            showMessage(
-                "Реєстрацію завершено. Перевірте електронну пошту та підтвердьте адресу. Після цього адміністрація підтвердить вашу роль.",
-                "success"
-            );
+                const password =
+                    document
+                        .getElementById("loginPassword")
+                        .value;
 
-            registerForm.reset();
 
-        } catch (error) {
-            console.error(error);
+                if (!email || !password) {
 
-            showMessage(
-                "Сталася помилка під час реєстрації.",
-                "error"
-            );
-        } finally {
-            button.disabled = false;
-            button.textContent = "Створити акаунт";
-        }
-    });
-
-    document
-        .getElementById("forgotPassword")
-        .addEventListener("click", async () => {
-
-            const email = document
-                .getElementById("loginEmail")
-                .value
-                .trim()
-                .toLowerCase();
-
-            if (!email) {
-                showMessage(
-                    "Спочатку введіть свою електронну пошту.",
-                    "error"
-                );
-                return;
-            }
-
-            try {
-                const { error } =
-                    await supabase.auth.resetPasswordForEmail(
-                        email,
-                        {
-                            redirectTo:
-                                "https://licei2.pntr.dev/reset-password.html"
-                        }
-                    );
-
-                if (error) {
                     showMessage(
-                        "Не вдалося надіслати лист: " +
-                        error.message,
+                        "Заповніть усі поля.",
                         "error"
                     );
+
                     return;
                 }
 
-                showMessage(
-                    "Лист для відновлення пароля надіслано на вашу пошту.",
-                    "success"
-                );
 
-            } catch (error) {
-                console.error(error);
+                const button =
+                    document.getElementById(
+                        "loginButton"
+                    );
 
-                showMessage(
-                    "Сталася помилка під час відновлення пароля.",
-                    "error"
-                );
+
+                button.disabled = true;
+                button.textContent = "Вхід...";
+
+
+                try {
+
+                    const result =
+                        await client.auth.signInWithPassword({
+                            email: email,
+                            password: password
+                        });
+
+
+                    const data = result.data;
+                    const error = result.error;
+
+
+                    if (error) {
+
+                        console.error(
+                            "Supabase Auth:",
+                            error
+                        );
+
+                        showMessage(
+                            "Помилка входу: " +
+                            error.message,
+                            "error"
+                        );
+
+                        return;
+                    }
+
+
+                    if (!data || !data.user) {
+
+                        showMessage(
+                            "Користувача не знайдено.",
+                            "error"
+                        );
+
+                        return;
+                    }
+
+
+                    localStorage.setItem(
+                        "licei2_user",
+                        JSON.stringify({
+                            id: data.user.id,
+                            email: data.user.email
+                        })
+                    );
+
+
+                    let role = "pending";
+
+
+                    try {
+
+                        const profileResult =
+                            await client
+                                .from("profiles")
+                                .select("role,full_name")
+                                .eq("id", data.user.id)
+                                .maybeSingle();
+
+
+                        if (
+                            !profileResult.error &&
+                            profileResult.data
+                        ) {
+
+                            role =
+                                profileResult.data.role ||
+                                "pending";
+
+                        } else if (
+                            profileResult.error
+                        ) {
+
+                            console.warn(
+                                "Profile query:",
+                                profileResult.error
+                            );
+                        }
+
+                    } catch (profileError) {
+
+                        console.warn(
+                            "Profile error:",
+                            profileError
+                        );
+                    }
+
+
+                    showMessage(
+                        "Вхід виконано. Відкриваємо систему...",
+                        "success"
+                    );
+
+
+                    setTimeout(
+                        () => {
+
+                            if (role === "admin") {
+
+                                window.location.href =
+                                    "admin.html";
+
+                                return;
+                            }
+
+
+                            if (role === "teacher") {
+
+                                window.location.href =
+                                    "teacher.html";
+
+                                return;
+                            }
+
+
+                            if (role === "student") {
+
+                                window.location.href =
+                                    "student.html";
+
+                                return;
+                            }
+
+
+                            if (role === "parent") {
+
+                                window.location.href =
+                                    "parent.html";
+
+                                return;
+                            }
+
+
+                            window.location.href =
+                                "dashboard.html";
+
+                        },
+                        400
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Login error:",
+                        error
+                    );
+
+                    showMessage(
+                        "Сталася помилка під час входу: " +
+                        (error.message || "невідома помилка"),
+                        "error"
+                    );
+
+                } finally {
+
+                    button.disabled = false;
+                    button.textContent = "Увійти";
+                }
             }
-        });
+        );
 
-});
+
+        registerForm.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                hideMessage();
+
+
+                const name =
+                    document
+                        .getElementById("registerName")
+                        .value
+                        .trim();
+
+
+                const email =
+                    document
+                        .getElementById("registerEmail")
+                        .value
+                        .trim()
+                        .toLowerCase();
+
+
+                const password =
+                    document
+                        .getElementById("registerPassword")
+                        .value;
+
+
+                const role =
+                    document
+                        .getElementById("registerRole")
+                        .value;
+
+
+                const consent =
+                    document
+                        .getElementById("registerConsent")
+                        .checked;
+
+
+                if (
+                    !name ||
+                    !email ||
+                    !password ||
+                    !role
+                ) {
+
+                    showMessage(
+                        "Заповніть усі поля.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!consent) {
+
+                    showMessage(
+                        "Потрібно погодитися з правилами системи.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (password.length < 6) {
+
+                    showMessage(
+                        "Пароль повинен містити щонайменше 6 символів.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const button =
+                    document.getElementById(
+                        "registerButton"
+                    );
+
+
+                button.disabled = true;
+                button.textContent = "Створення...";
+
+
+                try {
+
+                    const redirectUrl =
+                        "https://licei2.pntr.dev/verify-email.html";
+
+
+                    const result =
+                        await client.auth.signUp({
+                            email: email,
+                            password: password,
+
+                            options: {
+                                emailRedirectTo:
+                                    redirectUrl,
+
+                                data: {
+                                    full_name: name,
+                                    requested_role: role
+                                }
+                            }
+                        });
+
+
+                    const data = result.data;
+                    const error = result.error;
+
+
+                    if (error) {
+
+                        showMessage(
+                            "Не вдалося зареєструватися: " +
+                            error.message,
+                            "error"
+                        );
+
+                        return;
+                    }
+
+
+                    if (data && data.user) {
+
+                        const profileResult =
+                            await client
+                                .from("profiles")
+                                .upsert({
+                                    id: data.user.id,
+                                    email: email,
+                                    full_name: name,
+                                    role: "pending",
+                                    updated_at:
+                                        new Date().toISOString()
+                                });
+
+
+                        if (profileResult.error) {
+
+                            console.warn(
+                                "Профіль:",
+                                profileResult.error
+                            );
+                        }
+                    }
+
+
+                    showMessage(
+                        "Реєстрацію завершено. Перевірте електронну пошту та підтвердьте адресу.",
+                        "success"
+                    );
+
+
+                    registerForm.reset();
+
+                } catch (error) {
+
+                    console.error(
+                        "Register error:",
+                        error
+                    );
+
+                    showMessage(
+                        "Сталася помилка під час реєстрації: " +
+                        (error.message || "невідома помилка"),
+                        "error"
+                    );
+
+                } finally {
+
+                    button.disabled = false;
+                    button.textContent =
+                        "Створити акаунт";
+                }
+            }
+        );
+
+
+        document
+            .getElementById("forgotPassword")
+            .addEventListener(
+                "click",
+                async () => {
+
+                    hideMessage();
+
+
+                    const email =
+                        document
+                            .getElementById("loginEmail")
+                            .value
+                            .trim()
+                            .toLowerCase();
+
+
+                    if (!email) {
+
+                        showMessage(
+                            "Спочатку введіть свою електронну пошту.",
+                            "error"
+                        );
+
+                        return;
+                    }
+
+
+                    try {
+
+                        const result =
+                            await client.auth
+                                .resetPasswordForEmail(
+                                    email,
+                                    {
+                                        redirectTo:
+                                            "https://licei2.pntr.dev/reset-password.html"
+                                    }
+                                );
+
+
+                        if (result.error) {
+
+                            showMessage(
+                                "Не вдалося надіслати лист: " +
+                                result.error.message,
+                                "error"
+                            );
+
+                            return;
+                        }
+
+
+                        showMessage(
+                            "Лист для відновлення пароля надіслано на вашу пошту.",
+                            "success"
+                        );
+
+                    } catch (error) {
+
+                        console.error(
+                            "Reset password:",
+                            error
+                        );
+
+                        showMessage(
+                            "Сталася помилка під час відновлення пароля.",
+                            "error"
+                        );
+                    }
+                }
+            );
+
+    }
+);
+
 </script></body>
 </html>
