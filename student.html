@@ -2,234 +2,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#07111f">
     <title>Кабінет учня — Ліцей №2</title><link rel="stylesheet" href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 <script src="app.js" defer></script>
 
-</head><body class="dashboard-page">
-    <div class="page-background"></div><header class="topbar">
-    <a href="dashboard.html" class="brand">
-        <span class="brand-mark">Л2</span>
-        <span>
-            <strong>Ліцей №2</strong>
-            <small>Кабінет учня</small>
-        </span>
-    </a>
+<style>
+    body {
+        min-height: 100vh;
+    }
 
-    <button class="mobile-menu-btn" type="button" aria-label="Меню">
-        ☰
-    </button>
+    .student-page {
+        width: min(1180px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 24px 0 40px;
+    }
 
-    <nav class="main-nav">
-        <a href="dashboard.html">Головна</a>
-        <a href="student.html" class="active">Кабінет</a>
-        <a href="schedule.html">Розклад</a>
-        <a href="homework.html">Домашні завдання</a>
-        <a href="tests.html">Тести</a>
-        <a href="messages.html">Повідомлення</a>
-        <button class="logout-button" type="button">Вийти</button>
-    </nav>
-</header>
+    .student-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px;
+        margin-bottom: 22px;
+        border-radius: 24px;
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.10);
+        backdrop-filter: blur(18px);
+    }
 
-<main class="dashboard-container">
+    .student-title h1 {
+        margin: 0 0 6px;
+        font-size: clamp(25px, 5vw, 38px);
+    }
 
-    <section class="dashboard-hero">
-        <div>
-            <span class="eyebrow">КАБІНЕТ УЧНЯ</span>
+    .student-title p {
+        margin: 0;
+        opacity: .7;
+    }
 
-            <h1>
-                Привіт, <span data-user-name>учню</span> 👋
-            </h1>
+    .logout-btn {
+        border: 0;
+        border-radius: 14px;
+        padding: 11px 16px;
+        cursor: pointer;
+        background: rgba(255,255,255,.10);
+        color: inherit;
+        font-weight: 600;
+    }
 
-            <p>
-                Тут зібрані твої розклад, домашні завдання,
-                тести, події та повідомлення.
-            </p>
+    .logout-btn:hover {
+        background: rgba(255,255,255,.16);
+    }
+
+    .student-welcome {
+        padding: 24px;
+        border-radius: 24px;
+        margin-bottom: 22px;
+        background:
+            radial-gradient(circle at top right, rgba(0,170,255,.25), transparent 45%),
+            rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .student-welcome h2 {
+        margin: 0 0 8px;
+    }
+
+    .student-welcome p {
+        margin: 0;
+        opacity: .75;
+    }
+
+    .modules-title {
+        margin: 0 0 14px;
+        font-size: 22px;
+    }
+
+    .modules {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .module {
+        position: relative;
+        min-height: 145px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px;
+        border-radius: 22px;
+        text-decoration: none;
+        color: inherit;
+        background: rgba(255,255,255,.065);
+        border: 1px solid rgba(255,255,255,.09);
+        overflow: hidden;
+        transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .module::after {
+        content: "";
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        right: -35px;
+        bottom: -45px;
+        border-radius: 50%;
+        background: rgba(0,170,255,.12);
+    }
+
+    .module:hover {
+        transform: translateY(-4px);
+        background: rgba(255,255,255,.10);
+        border-color: rgba(0,180,255,.35);
+    }
+
+    .module-icon {
+        font-size: 30px;
+        margin-bottom: 12px;
+    }
+
+    .module h3 {
+        margin: 0 0 5px;
+        font-size: 18px;
+    }
+
+    .module p {
+        margin: 0;
+        opacity: .62;
+        font-size: 14px;
+    }
+
+    .quick-section {
+        margin-top: 26px;
+    }
+
+    .quick-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .quick-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 11px 15px;
+        border-radius: 14px;
+        text-decoration: none;
+        color: inherit;
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.09);
+    }
+
+    .quick-link:hover {
+        background: rgba(255,255,255,.12);
+    }
+
+    .student-footer {
+        margin-top: 30px;
+        text-align: center;
+        opacity: .5;
+        font-size: 13px;
+    }
+
+    @media (max-width: 850px) {
+        .modules {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 560px) {
+        .student-page {
+            width: min(100% - 18px, 1180px);
+            padding-top: 10px;
+        }
+
+        .student-header {
+            padding: 17px;
+            border-radius: 20px;
+        }
+
+        .student-header .logout-btn {
+            padding: 9px 11px;
+            font-size: 12px;
+        }
+
+        .student-welcome {
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        .modules {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .module {
+            min-height: 130px;
+            padding: 16px;
+            border-radius: 18px;
+        }
+
+        .module-icon {
+            font-size: 26px;
+        }
+
+        .module h3 {
+            font-size: 16px;
+        }
+
+        .module p {
+            font-size: 12px;
+        }
+    }
+</style>
+
+</head><body>
+    <main class="student-page">    <header class="student-header">
+        <div class="student-title">
+            <h1>Кабінет учня</h1>
+            <p id="studentEmail">Завантаження профілю...</p>
         </div>
 
-        <div class="hero-status">
-            <span class="status-dot"></span>
-            <span>Акаунт активний</span>
-        </div>
+        <button class="logout-btn" id="logoutBtn">
+            Вийти
+        </button>
+    </header>
+
+    <section class="student-welcome">
+        <h2>Вітаємо в Ліцеї №2 👋</h2>
+        <p>
+            Тут зібрані всі навчальні розділи: розклад, домашні завдання,
+            тести, повідомлення, оголошення, події та відвідування.
+        </p>
     </section>
 
-    <section class="quick-grid">
+    <h2 class="modules-title">Навчальні розділи</h2>
 
-        <a href="schedule.html" class="feature-card">
-            <div class="feature-icon">📅</div>
+    <section class="modules">
 
-            <h2>Розклад</h2>
-
-            <p>
-                Переглядай заняття на сьогодні та інші дні.
-            </p>
-
-            <span class="card-link">
-                Відкрити →
-            </span>
-        </a>
-
-        <a href="homework.html" class="feature-card">
-            <div class="feature-icon">📚</div>
-
-            <h2>Домашні завдання</h2>
-
-            <p>
-                Перевіряй актуальні завдання та терміни виконання.
-            </p>
-
-            <span class="card-link">
-                Відкрити →
-            </span>
-        </a>
-
-        <a href="tests.html" class="feature-card">
-            <div class="feature-icon">📝</div>
-
-            <h2>Тести</h2>
-
-            <p>
-                Переглядай доступні тести та навчальні матеріали.
-            </p>
-
-            <span class="card-link">
-                Відкрити →
-            </span>
-        </a>
-
-        <a href="attendance.html" class="feature-card">
-            <div class="feature-icon">✅</div>
-
-            <h2>Відвідування</h2>
-
-            <p>
-                Переглядай інформацію про свою присутність на заняттях.
-            </p>
-
-            <span class="card-link">
-                Відкрити →
-            </span>
-        </a>
-
-        <a href="events.html" class="feature-card">
-            <div class="feature-icon">🎓</div>
-
-            <h2>Події</h2>
-
-            <p>
-                Не пропускай шкільні заходи та важливі події.
-            </p>
-
-            <span class="card-link">
-                Відкрити →
-            </span>
-        </a>
-
-        <a href="announcements.html" class="feature-card">
-            <div class="feature-icon">📢</div>
-
-            <h2>Оголошення</h2>
-
-            <p>
-                Переглядай важливі повідомлення від ліцею.
-            </p>
-
-            <span class="card-link">
-                Відкрити →
-            </span>
-        </a>
-
-        <a href="messages.html" class="feature-card">
-            <div class="feature-icon">💬</div>
-
-            <h2>Повідомлення</h2>
-
-            <p>
-                Переглядай свої повідомлення та відповіді.
-            </p>
-
-            <span class="card-link">
-                Відкрити →
-            </span>
-        </a>
-
-    </section>
-
-    <section class="dashboard-section">
-
-        <div class="section-heading">
+        <a class="module" href="schedule.html">
             <div>
-                <span class="eyebrow">АКАУНТ</span>
-                <h2>Мій профіль</h2>
+                <div class="module-icon">📅</div>
+                <h3>Розклад</h3>
+                <p>Уроки та заняття</p>
             </div>
-        </div>
+        </a>
 
-        <div class="profile-panel">
-
-            <div class="profile-row">
-                <span>Ім'я</span>
-                <strong data-user-name>—</strong>
-            </div>
-
-            <div class="profile-row">
-                <span>Email</span>
-                <strong data-user-email>—</strong>
-            </div>
-
-            <div class="profile-row">
-                <span>Роль</span>
-                <strong data-user-role>Учень</strong>
-            </div>
-
-            <div class="profile-row">
-                <span>Статус</span>
-                <strong class="success-text">
-                    Активний
-                </strong>
-            </div>
-
-        </div>
-
-    </section>
-
-    <section class="dashboard-section">
-
-        <div class="info-banner">
-
-            <div class="info-banner-icon">
-                💡
-            </div>
-
+        <a class="module" href="homework.html">
             <div>
-                <h3>Все в одному місці</h3>
-
-                <p>
-                    Використовуй меню вище, щоб швидко перейти
-                    до потрібного розділу навчальної системи.
-                </p>
+                <div class="module-icon">📚</div>
+                <h3>Домашні завдання</h3>
+                <p>Поточні та прострочені</p>
             </div>
+        </a>
 
-        </div>
+        <a class="module" href="tests.html">
+            <div>
+                <div class="module-icon">📝</div>
+                <h3>Тести</h3>
+                <p>Контрольні та онлайн-тести</p>
+            </div>
+        </a>
+
+        <a class="module" href="messages.html">
+            <div>
+                <div class="module-icon">💬</div>
+                <h3>Повідомлення</h3>
+                <p>Особисті повідомлення</p>
+            </div>
+        </a>
+
+        <a class="module" href="announcements.html">
+            <div>
+                <div class="module-icon">📢</div>
+                <h3>Інформація</h3>
+                <p>Оголошення ліцею</p>
+            </div>
+        </a>
+
+        <a class="module" href="events.html">
+            <div>
+                <div class="module-icon">🎉</div>
+                <h3>Події</h3>
+                <p>Заходи та події</p>
+            </div>
+        </a>
+
+        <a class="module" href="attendance.html">
+            <div>
+                <div class="module-icon">✅</div>
+                <h3>Відвідування</h3>
+                <p>Присутність та запізнення</p>
+            </div>
+        </a>
+
+        <a class="module" href="dashboard.html">
+            <div>
+                <div class="module-icon">🏠</div>
+                <h3>Головна</h3>
+                <p>Повернутися до дашборду</p>
+            </div>
+        </a>
 
     </section>
+
+    <section class="quick-section">
+        <h2 class="modules-title">Швидкий доступ</h2>
+
+        <div class="quick-links">
+            <a class="quick-link" href="schedule.html">📅 Розклад</a>
+            <a class="quick-link" href="homework.html">📚 Домашка</a>
+            <a class="quick-link" href="tests.html">📝 Тести</a>
+            <a class="quick-link" href="messages.html">💬 Повідомлення</a>
+            <a class="quick-link" href="announcements.html">📢 Інформація</a>
+        </div>
+    </section>
+
+    <footer class="student-footer">
+        Ліцей №2 · Електронний кабінет учня
+    </footer>
 
 </main>
 
-<footer class="site-footer">
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const emailElement = document.getElementById("studentEmail");
+        const logoutButton = document.getElementById("logoutBtn");
 
-    <div>
-        <strong>Ліцей №2</strong>
-        <span>Цифрова система ліцею</span>
-    </div>
+        if (logoutButton) {
+            logoutButton.addEventListener("click", async () => {
+                if (typeof logout === "function") {
+                    await logout();
+                } else if (window.supabaseClient) {
+                    await window.supabaseClient.auth.signOut();
+                    location.href = "login.html";
+                }
+            });
+        }
 
-    <span>
-        © <span id="currentYear"></span> Ліцей №2
-    </span>
+        try {
+            if (!window.supabaseClient) {
+                emailElement.textContent = "Не вдалося підключити Supabase";
+                return;
+            }
 
-</footer>
+            const { data, error } = await window.supabaseClient.auth.getUser();
+
+            if (error || !data || !data.user) {
+                emailElement.textContent = "Користувача не знайдено";
+                return;
+            }
+
+            emailElement.textContent = data.user.email || "Учень";
+        } catch (error) {
+            console.error("Student profile error:", error);
+            emailElement.textContent = "Кабінет учня";
+        }
+    });
+</script>
 
 </body>
 </html>
