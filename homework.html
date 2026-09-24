@@ -1,8 +1,7 @@
 <!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#07111f"><title>Домашні завдання — Ліцей №2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Домашні завдання — Ліцей №2</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -10,151 +9,87 @@
 <script src="supabase.js"></script>
 <script src="app.js" defer></script>
 
-</head><body><header class="site-header">
-    <div class="container header-inner">    <a href="dashboard.html" class="brand">
-        <span class="brand-mark">Л2</span>
-
-        <span class="brand-text">
-            <strong>Ліцей №2</strong>
-            <small>Домашні завдання</small>
-        </span>
-    </a>
-
-    <button
-        type="button"
-        class="mobile-menu-button"
-        id="mobileMenuButton"
-        aria-label="Відкрити меню"
-        aria-expanded="false">
-        ☰
-    </button>
-
-    <nav class="main-nav" id="mainNav">
-        <a href="dashboard.html">Кабінет</a>
-        <a href="schedule.html">Розклад</a>
-        <a href="homework.html" class="active">Домашні завдання</a>
-        <a href="messages.html">Повідомлення</a>
-    </nav>
-
-</div>
-
-</header><main class="container page-content"><section class="page-hero">
-    <div>
-        <span class="eyebrow">Навчання</span>
-        <h1>Домашні завдання</h1>
-        <p>Переглядай завдання та терміни виконання.</p>
-    </div>
-</section>
-
-<section class="filters">
-
-    <button type="button" class="filter-button active" data-filter="all">
-        Усі
-    </button>
-
-    <button type="button" class="filter-button" data-filter="active">
-        Поточні
-    </button>
-
-    <button type="button" class="filter-button" data-filter="overdue">
-        Прострочені
-    </button>
-
-</section>
-
-<section id="homeworkStatus" class="status-box">
-    Завантаження домашніх завдань...
-</section>
-
-<section id="homeworkList" class="homework-list"></section>
-
-</main><footer class="site-footer">
-    <div class="container">
-        <p>© <span id="currentYear"></span> Ліцей №2</p>
-    </div>
-</footer><style>
-    .page-content {
-        padding-top: 28px;
-        padding-bottom: 48px;
+<style>
+    .homework-page {
+        width: min(1100px, calc(100% - 24px));
+        margin: auto;
+        padding: 20px 0 40px;
     }
 
-    .page-hero {
-        margin-bottom: 20px;
-        padding: 26px;
-        border: 1px solid var(--border-color);
+    .homework-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 20px;
+        margin-bottom: 18px;
         border-radius: 22px;
-        background:
-            radial-gradient(circle at top right, rgba(70, 130, 255, .18), transparent 35%),
-            var(--surface-color);
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.1);
     }
 
-    .page-hero h1 {
-        margin: 6px 0 8px;
-        font-size: clamp(27px, 5vw, 38px);
+    .homework-header h1 {
+        margin: 0 0 5px;
     }
 
-    .page-hero p {
+    .homework-header p {
         margin: 0;
-        color: var(--muted-text);
+        opacity: .65;
     }
 
-    .eyebrow {
-        color: var(--primary-color);
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .08em;
+    .back-btn {
+        padding: 10px 15px;
+        border-radius: 13px;
+        text-decoration: none;
+        color: inherit;
+        background: rgba(255,255,255,.09);
+        border: 1px solid rgba(255,255,255,.1);
+        white-space: nowrap;
     }
 
     .filters {
         display: flex;
-        flex-wrap: wrap;
         gap: 8px;
-        margin-bottom: 18px;
+        flex-wrap: wrap;
+        margin-bottom: 17px;
     }
 
-    .filter-button {
-        min-height: 42px;
-        padding: 9px 15px;
-        border: 1px solid var(--border-color);
+    .filter-btn {
+        border: 1px solid rgba(255,255,255,.1);
+        background: rgba(255,255,255,.06);
+        color: inherit;
         border-radius: 12px;
-        background: var(--surface-color);
-        color: var(--text-color);
+        padding: 9px 13px;
         cursor: pointer;
-        font-weight: 650;
     }
 
-    .filter-button.active,
-    .filter-button:hover {
-        border-color: rgba(100, 150, 255, .55);
-        background: rgba(70, 130, 255, .13);
+    .filter-btn.active {
+        background: rgba(0,170,255,.18);
+        border-color: rgba(0,170,255,.3);
     }
 
-    .status-box {
-        padding: 18px;
-        margin-bottom: 14px;
-        border: 1px solid var(--border-color);
+    .homework-status {
+        padding: 14px 17px;
+        margin-bottom: 16px;
         border-radius: 16px;
-        background: var(--surface-color);
-        color: var(--muted-text);
-        text-align: center;
-    }
-
-    .error-state {
-        color: #ff9d9d;
-        border-color: rgba(255, 90, 90, .35);
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.08);
     }
 
     .homework-list {
         display: grid;
-        gap: 13px;
+        gap: 14px;
     }
 
     .homework-card {
-        padding: 19px;
-        border: 1px solid var(--border-color);
-        border-radius: 19px;
-        background: var(--surface-color);
+        padding: 21px;
+        border-radius: 21px;
+        background: rgba(255,255,255,.065);
+        border: 1px solid rgba(255,255,255,.09);
+    }
+
+    .homework-card.overdue {
+        border-color: rgba(255,90,90,.3);
     }
 
     .homework-top {
@@ -164,165 +99,192 @@
         gap: 14px;
     }
 
-    .homework-subject {
-        color: var(--primary-color);
-        font-size: 13px;
-        font-weight: 750;
-        text-transform: uppercase;
-        letter-spacing: .04em;
+    .homework-card h2 {
+        margin: 0 0 8px;
+        font-size: 20px;
     }
 
-    .homework-title {
-        margin-top: 5px;
-        font-size: 19px;
-        font-weight: 750;
-        overflow-wrap: anywhere;
+    .subject {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 10px;
+        background: rgba(0,170,255,.13);
+        font-size: 12px;
     }
 
     .homework-description {
-        margin-top: 10px;
-        color: var(--muted-text);
-        line-height: 1.55;
+        margin: 15px 0 0;
+        line-height: 1.6;
+        opacity: .8;
         white-space: pre-wrap;
-        overflow-wrap: anywhere;
     }
 
     .homework-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 7px;
-        margin-top: 15px;
+        gap: 8px;
+        margin-top: 16px;
     }
 
-    .homework-meta span {
-        padding: 6px 9px;
-        border-radius: 9px;
-        background: rgba(255,255,255,.05);
-        color: var(--muted-text);
+    .meta {
+        padding: 7px 10px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.06);
+        font-size: 12px;
+        opacity: .75;
+    }
+
+    .overdue-label {
+        padding: 7px 10px;
+        border-radius: 10px;
+        background: rgba(255,70,70,.13);
         font-size: 12px;
     }
 
-    .due-date {
-        flex: 0 0 auto;
-        padding: 7px 9px;
-        border-radius: 9px;
-        background: rgba(70, 130, 255, .12);
-        color: var(--text-color);
-        font-size: 12px;
-        white-space: nowrap;
-    }
-
-    .due-date.overdue {
-        background: rgba(255, 70, 70, .12);
-        color: #ff9d9d;
-    }
-
-    .empty-state {
-        padding: 32px 18px;
-        border: 1px dashed var(--border-color);
-        border-radius: 18px;
-        color: var(--muted-text);
+    .empty {
+        padding: 42px 20px;
         text-align: center;
+        border-radius: 20px;
+        background: rgba(255,255,255,.05);
+        border: 1px dashed rgba(255,255,255,.12);
+    }
+
+    .empty-icon {
+        font-size: 42px;
+        margin-bottom: 10px;
+    }
+
+    .empty p {
+        margin: 0;
+        opacity: .65;
+    }
+
+    .error {
+        color: #ffb4b4;
     }
 
     @media (max-width: 600px) {
-        .page-content {
-            padding-top: 18px;
+        .homework-page {
+            width: min(100% - 16px, 1100px);
         }
 
-        .page-hero {
-            padding: 21px 17px;
-            border-radius: 19px;
+        .homework-header {
+            padding: 16px;
+        }
+
+        .homework-header h1 {
+            font-size: 24px;
+        }
+
+        .back-btn {
+            padding: 9px 11px;
+            font-size: 13px;
         }
 
         .homework-card {
-            padding: 16px;
-            border-radius: 17px;
+            padding: 17px;
         }
 
         .homework-top {
             flex-direction: column;
         }
-
-        .due-date {
-            white-space: normal;
-        }
-
-        .filters {
-            overflow-x: auto;
-            flex-wrap: nowrap;
-            padding-bottom: 3px;
-        }
-
-        .filter-button {
-            flex: 0 0 auto;
-        }
     }
-</style><script>
-(function () {
-    "use strict";
+</style>
+
+</head><body><main class="homework-page"><header class="homework-header">
+    <div>
+        <h1>📚 Домашні завдання</h1>
+        <p>Завдання та терміни виконання</p>
+    </div>
+
+    <a href="dashboard.html" class="back-btn">
+        🏠 Головна
+    </a>
+</header>
+
+<div class="filters">
+    <button class="filter-btn active" data-filter="all">
+        Усі
+    </button>
+
+    <button class="filter-btn" data-filter="active">
+        Актуальні
+    </button>
+
+    <button class="filter-btn" data-filter="overdue">
+        Прострочені
+    </button>
+</div>
+
+<div id="homeworkStatus" class="homework-status">
+    Завантаження домашніх завдань...
+</div>
+
+<section id="homeworkList" class="homework-list"></section>
+
+</main><script>
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const status = document.getElementById("homeworkStatus");
+    const list = document.getElementById("homeworkList");
+    const filterButtons = document.querySelectorAll(".filter-btn");
 
     let allHomework = [];
     let currentFilter = "all";
 
-    const statusElement = document.getElementById("homeworkStatus");
-    const listElement = document.getElementById("homeworkList");
+    function escapeHTML(value) {
+        if (value === null || value === undefined) return "";
 
-    function escapeHtml(value) {
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
     }
 
-    function showStatus(message, isError) {
-        statusElement.textContent = message;
-        statusElement.classList.toggle("error-state", Boolean(isError));
-        statusElement.style.display = "block";
+    function getToday() {
+        const now = new Date();
+
+        return new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
     }
 
-    function parseDate(value) {
-        if (!value) return null;
+    function isOverdue(item) {
+
+        if (!item.due_date) {
+            return false;
+        }
+
+        const due = new Date(item.due_date + "T23:59:59");
+
+        return due < new Date();
+    }
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "Термін не вказано";
+        }
 
         const date = new Date(value);
 
         if (Number.isNaN(date.getTime())) {
-            return null;
-        }
-
-        return date;
-    }
-
-    function isOverdue(item) {
-        const dueDate = parseDate(item.due_date);
-
-        if (!dueDate) {
-            return false;
-        }
-
-        const today = new Date();
-        today.setHours(23, 59, 59, 999);
-
-        return dueDate < today;
-    }
-
-    function formatDate(value) {
-        const date = parseDate(value);
-
-        if (!date) {
-            return "Дата не вказана";
+            return escapeHTML(value);
         }
 
         return date.toLocaleDateString("uk-UA", {
             day: "2-digit",
-            month: "2-digit",
+            month: "long",
             year: "numeric"
         });
     }
 
     function renderHomework() {
+
         let filtered = [...allHomework];
 
         if (currentFilter === "active") {
@@ -333,150 +295,163 @@
             filtered = filtered.filter(item => isOverdue(item));
         }
 
-        filtered.sort((a, b) => {
-            const dateA = parseDate(a.due_date)?.getTime() || Infinity;
-            const dateB = parseDate(b.due_date)?.getTime() || Infinity;
+        if (filtered.length === 0) {
 
-            return dateA - dateB;
-        });
+            status.textContent =
+                "За вибраним фільтром завдань немає.";
 
-        listElement.innerHTML = "";
-
-        if (!filtered.length) {
-            statusElement.style.display = "none";
-
-            listElement.innerHTML = `
-                <div class="empty-state">
-                    📭 Домашніх завдань за вибраним фільтром немає.
+            list.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">📚</div>
+                    <p>Домашніх завдань у цій категорії немає.</p>
                 </div>
             `;
 
             return;
         }
 
-        statusElement.style.display = "none";
+        status.textContent =
+            `Завдань: ${filtered.length}`;
 
-        filtered.forEach(item => {
+        list.innerHTML = filtered.map(item => {
+
             const overdue = isOverdue(item);
 
-            const card = document.createElement("article");
-            card.className = "homework-card";
+            const title =
+                escapeHTML(item.title || "Домашнє завдання");
 
-            const subject = escapeHtml(item.subject || "Предмет");
-            const title = escapeHtml(item.title || "Домашнє завдання");
-            const description = escapeHtml(
-                item.description || "Опис завдання відсутній."
-            );
+            const subject =
+                escapeHTML(item.subject || "Предмет не вказано");
 
-            const className = item.class_name
-                ? `<span>👥 ${escapeHtml(item.class_name)}</span>`
-                : "";
+            const description =
+                escapeHTML(
+                    item.description ||
+                    "Опис завдання відсутній."
+                );
 
-            const teacher = item.teacher_id
-                ? `<span>👨‍🏫 Учитель</span>`
-                : "";
+            const className =
+                item.class_name
+                    ? `👥 ${escapeHTML(item.class_name)}`
+                    : "";
 
-            const dateText = formatDate(item.due_date);
+            const date =
+                item.due_date
+                    ? `📅 До ${formatDate(item.due_date)}`
+                    : "📅 Термін не вказано";
 
-            card.innerHTML = `
-                <div class="homework-top">
-                    <div>
-                        <div class="homework-subject">${subject}</div>
-                        <div class="homework-title">${title}</div>
+            return `
+                <article class="homework-card ${overdue ? "overdue" : ""}">
+
+                    <div class="homework-top">
+
+                        <div>
+                            <h2>${title}</h2>
+
+                            <span class="subject">
+                                ${subject}
+                            </span>
+                        </div>
+
+                        ${
+                            overdue
+                                ? `<span class="overdue-label">⚠ Прострочено</span>`
+                                : ""
+                        }
+
                     </div>
 
-                    <div class="due-date ${overdue ? "overdue" : ""}">
-                        ${overdue ? "⚠️ " : "📅 "}
-                        ${dateText}
+                    <div class="homework-description">
+                        ${description}
                     </div>
-                </div>
 
-                <div class="homework-description">
-                    ${description}
-                </div>
+                    <div class="homework-meta">
 
-                <div class="homework-meta">
-                    ${className}
-                    ${teacher}
-                </div>
+                        <span class="meta">
+                            ${date}
+                        </span>
+
+                        ${
+                            className
+                                ? `<span class="meta">${className}</span>`
+                                : ""
+                        }
+
+                    </div>
+
+                </article>
             `;
 
-            listElement.appendChild(card);
-        });
+        }).join("");
     }
 
-    async function loadHomework() {
-        listElement.innerHTML = "";
+    filterButtons.forEach(button => {
 
-        if (
-            typeof window.supabaseClient === "undefined" ||
-            !window.supabaseClient
-        ) {
-            showStatus(
-                "Не вдалося підключити Supabase. Перевір файл supabase.js.",
-                true
+        button.addEventListener("click", () => {
+
+            filterButtons.forEach(item =>
+                item.classList.remove("active")
             );
+
+            button.classList.add("active");
+
+            currentFilter =
+                button.dataset.filter || "all";
+
+            renderHomework();
+        });
+
+    });
+
+    try {
+
+        if (!window.supabaseClient) {
+
+            status.innerHTML =
+                '<span class="error">Не вдалося підключити Supabase. Перевір supabase.js.</span>';
+
             return;
         }
 
-        showStatus("Завантаження домашніх завдань...", false);
-
-        try {
-            const { data, error } = await window.supabaseClient
-                .from("homework")
-                .select("*")
-                .order("due_date", { ascending: true });
-
-            if (error) {
-                console.error("Homework Supabase error:", error);
-
-                showStatus(
-                    "Не вдалося завантажити домашні завдання. Перевір таблицю homework та RLS-політики у Supabase.",
-                    true
-                );
-
-                listElement.innerHTML = `
-                    <div class="empty-state error-state">
-                        ⚠️ Не вдалося отримати дані з таблиці homework.
-                    </div>
-                `;
-
-                return;
-            }
-
-            allHomework = Array.isArray(data) ? data : [];
-
-            renderHomework();
-
-        } catch (error) {
-            console.error("Homework loading error:", error);
-
-            showStatus(
-                "Сталася помилка під час завантаження домашніх завдань.",
-                true
-            );
-        }
-    }
-
-    document.querySelectorAll(".filter-button").forEach(button => {
-        button.addEventListener("click", function () {
-            currentFilter = this.dataset.filter || "all";
-
-            document.querySelectorAll(".filter-button").forEach(item => {
-                item.classList.toggle("active", item === this);
+        const {
+            data: homework,
+            error
+        } = await window.supabaseClient
+            .from("homework")
+            .select("*")
+            .order("due_date", {
+                ascending: true,
+                nullsFirst: false
             });
 
-            renderHomework();
-        });
-    });
+        if (error) {
 
-    document.addEventListener("DOMContentLoaded", function () {
-        loadHomework();
-    });
+            console.error("Supabase homework error:", error);
 
-    if (document.readyState !== "loading") {
-        loadHomework();
+            status.innerHTML =
+                '<span class="error">Не вдалося завантажити домашні завдання. Перевір таблицю homework та RLS.</span>';
+
+            list.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">⚠️</div>
+                    <p>Supabase повернув помилку під час отримання домашніх завдань.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        allHomework = homework || [];
+
+        renderHomework();
+
+    } catch (error) {
+
+        console.error("Homework loading error:", error);
+
+        status.innerHTML =
+            '<span class="error">Помилка під час завантаження домашніх завдань.</span>';
     }
-})();
+
+});
 </script></body>
 </html>
