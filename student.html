@@ -1,369 +1,311 @@
 <!DOCTYPE html><html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кабінет учня — Ліцей №2</title><link rel="stylesheet" href="style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
-<script src="app.js" defer></script>
-
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Кабінет учня — Ліцей №2</title>  <link rel="stylesheet" href="style.css">  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <script src="supabase.js"></script>  <script src="app.js" defer></script>  <style>
     body {
-        min-height: 100vh;
+      background:
+        radial-gradient(circle at 0 0, rgba(59,130,246,.2), transparent 32%),
+        radial-gradient(circle at 100% 100%, rgba(14,165,233,.13), transparent 35%),
+        #07111f;
     }
 
     .student-page {
-        width: min(1180px, calc(100% - 28px));
-        margin: 0 auto;
-        padding: 24px 0 40px;
+      width: min(1100px, calc(100% - 28px));
+      margin: auto;
+      padding: 25px 0 50px;
     }
 
-    .student-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        padding: 22px;
-        margin-bottom: 22px;
-        border-radius: 24px;
-        background: rgba(255,255,255,.07);
-        border: 1px solid rgba(255,255,255,.10);
-        backdrop-filter: blur(18px);
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
     }
 
-    .student-title h1 {
-        margin: 0 0 6px;
-        font-size: clamp(25px, 5vw, 38px);
+    h1 {
+      margin: 0;
+      font-size: clamp(27px, 7vw, 43px);
     }
 
-    .student-title p {
-        margin: 0;
-        opacity: .7;
+    .subtitle {
+      margin: 7px 0 0;
+      opacity: .65;
     }
 
-    .logout-btn {
-        border: 0;
-        border-radius: 14px;
-        padding: 11px 16px;
-        cursor: pointer;
-        background: rgba(255,255,255,.10);
-        color: inherit;
-        font-weight: 600;
+    .user {
+      padding: 11px 15px;
+      border-radius: 15px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      font-size: 13px;
+      word-break: break-word;
     }
 
-    .logout-btn:hover {
-        background: rgba(255,255,255,.16);
+    .welcome {
+      padding: 24px;
+      border-radius: 23px;
+      margin-bottom: 23px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(59,130,246,.2),
+          rgba(14,165,233,.06)
+        );
+      border: 1px solid rgba(96,165,250,.18);
     }
 
-    .student-welcome {
-        padding: 24px;
-        border-radius: 24px;
-        margin-bottom: 22px;
-        background:
-            radial-gradient(circle at top right, rgba(0,170,255,.25), transparent 45%),
-            rgba(255,255,255,.06);
-        border: 1px solid rgba(255,255,255,.10);
+    .welcome h2 {
+      margin: 0 0 8px;
     }
 
-    .student-welcome h2 {
-        margin: 0 0 8px;
+    .welcome p {
+      margin: 0;
+      opacity: .7;
+      line-height: 1.55;
     }
 
-    .student-welcome p {
-        margin: 0;
-        opacity: .75;
-    }
-
-    .modules-title {
-        margin: 0 0 14px;
-        font-size: 22px;
+    .title {
+      margin: 27px 0 13px;
+      font-size: 19px;
     }
 
     .modules {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
     }
 
     .module {
-        position: relative;
-        min-height: 145px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 20px;
-        border-radius: 22px;
-        text-decoration: none;
-        color: inherit;
-        background: rgba(255,255,255,.065);
-        border: 1px solid rgba(255,255,255,.09);
-        overflow: hidden;
-        transition: transform .2s ease, border-color .2s ease, background .2s ease;
-    }
-
-    .module::after {
-        content: "";
-        position: absolute;
-        width: 100px;
-        height: 100px;
-        right: -35px;
-        bottom: -45px;
-        border-radius: 50%;
-        background: rgba(0,170,255,.12);
+      display: block;
+      min-height: 120px;
+      padding: 19px;
+      box-sizing: border-box;
+      border-radius: 21px;
+      color: inherit;
+      text-decoration: none;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.09);
+      transition: .2s ease;
+      backdrop-filter: blur(14px);
     }
 
     .module:hover {
-        transform: translateY(-4px);
-        background: rgba(255,255,255,.10);
-        border-color: rgba(0,180,255,.35);
+      transform: translateY(-3px);
+      background: rgba(255,255,255,.08);
+      border-color: rgba(96,165,250,.32);
     }
 
-    .module-icon {
-        font-size: 30px;
-        margin-bottom: 12px;
+    .icon {
+      font-size: 29px;
+      margin-bottom: 10px;
     }
 
-    .module h3 {
-        margin: 0 0 5px;
-        font-size: 18px;
+    .module strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 17px;
     }
 
-    .module p {
-        margin: 0;
-        opacity: .62;
-        font-size: 14px;
+    .module span {
+      font-size: 13px;
+      opacity: .62;
+      line-height: 1.4;
     }
 
-    .quick-section {
-        margin-top: 26px;
+    .student-info {
+      margin-top: 20px;
+      padding: 19px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.045);
+      border: 1px solid rgba(255,255,255,.08);
     }
 
-    .quick-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
+    .student-info strong {
+      display: block;
+      margin-bottom: 7px;
     }
 
-    .quick-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        padding: 11px 15px;
-        border-radius: 14px;
-        text-decoration: none;
-        color: inherit;
-        background: rgba(255,255,255,.07);
-        border: 1px solid rgba(255,255,255,.09);
+    .student-info p {
+      margin: 0;
+      opacity: .65;
+      line-height: 1.5;
+      font-size: 14px;
     }
 
-    .quick-link:hover {
-        background: rgba(255,255,255,.12);
+    .admin {
+      display: none;
+      margin-top: 20px;
+      padding: 19px;
+      border-radius: 20px;
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.18);
     }
 
-    .student-footer {
-        margin-top: 30px;
-        text-align: center;
-        opacity: .5;
-        font-size: 13px;
+    .admin a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: white;
+      text-decoration: none;
+      background: rgba(239,68,68,.15);
     }
 
-    @media (max-width: 850px) {
-        .modules {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
+    .logout {
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      border: 0;
+      border-radius: 15px;
+      color: white;
+      background: rgba(255,255,255,.07);
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 800px) {
+      .modules {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     @media (max-width: 560px) {
-        .student-page {
-            width: min(100% - 18px, 1180px);
-            padding-top: 10px;
-        }
-
-        .student-header {
-            padding: 17px;
-            border-radius: 20px;
-        }
-
-        .student-header .logout-btn {
-            padding: 9px 11px;
-            font-size: 12px;
-        }
-
-        .student-welcome {
-            padding: 20px;
-            border-radius: 20px;
-        }
-
-        .modules {
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .module {
-            min-height: 130px;
-            padding: 16px;
-            border-radius: 18px;
-        }
-
-        .module-icon {
-            font-size: 26px;
-        }
-
-        .module h3 {
-            font-size: 16px;
-        }
-
-        .module p {
-            font-size: 12px;
-        }
+      .modules {
+        grid-template-columns: 1fr;
+      }
     }
-</style>
+  </style></head><body><main class="student-page">  <header class="header">
+    <div>
+      <h1>🎓 Кабінет учня</h1>
+      <p class="subtitle">Ліцей №2</p>
+    </div><div class="user" id="userEmail">
+  Завантаження…
+</div>
 
-</head><body>
-    <main class="student-page">    <header class="student-header">
-        <div class="student-title">
-            <h1>Кабінет учня</h1>
-            <p id="studentEmail">Завантаження профілю...</p>
-        </div>
+  </header>  <section class="welcome">
+    <h2 id="welcome">Вітаємо! 👋</h2>
+    <p>
+      Усі основні навчальні матеріали та інформація
+      доступні в одному кабінеті.
+    </p>
+  </section>  <h2 class="title">Моє навчання</h2>  <section class="modules"><a class="module" href="schedule.html">
+  <div class="icon">📚</div>
+  <strong>Розклад</strong>
+  <span>Перегляд уроків та часу занять.</span>
+</a>
 
-        <button class="logout-btn" id="logoutBtn">
-            Вийти
-        </button>
-    </header>
+<a class="module" href="homework.html">
+  <div class="icon">📝</div>
+  <strong>Домашні завдання</strong>
+  <span>Актуальні завдання та строки.</span>
+</a>
 
-    <section class="student-welcome">
-        <h2>Вітаємо в Ліцеї №2 👋</h2>
-        <p>
-            Тут зібрані всі навчальні розділи: розклад, домашні завдання,
-            тести, повідомлення, оголошення, події та відвідування.
-        </p>
-    </section>
+<a class="module" href="tests.html">
+  <div class="icon">🧪</div>
+  <strong>Тести</strong>
+  <span>Навчальні та контрольні тести.</span>
+</a>
 
-    <h2 class="modules-title">Навчальні розділи</h2>
+<a class="module" href="attendance.html">
+  <div class="icon">✅</div>
+  <strong>Відвідування</strong>
+  <span>Інформація про присутність.</span>
+</a>
 
-    <section class="modules">
+  </section>  <h2 class="title">Інформація</h2>  <section class="modules"><a class="module" href="messages.html">
+  <div class="icon">💬</div>
+  <strong>Повідомлення</strong>
+  <span>Повідомлення від учителів та адміністрації.</span>
+</a>
 
-        <a class="module" href="schedule.html">
-            <div>
-                <div class="module-icon">📅</div>
-                <h3>Розклад</h3>
-                <p>Уроки та заняття</p>
-            </div>
-        </a>
+<a class="module" href="announcements.html">
+  <div class="icon">📢</div>
+  <strong>Оголошення</strong>
+  <span>Важливі оголошення ліцею.</span>
+</a>
 
-        <a class="module" href="homework.html">
-            <div>
-                <div class="module-icon">📚</div>
-                <h3>Домашні завдання</h3>
-                <p>Поточні та прострочені</p>
-            </div>
-        </a>
+<a class="module" href="events.html">
+  <div class="icon">📅</div>
+  <strong>Події</strong>
+  <span>Шкільні заходи та майбутні події.</span>
+</a>
 
-        <a class="module" href="tests.html">
-            <div>
-                <div class="module-icon">📝</div>
-                <h3>Тести</h3>
-                <p>Контрольні та онлайн-тести</p>
-            </div>
-        </a>
+<a class="module" href="dashboard.html">
+  <div class="icon">🏠</div>
+  <strong>Головна панель</strong>
+  <span>Повернутися до особистої панелі.</span>
+</a>
 
-        <a class="module" href="messages.html">
-            <div>
-                <div class="module-icon">💬</div>
-                <h3>Повідомлення</h3>
-                <p>Особисті повідомлення</p>
-            </div>
-        </a>
+  </section>  <section class="student-info">
+    <strong>ℹ️ Інформація</strong>
+    <p>
+      Якщо виникла проблема з розкладом, завданням,
+      тестом або відвідуванням, зверніться до вчителя
+      через розділ «Повідомлення».
+    </p>
+  </section>  <section id="adminBox" class="admin">
+    <strong>⚙️ Адміністрування</strong><div style="opacity:.7;margin-top:5px;">
+  Цей акаунт також має адміністративні права.
+</div>
 
-        <a class="module" href="announcements.html">
-            <div>
-                <div class="module-icon">📢</div>
-                <h3>Інформація</h3>
-                <p>Оголошення ліцею</p>
-            </div>
-        </a>
+<a href="admin.html">
+  Відкрити адмін-панель
+</a>
 
-        <a class="module" href="events.html">
-            <div>
-                <div class="module-icon">🎉</div>
-                <h3>Події</h3>
-                <p>Заходи та події</p>
-            </div>
-        </a>
+  </section>  <button class="logout" onclick="logout()">
+    Вийти з акаунта
+  </button></main><script>
+  async function loadStudentProfile() {
+    const email = document.getElementById("userEmail");
+    const welcome = document.getElementById("welcome");
+    const adminBox = document.getElementById("adminBox");
 
-        <a class="module" href="attendance.html">
-            <div>
-                <div class="module-icon">✅</div>
-                <h3>Відвідування</h3>
-                <p>Присутність та запізнення</p>
-            </div>
-        </a>
+    if (!window.supabaseClient) {
+      email.textContent = "Supabase не підключено";
+      return;
+    }
 
-        <a class="module" href="dashboard.html">
-            <div>
-                <div class="module-icon">🏠</div>
-                <h3>Головна</h3>
-                <p>Повернутися до дашборду</p>
-            </div>
-        </a>
+    try {
+      const {
+        data: { user },
+        error
+      } = await window.supabaseClient.auth.getUser();
 
-    </section>
+      if (error || !user) {
+        email.textContent = "Користувач не авторизований";
+        return;
+      }
 
-    <section class="quick-section">
-        <h2 class="modules-title">Швидкий доступ</h2>
+      email.textContent = user.email || "Користувач";
 
-        <div class="quick-links">
-            <a class="quick-link" href="schedule.html">📅 Розклад</a>
-            <a class="quick-link" href="homework.html">📚 Домашка</a>
-            <a class="quick-link" href="tests.html">📝 Тести</a>
-            <a class="quick-link" href="messages.html">💬 Повідомлення</a>
-            <a class="quick-link" href="announcements.html">📢 Інформація</a>
-        </div>
-    </section>
+      const { data: profile, error: profileError } =
+        await window.supabaseClient
+          .from("profiles")
+          .select("full_name,role")
+          .eq("id", user.id)
+          .maybeSingle();
 
-    <footer class="student-footer">
-        Ліцей №2 · Електронний кабінет учня
-    </footer>
+      if (profileError) {
+        console.error("Profile error:", profileError);
+        return;
+      }
 
-</main>
+      if (profile?.full_name) {
+        welcome.textContent =
+          `Вітаємо, ${profile.full_name}! 👋`;
+      }
 
-<script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        const emailElement = document.getElementById("studentEmail");
-        const logoutButton = document.getElementById("logoutBtn");
+      if (profile?.role === "admin") {
+        adminBox.style.display = "block";
+      }
 
-        if (logoutButton) {
-            logoutButton.addEventListener("click", async () => {
-                if (typeof logout === "function") {
-                    await logout();
-                } else if (window.supabaseClient) {
-                    await window.supabaseClient.auth.signOut();
-                    location.href = "login.html";
-                }
-            });
-        }
+    } catch (error) {
+      console.error("Student profile error:", error);
+    }
+  }
 
-        try {
-            if (!window.supabaseClient) {
-                emailElement.textContent = "Не вдалося підключити Supabase";
-                return;
-            }
-
-            const { data, error } = await window.supabaseClient.auth.getUser();
-
-            if (error || !data || !data.user) {
-                emailElement.textContent = "Користувача не знайдено";
-                return;
-            }
-
-            emailElement.textContent = data.user.email || "Учень";
-        } catch (error) {
-            console.error("Student profile error:", error);
-            emailElement.textContent = "Кабінет учня";
-        }
-    });
-</script>
-
-</body>
+  document.addEventListener("DOMContentLoaded", loadStudentProfile);
+</script></body>
 </html>
