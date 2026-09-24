@@ -1,383 +1,870 @@
 <!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#07111f">
-    <meta name="description" content="Ліцей №2 — сучасна цифрова платформа ліцею">
-    <title>Ліцей №2</title><link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Ліцей №2</title>
+<meta name="description" content="Цифрова система Ліцею №2">
+
+<link rel="stylesheet" href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 <script src="app.js" defer></script>
 
-</head><body class="landing-page"><div class="page-background">
-    <div class="background-orb orb-one"></div>
-    <div class="background-orb orb-two"></div>
-    <div class="background-grid"></div>
-</div>
+</head><body><header class="site-header"><div class="header-inner">
 
-<header class="site-header">
     <a href="index.html" class="brand">
-        <span class="brand-icon">Л2</span>
-        <span class="brand-text">
+        <div class="logo-mark">Л2</div>
+
+        <div>
             <strong>Ліцей №2</strong>
-            <small>Цифровий простір</small>
-        </span>
+            <span>Цифрова система</span>
+        </div>
     </a>
 
-    <nav class="main-nav" aria-label="Головна навігація">
-        <a href="#about">Про платформу</a>
-        <a href="#features">Можливості</a>
-        <a href="#status">Статус</a>
-        <a href="login.html" class="nav-login">Увійти</a>
+    <nav class="desktop-nav">
+        <a href="#about">Про систему</a>
+        <a href="#modules">Розділи</a>
+        <a href="#info">Інформація</a>
+        <a href="login.html" class="nav-button">
+            Увійти
+        </a>
     </nav>
 
-    <button class="mobile-menu-btn" type="button" aria-label="Відкрити меню">
-        ☰
+    <button
+        class="menu-button"
+        data-menu-toggle
+        type="button"
+        aria-label="Відкрити меню"
+    >
+        <span></span>
+        <span></span>
+        <span></span>
     </button>
-</header>
 
-<main>
+</div>
 
-    <section class="hero-section">
-        <div class="hero-content">
+<div class="mobile-menu" data-mobile-menu>
 
-            <div class="status-badge">
-                <span class="status-dot"></span>
-                <span data-system-status>У розробці</span>
-            </div>
+    <a href="#about">Про систему</a>
+    <a href="#modules">Розділи</a>
+    <a href="#info">Інформація</a>
 
-            <h1>
-                Ласкаво просимо до
-                <span>Ліцею №2</span>
-            </h1>
+    <a href="login.html" class="nav-button">
+        Увійти
+    </a>
 
-            <p class="hero-description">
-                Сучасний цифровий простір для учнів, батьків,
-                вчителів та адміністрації.
-            </p>
+</div>
 
-            <div class="hero-actions">
-                <a href="login.html" class="primary-button">
-                    <span>Увійти до системи</span>
-                    <span class="button-arrow">→</span>
-                </a>
+</header><main><section class="hero-section">
 
-                <a href="#features" class="secondary-button">
-                    Дізнатися більше
-                </a>
-            </div>
+    <div class="hero-glow"></div>
 
-            <div class="hero-note">
-                <span>🔒</span>
-                <span>Безпечний доступ за ролями</span>
-            </div>
+    <div class="hero-content">
+
+        <div class="status-pill">
+            <span></span>
+            Система працює
         </div>
 
-        <div class="hero-visual">
-            <div class="dashboard-preview">
+        <h1>
+            Ласкаво просимо до
+            <span>Ліцею №2</span>
+        </h1>
 
-                <div class="preview-top">
-                    <div class="preview-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
+        <p>
+            Єдина цифрова система для учнів, батьків,
+            вчителів та адміністрації.
+        </p>
 
-                    <span class="preview-title">Ліцей №2</span>
+        <div class="hero-actions">
 
-                    <div class="preview-avatar">Л2</div>
-                </div>
+            <a href="login.html" class="primary-button">
+                Увійти до системи
+            </a>
 
-                <div class="preview-content">
-
-                    <div class="preview-greeting">
-                        <small>Цифровий простір</small>
-                        <strong>Усе необхідне — в одному місці</strong>
-                    </div>
-
-                    <div class="preview-cards">
-
-                        <div class="preview-card">
-                            <span class="preview-card-icon">📅</span>
-                            <div>
-                                <strong>Розклад</strong>
-                                <small>Заняття та уроки</small>
-                            </div>
-                        </div>
-
-                        <div class="preview-card">
-                            <span class="preview-card-icon">📚</span>
-                            <div>
-                                <strong>Домашні завдання</strong>
-                                <small>Навчальні матеріали</small>
-                            </div>
-                        </div>
-
-                        <div class="preview-card">
-                            <span class="preview-card-icon">📢</span>
-                            <div>
-                                <strong>Оголошення</strong>
-                                <small>Новини ліцею</small>
-                            </div>
-                        </div>
-
-                        <div class="preview-card">
-                            <span class="preview-card-icon">💬</span>
-                            <div>
-                                <strong>Повідомлення</strong>
-                                <small>Зв'язок із ліцеєм</small>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="preview-progress">
-                        <div class="progress-info">
-                            <span>Навчальний простір</span>
-                            <strong>Готово</strong>
-                        </div>
-
-                        <div class="progress-line">
-                            <span></span>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="about" class="content-section">
-        <div class="section-heading">
-            <span class="section-label">ПРО ПЛАТФОРМУ</span>
-            <h2>Один простір для всіх</h2>
-            <p>
-                Платформа об'єднує основні навчальні та організаційні
-                інструменти ліцею в одному зручному середовищі.
-            </p>
-        </div>
-
-        <div class="role-grid">
-
-            <article class="role-card">
-                <div class="role-icon">🎓</div>
-                <h3>Учні</h3>
-                <p>
-                    Розклад, домашні завдання, тести,
-                    події та повідомлення.
-                </p>
-            </article>
-
-            <article class="role-card">
-                <div class="role-icon">👨‍🏫</div>
-                <h3>Вчителі</h3>
-                <p>
-                    Робота з розкладом, завданнями,
-                    тестами та оголошеннями.
-                </p>
-            </article>
-
-            <article class="role-card">
-                <div class="role-icon">👨‍👩‍👧</div>
-                <h3>Батьки</h3>
-                <p>
-                    Доступ до важливої інформації
-                    про навчання та події.
-                </p>
-            </article>
-
-            <article class="role-card">
-                <div class="role-icon">⚙️</div>
-                <h3>Адміністрація</h3>
-                <p>
-                    Керування користувачами,
-                    системою та інформацією ліцею.
-                </p>
-            </article>
-
-        </div>
-    </section>
-
-    <section id="features" class="content-section features-section">
-
-        <div class="section-heading">
-            <span class="section-label">МОЖЛИВОСТІ</span>
-            <h2>Усе необхідне поруч</h2>
-            <p>
-                Основні функції цифрової платформи Ліцею №2.
-            </p>
-        </div>
-
-        <div class="feature-grid">
-
-            <article class="feature-card">
-                <div class="feature-number">01</div>
-                <div class="feature-icon">📅</div>
-                <h3>Розклад</h3>
-                <p>
-                    Перегляд актуального розкладу занять
-                    для класів.
-                </p>
-            </article>
-
-            <article class="feature-card">
-                <div class="feature-number">02</div>
-                <div class="feature-icon">📚</div>
-                <h3>Домашні завдання</h3>
-                <p>
-                    Завдання, предмети, терміни
-                    та навчальна інформація.
-                </p>
-            </article>
-
-            <article class="feature-card">
-                <div class="feature-number">03</div>
-                <div class="feature-icon">📝</div>
-                <h3>Тести</h3>
-                <p>
-                    Навчальні тести та матеріали
-                    від учителів.
-                </p>
-            </article>
-
-            <article class="feature-card">
-                <div class="feature-number">04</div>
-                <div class="feature-icon">📢</div>
-                <h3>Оголошення</h3>
-                <p>
-                    Важливі повідомлення та новини
-                    ліцею.
-                </p>
-            </article>
-
-            <article class="feature-card">
-                <div class="feature-number">05</div>
-                <div class="feature-icon">💬</div>
-                <h3>Повідомлення</h3>
-                <p>
-                    Зручний зв'язок між учасниками
-                    освітнього процесу.
-                </p>
-            </article>
-
-            <article class="feature-card">
-                <div class="feature-number">06</div>
-                <div class="feature-icon">📊</div>
-                <h3>Відвідування</h3>
-                <p>
-                    Інформація про присутність,
-                    запізнення та відсутність.
-                </p>
-            </article>
-
-        </div>
-    </section>
-
-    <section id="status" class="status-section">
-
-        <div class="status-panel">
-
-            <div class="status-panel-icon">
-                <span class="status-dot"></span>
-            </div>
-
-            <div class="status-panel-content">
-                <span class="section-label">СТАН СИСТЕМИ</span>
-
-                <h2>
-                    <span data-system-status>У розробці</span>
-                </h2>
-
-                <p>
-                    Платформа поступово розвивається.
-                    Доступ до функцій залежить від ролі користувача.
-                </p>
-            </div>
-
-            <a href="login.html" class="status-button">
-                Перейти до входу →
+            <a href="#modules" class="secondary-button">
+                Переглянути розділи
             </a>
 
         </div>
 
-    </section>
+    </div>
 
-    <section class="cta-section">
+    <div class="hero-panel">
 
-        <div class="cta-content">
+        <div class="panel-top">
+            <span>Ліцей №2</span>
+            <span class="live-dot">● Онлайн</span>
+        </div>
 
-            <span class="section-label">ГОТОВІ ПОЧАТИ?</span>
+        <div class="panel-main">
+
+            <div class="mini-card">
+                <span>📅</span>
+                <strong>Розклад</strong>
+                <small>Усі уроки</small>
+            </div>
+
+            <div class="mini-card">
+                <span>📝</span>
+                <strong>Домашні завдання</strong>
+                <small>Актуальні завдання</small>
+            </div>
+
+            <div class="mini-card">
+                <span>📊</span>
+                <strong>Відвідування</strong>
+                <small>Статистика</small>
+            </div>
+
+            <div class="mini-card">
+                <span>💬</span>
+                <strong>Повідомлення</strong>
+                <small>Зв'язок</small>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section id="about" class="content-section">
+
+    <div class="section-heading">
+
+        <span>ПРО СИСТЕМУ</span>
+
+        <h2>
+            Все необхідне —
+            <strong>в одному місці</strong>
+        </h2>
+
+        <p>
+            Система об'єднує основні навчальні та інформаційні
+            функції ліцею в одному зручному інтерфейсі.
+        </p>
+
+    </div>
+
+    <div class="feature-grid">
+
+        <article class="feature-card">
+            <div class="feature-icon">🎓</div>
+            <h3>Для учнів</h3>
+            <p>
+                Розклад, домашні завдання, тести,
+                повідомлення та відвідування.
+            </p>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">👨‍🏫</div>
+            <h3>Для вчителів</h3>
+            <p>
+                Робота з розкладом, завданнями,
+                тестами та відвідуванням.
+            </p>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">👨‍👩‍👧</div>
+            <h3>Для батьків</h3>
+            <p>
+                Перегляд навчальної інформації,
+                повідомлень та відвідування.
+            </p>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">⚙️</div>
+            <h3>Для адміністрації</h3>
+            <p>
+                Керування користувачами,
+                повідомленнями та системою.
+            </p>
+        </article>
+
+    </div>
+
+</section>
+
+
+<section id="modules" class="content-section modules-section">
+
+    <div class="section-heading">
+
+        <span>РОЗДІЛИ</span>
+
+        <h2>
+            Основні можливості
+        </h2>
+
+    </div>
+
+    <div class="module-grid">
+
+        <a href="schedule.html" class="module-card">
+            <span>📅</span>
+            <div>
+                <strong>Розклад</strong>
+                <small>Перегляд занять</small>
+            </div>
+        </a>
+
+        <a href="homework.html" class="module-card">
+            <span>📚</span>
+            <div>
+                <strong>Домашні завдання</strong>
+                <small>Завдання та терміни</small>
+            </div>
+        </a>
+
+        <a href="tests.html" class="module-card">
+            <span>📝</span>
+            <div>
+                <strong>Тести</strong>
+                <small>Контрольні та перевірки</small>
+            </div>
+        </a>
+
+        <a href="messages.html" class="module-card">
+            <span>💬</span>
+            <div>
+                <strong>Повідомлення</strong>
+                <small>Спілкування</small>
+            </div>
+        </a>
+
+        <a href="announcements.html" class="module-card">
+            <span>📢</span>
+            <div>
+                <strong>Оголошення</strong>
+                <small>Важлива інформація</small>
+            </div>
+        </a>
+
+        <a href="events.html" class="module-card">
+            <span>📆</span>
+            <div>
+                <strong>Події</strong>
+                <small>Шкільні заходи</small>
+            </div>
+        </a>
+
+        <a href="attendance.html" class="module-card">
+            <span>📊</span>
+            <div>
+                <strong>Відвідування</strong>
+                <small>Облік присутності</small>
+            </div>
+        </a>
+
+        <a href="dashboard.html" class="module-card accent-module">
+            <span>🏠</span>
+            <div>
+                <strong>Особистий кабінет</strong>
+                <small>Перейти до системи</small>
+            </div>
+        </a>
+
+    </div>
+
+</section>
+
+
+<section id="info" class="info-section">
+
+    <div class="info-card">
+
+        <div>
+
+            <span class="section-label">
+                ІНФОРМАЦІЯ
+            </span>
 
             <h2>
-                Увійдіть до цифрового простору
+                Система Ліцею №2
             </h2>
 
             <p>
-                Оберіть свій обліковий запис та отримайте
-                доступ до доступних функцій платформи.
+                Для доступу до навчальних розділів
+                необхідно увійти до свого акаунта.
+                Доступ до функцій залежить від ролі користувача.
             </p>
 
-            <a href="login.html" class="primary-button">
-                <span>Відкрити систему</span>
-                <span class="button-arrow">→</span>
-            </a>
-
         </div>
 
-    </section>
+        <a href="login.html" class="primary-button">
+            Увійти
+        </a>
 
-</main>
+    </div>
 
-<footer class="site-footer">
+</section>
 
-    <div class="footer-main">
+</main><footer class="site-footer"><div class="footer-inner">
 
-        <div class="footer-brand">
-            <a href="index.html" class="brand">
-                <span class="brand-icon">Л2</span>
-                <span class="brand-text">
-                    <strong>Ліцей №2</strong>
-                    <small>Цифровий простір</small>
-                </span>
-            </a>
+    <div class="footer-brand">
 
-            <p>
-                Сучасний цифровий простір
-                для освітнього середовища.
-            </p>
+        <div class="logo-mark">Л2</div>
+
+        <div>
+            <strong>Ліцей №2</strong>
+            <span>Цифрова система</span>
         </div>
 
-        <div class="footer-links">
+    </div>
 
-            <div>
-                <strong>Навігація</strong>
-                <a href="#about">Про платформу</a>
-                <a href="#features">Можливості</a>
-                <a href="#status">Статус</a>
-            </div>
+    <div class="footer-links">
 
-            <div>
-                <strong>Система</strong>
-                <a href="login.html">Вхід</a>
-                <a href="consent.html">Правила</a>
-            </div>
+        <a href="consent.html">
+            Правила системи
+        </a>
 
-        </div>
+        <a href="login.html">
+            Вхід
+        </a>
+
+        <a href="maintenance.html">
+            Стан системи
+        </a>
 
     </div>
 
     <div class="footer-bottom">
-        <span>
-            © <span id="currentYear"></span> Ліцей №2
-        </span>
-
-        <span>
-            Версія системи 1.2.0
-        </span>
+        © <span data-year></span> Ліцей №2
     </div>
 
-</footer>
+</div>
 
-</body>
+</footer><style>
+
+body {
+    margin: 0;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(61, 126, 255, .14), transparent 32%),
+        radial-gradient(circle at 85% 25%, rgba(110, 75, 255, .12), transparent 30%),
+        #050b14;
+    color: #fff;
+}
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgba(5, 11, 20, .78);
+    border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.header-inner {
+    max-width: 1180px;
+    margin: auto;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.logo-mark {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    background: linear-gradient(135deg,#5b8cff,#754dff);
+    box-shadow: 0 10px 30px rgba(74,105,255,.25);
+}
+
+.brand strong,
+.footer-brand strong {
+    display: block;
+    font-size: 15px;
+}
+
+.brand span,
+.footer-brand span {
+    display: block;
+    margin-top: 3px;
+    color: rgba(255,255,255,.5);
+    font-size: 11px;
+}
+
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.desktop-nav a {
+    color: rgba(255,255,255,.72);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.desktop-nav a:hover {
+    color: #fff;
+}
+
+.nav-button,
+.primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #fff !important;
+    background: linear-gradient(135deg,#477cff,#704cff);
+    border: 0;
+    border-radius: 13px;
+    padding: 12px 19px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(67,92,255,.22);
+}
+
+.menu-button {
+    display: none;
+    border: 0;
+    background: transparent;
+    padding: 7px;
+}
+
+.menu-button span {
+    display: block;
+    width: 25px;
+    height: 2px;
+    margin: 5px;
+    background: #fff;
+}
+
+.mobile-menu {
+    display: none;
+}
+
+.hero-section {
+    max-width: 1180px;
+    margin: auto;
+    min-height: 650px;
+    padding: 90px 20px 70px;
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    align-items: center;
+    gap: 70px;
+    position: relative;
+}
+
+.hero-glow {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: rgba(67,95,255,.17);
+    filter: blur(90px);
+    left: -120px;
+    top: 100px;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.08);
+    color: rgba(255,255,255,.72);
+    font-size: 12px;
+}
+
+.status-pill span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #43df9a;
+    box-shadow: 0 0 12px #43df9a;
+}
+
+.hero-content h1 {
+    font-size: clamp(42px, 6vw, 75px);
+    line-height: .98;
+    letter-spacing: -3px;
+    margin: 25px 0;
+}
+
+.hero-content h1 span {
+    display: block;
+    background: linear-gradient(90deg,#6fa0ff,#a177ff);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.hero-content p {
+    max-width: 600px;
+    color: rgba(255,255,255,.62);
+    font-size: 18px;
+    line-height: 1.65;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+}
+
+.secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 19px;
+    border-radius: 13px;
+    border: 1px solid rgba(255,255,255,.1);
+    color: #fff;
+    text-decoration: none;
+    background: rgba(255,255,255,.05);
+}
+
+.hero-panel {
+    padding: 22px;
+    border-radius: 28px;
+    background: rgba(255,255,255,.055);
+    border: 1px solid rgba(255,255,255,.09);
+    box-shadow: 0 30px 90px rgba(0,0,0,.28);
+    backdrop-filter: blur(25px);
+    transform: rotate(1deg);
+}
+
+.panel-top {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255,255,255,.7);
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.live-dot {
+    color: #61e7a4;
+}
+
+.panel-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.mini-card {
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.055);
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+.mini-card > span {
+    display: block;
+    font-size: 25px;
+    margin-bottom: 14px;
+}
+
+.mini-card strong,
+.mini-card small {
+    display: block;
+}
+
+.mini-card strong {
+    font-size: 14px;
+}
+
+.mini-card small {
+    color: rgba(255,255,255,.45);
+    margin-top: 6px;
+    font-size: 11px;
+}
+
+.content-section {
+    max-width: 1180px;
+    margin: auto;
+    padding: 90px 20px;
+}
+
+.section-heading {
+    max-width: 680px;
+    margin-bottom: 35px;
+}
+
+.section-heading > span,
+.section-label {
+    color: #779dff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.section-heading h2 {
+    font-size: clamp(30px,4vw,48px);
+    margin: 12px 0;
+}
+
+.section-heading h2 strong {
+    color: #779dff;
+}
+
+.section-heading p {
+    color: rgba(255,255,255,.55);
+    line-height: 1.7;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 15px;
+}
+
+.feature-card {
+    padding: 25px;
+    border-radius: 22px;
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+.feature-icon {
+    font-size: 28px;
+    margin-bottom: 18px;
+}
+
+.feature-card h3 {
+    margin: 0 0 9px;
+}
+
+.feature-card p {
+    margin: 0;
+    color: rgba(255,255,255,.5);
+    line-height: 1.55;
+    font-size: 13px;
+}
+
+.module-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 14px;
+}
+
+.module-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    min-height: 80px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 20px;
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(255,255,255,.07);
+    transition: .2s ease;
+}
+
+.module-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(110,140,255,.4);
+    background: rgba(110,140,255,.08);
+}
+
+.module-card > span {
+    font-size: 26px;
+}
+
+.module-card strong,
+.module-card small {
+    display: block;
+}
+
+.module-card small {
+    margin-top: 5px;
+    color: rgba(255,255,255,.45);
+    font-size: 11px;
+}
+
+.accent-module {
+    background: linear-gradient(
+        135deg,
+        rgba(73,110,255,.17),
+        rgba(115,72,255,.14)
+    );
+}
+
+.info-section {
+    max-width: 1180px;
+    margin: auto;
+    padding: 30px 20px 100px;
+}
+
+.info-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 40px;
+    border-radius: 28px;
+    background: linear-gradient(
+        135deg,
+        rgba(71,110,255,.15),
+        rgba(105,69,255,.09)
+    );
+    border: 1px solid rgba(115,145,255,.18);
+}
+
+.info-card h2 {
+    margin: 10px 0;
+    font-size: 30px;
+}
+
+.info-card p {
+    max-width: 650px;
+    color: rgba(255,255,255,.55);
+    line-height: 1.6;
+}
+
+.site-footer {
+    border-top: 1px solid rgba(255,255,255,.07);
+    background: rgba(0,0,0,.15);
+}
+
+.footer-inner {
+    max-width: 1180px;
+    margin: auto;
+    padding: 35px 20px;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin: 25px 0;
+}
+
+.footer-links a {
+    color: rgba(255,255,255,.5);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.footer-bottom {
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    color: rgba(255,255,255,.35);
+    font-size: 12px;
+}
+
+@media (max-width: 850px) {
+
+    .desktop-nav {
+        display: none;
+    }
+
+    .menu-button {
+        display: block;
+    }
+
+    .mobile-menu {
+        padding: 10px 20px 20px;
+        background: rgba(5,11,20,.96);
+    }
+
+    .mobile-menu.open {
+        display: grid;
+        gap: 5px;
+    }
+
+    .mobile-menu a {
+        padding: 14px;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 12px;
+    }
+
+    .hero-section {
+        grid-template-columns: 1fr;
+        gap: 35px;
+        padding-top: 60px;
+    }
+
+    .hero-content h1 {
+        letter-spacing: -2px;
+    }
+
+    .feature-grid,
+    .module-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .hero-panel {
+        transform: none;
+    }
+
+}
+
+@media (max-width: 520px) {
+
+    .hero-section {
+        min-height: auto;
+        padding-top: 45px;
+    }
+
+    .hero-content h1 {
+        font-size: 43px;
+    }
+
+    .hero-content p {
+        font-size: 15px;
+    }
+
+    .feature-grid,
+    .module-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-main {
+        grid-template-columns: 1fr;
+    }
+
+    .info-card {
+        padding: 28px;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .hero-actions a {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+}
+
+</style></body>
 </html>
