@@ -1,220 +1,177 @@
 <!DOCTYPE html><html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тести — Ліцей №2</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="supabase.js"></script>
-    <script src="app.js" defer></script><style>
-    body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: Arial, sans-serif;
-        background:
-            radial-gradient(circle at 15% 10%, rgba(80,120,255,.18), transparent 30%),
-            radial-gradient(circle at 85% 20%, rgba(0,220,255,.12), transparent 28%),
-            #070b14;
-        color: #fff;
-    }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Тести — Ліцей №2</title>
 
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="app.js" defer></script>
+
+<style>
     .tests-page {
-        width: min(1100px, calc(100% - 28px));
-        margin: 0 auto;
-        padding: 24px 0 50px;
+        width: min(1100px, calc(100% - 24px));
+        margin: auto;
+        padding: 20px 0 40px;
     }
 
     .tests-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-
-    .back-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: #fff;
-        text-decoration: none;
-        padding: 11px 16px;
-        border-radius: 14px;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding: 20px;
+        border-radius: 22px;
         background: rgba(255,255,255,.07);
         border: 1px solid rgba(255,255,255,.1);
     }
 
-    .back-button:hover {
-        background: rgba(255,255,255,.12);
+    .tests-header h1 {
+        margin: 0 0 5px;
     }
 
-    .hero {
-        padding: 28px;
-        border-radius: 28px;
-        background: linear-gradient(135deg, rgba(45,105,255,.2), rgba(0,220,255,.08));
-        border: 1px solid rgba(255,255,255,.1);
-        box-shadow: 0 20px 60px rgba(0,0,0,.25);
-        margin-bottom: 22px;
-    }
-
-    .hero h1 {
-        margin: 0 0 8px;
-        font-size: clamp(28px, 6vw, 44px);
-    }
-
-    .hero p {
+    .tests-header p {
         margin: 0;
-        color: #aebbd1;
-        line-height: 1.5;
+        opacity: .65;
     }
 
-    .stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-        margin-bottom: 22px;
-    }
-
-    .stat {
-        padding: 20px;
-        border-radius: 20px;
-        background: rgba(255,255,255,.055);
-        border: 1px solid rgba(255,255,255,.08);
-    }
-
-    .stat-number {
-        font-size: 30px;
-        font-weight: 800;
-        margin-bottom: 5px;
-    }
-
-    .stat-label {
-        color: #9eabc0;
-        font-size: 14px;
-    }
-
-    .filters {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-    }
-
-    .filter-button {
-        border: 1px solid rgba(255,255,255,.1);
-        background: rgba(255,255,255,.06);
-        color: #fff;
-        padding: 11px 16px;
+    .back-btn {
+        padding: 10px 15px;
         border-radius: 13px;
-        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        background: rgba(255,255,255,.09);
+        border: 1px solid rgba(255,255,255,.1);
+        white-space: nowrap;
     }
 
-    .filter-button.active {
-        background: #2777ff;
-        border-color: #2777ff;
+    .tests-status {
+        padding: 15px 18px;
+        margin-bottom: 18px;
+        border-radius: 17px;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.08);
     }
 
     .tests-list {
         display: grid;
-        gap: 16px;
+        gap: 14px;
     }
 
     .test-card {
-        padding: 22px;
-        border-radius: 22px;
-        background: rgba(255,255,255,.055);
+        padding: 20px;
+        border-radius: 20px;
+        background: rgba(255,255,255,.065);
         border: 1px solid rgba(255,255,255,.09);
-        box-shadow: 0 12px 40px rgba(0,0,0,.18);
+        transition: transform .2s ease, background .2s ease;
+    }
+
+    .test-card:hover {
+        transform: translateY(-2px);
+        background: rgba(255,255,255,.09);
     }
 
     .test-top {
         display: flex;
-        justify-content: space-between;
         align-items: flex-start;
-        gap: 15px;
+        justify-content: space-between;
+        gap: 12px;
     }
 
-    .test-subject {
-        color: #66b7ff;
-        font-size: 14px;
-        font-weight: 700;
-        margin-bottom: 7px;
+    .test-card h2 {
+        margin: 0 0 7px;
+        font-size: 20px;
     }
 
-    .test-title {
-        font-size: 22px;
-        font-weight: 800;
-        margin-bottom: 8px;
+    .subject {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 10px;
+        background: rgba(0,170,255,.13);
+        font-size: 13px;
     }
 
     .test-description {
-        color: #b5bfd0;
+        margin: 15px 0;
         line-height: 1.55;
-        white-space: pre-wrap;
+        opacity: .78;
     }
 
     .test-info {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        margin-top: 17px;
+        margin-top: 12px;
     }
 
-    .info-tag {
-        padding: 8px 11px;
+    .info-item {
+        padding: 7px 10px;
         border-radius: 10px;
         background: rgba(255,255,255,.06);
-        color: #c8d2e2;
         font-size: 13px;
+        opacity: .75;
     }
 
-    .test-button {
+    .test-link {
         display: inline-flex;
-        margin-top: 18px;
-        padding: 12px 17px;
-        border-radius: 13px;
-        background: linear-gradient(135deg, #2777ff, #15b9ff);
-        color: #fff;
+        margin-top: 16px;
+        padding: 10px 14px;
+        border-radius: 12px;
         text-decoration: none;
-        font-weight: 700;
+        color: inherit;
+        background: rgba(0,170,255,.16);
+        border: 1px solid rgba(0,170,255,.22);
+        font-weight: 600;
     }
 
-    .empty,
-    .loading,
-    .error {
+    .test-link:hover {
+        background: rgba(0,170,255,.24);
+    }
+
+    .empty {
         padding: 35px 20px;
         text-align: center;
-        border-radius: 22px;
-        background: rgba(255,255,255,.045);
-        border: 1px solid rgba(255,255,255,.08);
-        color: #aeb9ca;
+        border-radius: 20px;
+        background: rgba(255,255,255,.05);
+        border: 1px dashed rgba(255,255,255,.12);
+    }
+
+    .empty-icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
+
+    .empty p {
+        margin: 0;
+        opacity: .65;
     }
 
     .error {
-        color: #ff9e9e;
+        color: #ffb4b4;
     }
 
-    @media (max-width: 650px) {
+    @media (max-width: 600px) {
         .tests-page {
-            width: min(100% - 18px, 1100px);
-            padding-top: 14px;
+            width: min(100% - 16px, 1100px);
         }
 
         .tests-header {
-            align-items: stretch;
-            flex-direction: column;
+            padding: 16px;
         }
 
-        .hero {
-            padding: 22px;
-            border-radius: 22px;
+        .tests-header h1 {
+            font-size: 24px;
         }
 
-        .stats {
-            grid-template-columns: 1fr;
+        .back-btn {
+            padding: 9px 11px;
+            font-size: 13px;
         }
 
         .test-card {
-            padding: 18px;
+            padding: 17px;
         }
 
         .test-top {
@@ -223,209 +180,189 @@
     }
 </style>
 
-</head><body>
-    <main class="tests-page">    <div class="tests-header">
-        <a class="back-button" href="dashboard.html">← Назад</a>
-        <div data-user-name>Користувач</div>
-    </div>
-
-    <section class="hero">
+</head><body><main class="tests-page"><header class="tests-header">
+    <div>
         <h1>📝 Тести</h1>
-        <p>Переглядай доступні тести, предмети, класи та терміни виконання.</p>
-    </section>
-
-    <section class="stats">
-        <div class="stat">
-            <div class="stat-number" id="totalTests">0</div>
-            <div class="stat-label">Усього тестів</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-number" id="activeTests">0</div>
-            <div class="stat-label">Актуальні</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-number" id="overdueTests">0</div>
-            <div class="stat-label">Завершені за терміном</div>
-        </div>
-    </section>
-
-    <div class="filters">
-        <button class="filter-button active" data-filter="all">Усі</button>
-        <button class="filter-button" data-filter="active">Актуальні</button>
-        <button class="filter-button" data-filter="overdue">Завершені</button>
+        <p>Навчальні та контрольні тести ліцею</p>
     </div>
 
-    <section id="testsList" class="tests-list">
-        <div class="loading">Завантаження тестів...</div>
-    </section>
+    <a href="dashboard.html" class="back-btn">
+        🏠 Головна
+    </a>
+</header>
 
-</main>
+<div id="testsStatus" class="tests-status">
+    Завантаження тестів...
+</div>
 
-<script>
-    let allTests = [];
-    let currentFilter = 'all';
+<section id="testsList" class="tests-list"></section>
 
-    function escapeHtml(value) {
-        return String(value ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+</main><script>
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const status = document.getElementById("testsStatus");
+    const list = document.getElementById("testsList");
+
+    function escapeHTML(value) {
+        if (value === null || value === undefined) return "";
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
     }
 
     function formatDate(value) {
-        if (!value) return 'Без терміну';
+        if (!value) return "";
 
-        const date = new Date(value + 'T00:00:00');
+        const date = new Date(value);
 
         if (Number.isNaN(date.getTime())) {
-            return value;
+            return escapeHTML(value);
         }
 
-        return date.toLocaleDateString('uk-UA', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
+        return date.toLocaleDateString("uk-UA", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
         });
     }
 
-    function isOverdue(test) {
-        if (!test.due_date) return false;
+    function renderTests(tests) {
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        if (!tests || tests.length === 0) {
 
-        const due = new Date(test.due_date + 'T00:00:00');
-        return due < today;
-    }
+            status.textContent = "Нових тестів поки немає.";
 
-    function updateStats() {
-        const total = allTests.length;
-        const overdue = allTests.filter(isOverdue).length;
-        const active = total - overdue;
-
-        document.getElementById('totalTests').textContent = total;
-        document.getElementById('activeTests').textContent = active;
-        document.getElementById('overdueTests').textContent = overdue;
-    }
-
-    function renderTests() {
-        const container = document.getElementById('testsList');
-
-        let tests = [...allTests];
-
-        if (currentFilter === 'active') {
-            tests = tests.filter(test => !isOverdue(test));
-        }
-
-        if (currentFilter === 'overdue') {
-            tests = tests.filter(isOverdue);
-        }
-
-        if (!tests.length) {
-            container.innerHTML = `
+            list.innerHTML = `
                 <div class="empty">
-                    <div style="font-size:36px;margin-bottom:10px;">📭</div>
-                    <div>Тестів у цьому розділі поки немає.</div>
+                    <div class="empty-icon">📝</div>
+                    <p>Коли учитель додасть тест, він з'явиться тут.</p>
                 </div>
             `;
+
             return;
         }
 
-        container.innerHTML = tests.map(test => {
-            const overdue = isOverdue(test);
+        status.textContent =
+            `Знайдено тестів: ${tests.length}`;
+
+        list.innerHTML = tests.map(test => {
+
+            const title =
+                escapeHTML(test.title || "Тест");
+
+            const subject =
+                escapeHTML(test.subject || "Предмет не вказано");
+
+            const description =
+                escapeHTML(test.description || "Опис тесту відсутній.");
+
+            const className =
+                escapeHTML(test.class_name || "Усі класи");
+
+            const dueDate =
+                test.due_date
+                    ? `📅 До ${formatDate(test.due_date)}`
+                    : "📅 Дата не вказана";
+
+            const link =
+                test.test_url
+                    ? `
+                        <a
+                            class="test-link"
+                            href="${escapeHTML(test.test_url)}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            ▶ Відкрити тест
+                        </a>
+                    `
+                    : "";
 
             return `
                 <article class="test-card">
+
                     <div class="test-top">
                         <div>
-                            <div class="test-subject">
-                                📚 ${escapeHtml(test.subject)}
-                            </div>
-
-                            <div class="test-title">
-                                ${escapeHtml(test.title)}
-                            </div>
-
-                            <div class="test-description">
-                                ${escapeHtml(test.description || 'Опис тесту відсутній.')}
-                            </div>
+                            <h2>${title}</h2>
+                            <span class="subject">${subject}</span>
                         </div>
                     </div>
 
-                    <div class="test-info">
-                        ${test.class_name
-                            ? `<span class="info-tag">👥 ${escapeHtml(test.class_name)}</span>`
-                            : ''}
+                    <p class="test-description">
+                        ${description}
+                    </p>
 
-                        <span class="info-tag">
-                            📅 ${test.due_date ? formatDate(test.due_date) : 'Без терміну'}
+                    <div class="test-info">
+                        <span class="info-item">
+                            👥 ${className}
                         </span>
 
-                        <span class="info-tag">
-                            ${overdue ? '🔴 Завершено' : '🟢 Актуальний'}
+                        <span class="info-item">
+                            ${dueDate}
                         </span>
                     </div>
 
-                    ${test.test_url
-                        ? `<a class="test-button" href="${escapeHtml(test.test_url)}" target="_blank" rel="noopener noreferrer">Відкрити тест →</a>`
-                        : ''}
+                    ${link}
+
                 </article>
             `;
-        }).join('');
+
+        }).join("");
     }
 
-    async function loadTests() {
-        const container = document.getElementById('testsList');
+    try {
 
-        try {
-            if (typeof supabaseClient === 'undefined') {
-                throw new Error('Supabase не підключено.');
-            }
+        if (!window.supabaseClient) {
 
-            const { data, error } = await supabaseClient
-                .from('tests')
-                .select('*')
-                .order('due_date', { ascending: true })
-                .order('created_at', { ascending: false });
+            status.innerHTML =
+                '<span class="error">Не вдалося підключити Supabase. Перевір supabase.js.</span>';
 
-            if (error) throw error;
-
-            allTests = data || [];
-
-            updateStats();
-            renderTests();
-
-        } catch (error) {
-            console.error('Tests loading error:', error);
-
-            container.innerHTML = `
-                <div class="error">
-                    Не вдалося завантажити тести.<br>
-                    Перевір підключення Supabase та права доступу до таблиці tests.
-                </div>
-            `;
+            return;
         }
-    }
 
-    document.querySelectorAll('[data-filter]').forEach(button => {
-        button.addEventListener('click', () => {
-            document.querySelectorAll('[data-filter]').forEach(item => {
-                item.classList.remove('active');
+        const {
+            data: tests,
+            error
+        } = await window.supabaseClient
+            .from("tests")
+            .select("*")
+            .order("due_date", {
+                ascending: true,
+                nullsFirst: false
             });
 
-            button.classList.add('active');
-            currentFilter = button.dataset.filter;
+        if (error) {
 
-            renderTests();
-        });
-    });
+            console.error("Supabase tests error:", error);
 
-    document.addEventListener('DOMContentLoaded', loadTests);
-</script>
+            status.innerHTML =
+                '<span class="error">Не вдалося завантажити тести. Перевір таблицю tests та права доступу.</span>';
 
-</body>
+            list.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">⚠️</div>
+                    <p>Supabase повернув помилку під час отримання тестів.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        renderTests(tests);
+
+    } catch (error) {
+
+        console.error("Tests loading error:", error);
+
+        status.innerHTML =
+            '<span class="error">Помилка під час завантаження тестів.</span>';
+
+    }
+
+});
+</script></body>
 </html>
