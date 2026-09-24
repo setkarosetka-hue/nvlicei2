@@ -1,170 +1,383 @@
-<!doctype html>
-<html lang="uk">
+<!DOCTYPE html><html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ліцей №2 — Електронна система</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header class="site-header">
-    <div class="header-container container">
-      <a href="index.html" class="logo" aria-label="Ліцей №2">
-        <span class="logo-mark">Л2</span>
-        <span class="logo-text">
-          <strong>Ліцей №2</strong>
-          <small>Електронна система</small>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07111f">
+    <meta name="description" content="Ліцей №2 — сучасна цифрова платформа ліцею">
+    <title>Ліцей №2</title><link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="app.js" defer></script>
+
+</head><body class="landing-page"><div class="page-background">
+    <div class="background-orb orb-one"></div>
+    <div class="background-orb orb-two"></div>
+    <div class="background-grid"></div>
+</div>
+
+<header class="site-header">
+    <a href="index.html" class="brand">
+        <span class="brand-icon">Л2</span>
+        <span class="brand-text">
+            <strong>Ліцей №2</strong>
+            <small>Цифровий простір</small>
         </span>
-      </a>
+    </a>
 
-      <nav class="navigation" aria-label="Main navigation">
-        <a href="#about">Про систему</a>
+    <nav class="main-nav" aria-label="Головна навігація">
+        <a href="#about">Про платформу</a>
         <a href="#features">Можливості</a>
-        <a href="#contacts">Контакти</a>
-        <a href="login.html" class="login-button">Увійти</a>
-      </nav>
+        <a href="#status">Статус</a>
+        <a href="login.html" class="nav-login">Увійти</a>
+    </nav>
 
-      <button class="mobile-menu" type="button" aria-label="Відкрити навігацію" onclick="toggleMenu()">☰</button>
-    </div>
-  </header>
+    <button class="mobile-menu-btn" type="button" aria-label="Відкрити меню">
+        ☰
+    </button>
+</header>
 
-  <main>
-    <div class="container system-notice" style="margin-top: 24px; display:flex; gap:12px; align-items:flex-start; padding:16px 18px; border-radius:18px; background:linear-gradient(135deg, rgba(255,244,207,.86), rgba(255,255,255,.75)); border:1px solid rgba(241,177,56,.24); color:#6b4e12; box-shadow: var(--shadow-soft);">
-      <div style="font-size:1.3rem;">⚠️</div>
-      <div>
-        <strong style="display:block; margin-bottom:4px;">Важлива інформація</strong>
-        <span>Ця електронна система наразі перебуває у розробці та ще не підтверджена адміністрацією ліцею.</span>
-      </div>
-    </div>
+<main>
 
-    <section class="hero container">
-      <div class="hero-content">
-        <div class="status-badge"><span class="status-dot"></span>Система працює</div>
-        <h1>Навчання,<br><span>яке завжди</span><br>поруч.</h1>
-        <p class="hero-description">Сучасний цифровий простір Ліцею №2 для учнів, батьків, учителів та адміністрації.</p>
+    <section class="hero-section">
+        <div class="hero-content">
 
-        <div class="hero-buttons">
-          <a href="login.html" class="primary-button">Увійти до системи →</a>
-          <a href="#features" class="secondary-button">Дізнатися більше</a>
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span data-system-status>У розробці</span>
+            </div>
+
+            <h1>
+                Ласкаво просимо до
+                <span>Ліцею №2</span>
+            </h1>
+
+            <p class="hero-description">
+                Сучасний цифровий простір для учнів, батьків,
+                вчителів та адміністрації.
+            </p>
+
+            <div class="hero-actions">
+                <a href="login.html" class="primary-button">
+                    <span>Увійти до системи</span>
+                    <span class="button-arrow">→</span>
+                </a>
+
+                <a href="#features" class="secondary-button">
+                    Дізнатися більше
+                </a>
+            </div>
+
+            <div class="hero-note">
+                <span>🔒</span>
+                <span>Безпечний доступ за ролями</span>
+            </div>
         </div>
 
-        <div class="hero-info">
-          <div class="info-item"><strong>24/7</strong><span>доступ</span></div>
-          <div class="info-item"><strong>4</strong><span>ролі</span></div>
-          <div class="info-item"><strong>100%</strong><span>онлайн</span></div>
-        </div>
-      </div>
+        <div class="hero-visual">
+            <div class="dashboard-preview">
 
-      <div class="hero-card-wrap">
-        <div class="school-card">
-          <div class="school-card-header">
+                <div class="preview-top">
+                    <div class="preview-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                    <span class="preview-title">Ліцей №2</span>
+
+                    <div class="preview-avatar">Л2</div>
+                </div>
+
+                <div class="preview-content">
+
+                    <div class="preview-greeting">
+                        <small>Цифровий простір</small>
+                        <strong>Усе необхідне — в одному місці</strong>
+                    </div>
+
+                    <div class="preview-cards">
+
+                        <div class="preview-card">
+                            <span class="preview-card-icon">📅</span>
+                            <div>
+                                <strong>Розклад</strong>
+                                <small>Заняття та уроки</small>
+                            </div>
+                        </div>
+
+                        <div class="preview-card">
+                            <span class="preview-card-icon">📚</span>
+                            <div>
+                                <strong>Домашні завдання</strong>
+                                <small>Навчальні матеріали</small>
+                            </div>
+                        </div>
+
+                        <div class="preview-card">
+                            <span class="preview-card-icon">📢</span>
+                            <div>
+                                <strong>Оголошення</strong>
+                                <small>Новини ліцею</small>
+                            </div>
+                        </div>
+
+                        <div class="preview-card">
+                            <span class="preview-card-icon">💬</span>
+                            <div>
+                                <strong>Повідомлення</strong>
+                                <small>Зв'язок із ліцеєм</small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="preview-progress">
+                        <div class="progress-info">
+                            <span>Навчальний простір</span>
+                            <strong>Готово</strong>
+                        </div>
+
+                        <div class="progress-line">
+                            <span></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="content-section">
+        <div class="section-heading">
+            <span class="section-label">ПРО ПЛАТФОРМУ</span>
+            <h2>Один простір для всіх</h2>
+            <p>
+                Платформа об'єднує основні навчальні та організаційні
+                інструменти ліцею в одному зручному середовищі.
+            </p>
+        </div>
+
+        <div class="role-grid">
+
+            <article class="role-card">
+                <div class="role-icon">🎓</div>
+                <h3>Учні</h3>
+                <p>
+                    Розклад, домашні завдання, тести,
+                    події та повідомлення.
+                </p>
+            </article>
+
+            <article class="role-card">
+                <div class="role-icon">👨‍🏫</div>
+                <h3>Вчителі</h3>
+                <p>
+                    Робота з розкладом, завданнями,
+                    тестами та оголошеннями.
+                </p>
+            </article>
+
+            <article class="role-card">
+                <div class="role-icon">👨‍👩‍👧</div>
+                <h3>Батьки</h3>
+                <p>
+                    Доступ до важливої інформації
+                    про навчання та події.
+                </p>
+            </article>
+
+            <article class="role-card">
+                <div class="role-icon">⚙️</div>
+                <h3>Адміністрація</h3>
+                <p>
+                    Керування користувачами,
+                    системою та інформацією ліцею.
+                </p>
+            </article>
+
+        </div>
+    </section>
+
+    <section id="features" class="content-section features-section">
+
+        <div class="section-heading">
+            <span class="section-label">МОЖЛИВОСТІ</span>
+            <h2>Усе необхідне поруч</h2>
+            <p>
+                Основні функції цифрової платформи Ліцею №2.
+            </p>
+        </div>
+
+        <div class="feature-grid">
+
+            <article class="feature-card">
+                <div class="feature-number">01</div>
+                <div class="feature-icon">📅</div>
+                <h3>Розклад</h3>
+                <p>
+                    Перегляд актуального розкладу занять
+                    для класів.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-number">02</div>
+                <div class="feature-icon">📚</div>
+                <h3>Домашні завдання</h3>
+                <p>
+                    Завдання, предмети, терміни
+                    та навчальна інформація.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-number">03</div>
+                <div class="feature-icon">📝</div>
+                <h3>Тести</h3>
+                <p>
+                    Навчальні тести та матеріали
+                    від учителів.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-number">04</div>
+                <div class="feature-icon">📢</div>
+                <h3>Оголошення</h3>
+                <p>
+                    Важливі повідомлення та новини
+                    ліцею.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-number">05</div>
+                <div class="feature-icon">💬</div>
+                <h3>Повідомлення</h3>
+                <p>
+                    Зручний зв'язок між учасниками
+                    освітнього процесу.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-number">06</div>
+                <div class="feature-icon">📊</div>
+                <h3>Відвідування</h3>
+                <p>
+                    Інформація про присутність,
+                    запізнення та відсутність.
+                </p>
+            </article>
+
+        </div>
+    </section>
+
+    <section id="status" class="status-section">
+
+        <div class="status-panel">
+
+            <div class="status-panel-icon">
+                <span class="status-dot"></span>
+            </div>
+
+            <div class="status-panel-content">
+                <span class="section-label">СТАН СИСТЕМИ</span>
+
+                <h2>
+                    <span data-system-status>У розробці</span>
+                </h2>
+
+                <p>
+                    Платформа поступово розвивається.
+                    Доступ до функцій залежить від ролі користувача.
+                </p>
+            </div>
+
+            <a href="login.html" class="status-button">
+                Перейти до входу →
+            </a>
+
+        </div>
+
+    </section>
+
+    <section class="cta-section">
+
+        <div class="cta-content">
+
+            <span class="section-label">ГОТОВІ ПОЧАТИ?</span>
+
+            <h2>
+                Увійдіть до цифрового простору
+            </h2>
+
+            <p>
+                Оберіть свій обліковий запис та отримайте
+                доступ до доступних функцій платформи.
+            </p>
+
+            <a href="login.html" class="primary-button">
+                <span>Відкрити систему</span>
+                <span class="button-arrow">→</span>
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="site-footer">
+
+    <div class="footer-main">
+
+        <div class="footer-brand">
+            <a href="index.html" class="brand">
+                <span class="brand-icon">Л2</span>
+                <span class="brand-text">
+                    <strong>Ліцей №2</strong>
+                    <small>Цифровий простір</small>
+                </span>
+            </a>
+
+            <p>
+                Сучасний цифровий простір
+                для освітнього середовища.
+            </p>
+        </div>
+
+        <div class="footer-links">
+
             <div>
-              <span class="small-label">DIGITAL LYCEUM</span>
-              <h2>Ліцей №2</h2>
+                <strong>Навігація</strong>
+                <a href="#about">Про платформу</a>
+                <a href="#features">Можливості</a>
+                <a href="#status">Статус</a>
             </div>
-            <div class="school-icon">🏫</div>
-          </div>
 
-          <div class="card-line"></div>
+            <div>
+                <strong>Система</strong>
+                <a href="login.html">Вхід</a>
+                <a href="consent.html">Правила</a>
+            </div>
 
-          <div class="dashboard-preview">
-            <div class="preview-item">
-              <span class="preview-icon">📅</span>
-              <div><strong>Розклад</strong><small>Наступний урок о 08:55</small></div>
-            </div>
-            <div class="preview-item">
-              <span class="preview-icon">📚</span>
-              <div><strong>Завдання</strong><small>3 активні завдання</small></div>
-            </div>
-            <div class="preview-item">
-              <span class="preview-icon">📢</span>
-              <div><strong>Оголошення</strong><small>2 нові повідомлення</small></div>
-            </div>
-          </div>
-
-          <div class="card-footer"><span class="online-indicator"></span>Усе під контролем</div>
         </div>
-      </div>
-    </section>
 
-    <section id="about" class="section container">
-      <div class="section-header">
-        <span class="section-label">Про систему</span>
-        <h2>Один простір для<br><span>всієї шкільної спільноти.</span></h2>
-        <p>Менше пошуку, більше уваги навчанню та спілкуванню.</p>
-      </div>
-    </section>
-
-    <section id="features" class="section container">
-      <div class="section-header">
-        <span class="section-label">Можливості</span>
-        <h2>Усе важливе — <span>поруч</span></h2>
-      </div>
-
-      <div class="features-grid">
-        <article class="feature-card">
-          <div class="feature-icon">📅</div>
-          <h3>Розклад</h3>
-          <p>Актуальні уроки, кабінети та навчальний тиждень.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon">📚</div>
-          <h3>Завдання</h3>
-          <p>Домашня робота й дедлайни без зайвих повідомлень.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon">📊</div>
-          <h3>Успішність</h3>
-          <p>Оцінки та відвідування в зрозумілому форматі.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon">💬</div>
-          <h3>Комунікація</h3>
-          <p>Зручний контакт між учнями, батьками й учителями.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon">🎉</div>
-          <h3>Події</h3>
-          <p>Шкільне життя, зустрічі та важливі дати.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon">🛡️</div>
-          <h3>Безпека</h3>
-          <p>Ролі та авторизація на базі Supabase.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="contacts" class="section container">
-      <div class="contact-card">
-        <div>
-          <span class="section-label">Допомога</span>
-          <h2>Почніть із власного кабінету.</h2>
-          <p>Увійдіть, щоб перейти до персонального навчального простору.</p>
-        </div>
-        <a href="login.html" class="primary-button">Увійти до системи →</a>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="footer-container">
-      <strong>Ліцей №2</strong>
-      <div class="footer-links">
-        <a href="#about">Про систему</a>
-        <a href="#features">Можливості</a>
-        <a href="#contacts">Контакти</a>
-        <a href="consent.html">Правила</a>
-        <a href="login.html">Увійти</a>
-      </div>
     </div>
-  </footer>
 
-  <script src="app.js"></script>
+    <div class="footer-bottom">
+        <span>
+            © <span id="currentYear"></span> Ліцей №2
+        </span>
+
+        <span>
+            Версія системи 1.2.0
+        </span>
+    </div>
+
+</footer>
+
 </body>
 </html>
