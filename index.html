@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ліцей 2 — Розклад</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f2f3f5;--sf:#fff;--ink:#1c2430;--mut:#5d6877;--ln:#d9dde3;--br:#1f4e8c;--ac:#d9620b;--bl:90%;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#13161b;--sf:#1c2027;--ink:#e6e9ee;--mut:#9aa4b2;--ln:#2c323c;--br:#7fb0f0;--ac:#ff9a4d;--bl:24%;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#13161b;--sf:#1c2027;--ink:#e6e9ee;--mut:#9aa4b2;--ln:#2c323c;--br:#7fb0f0;--ac:#ff9a4d;--bl:24%;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--br);outline-offset:2px}
+header{background:var(--br);color:#fff;padding:14px 20px;display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
+:root[data-theme="dark"] header,:root:not([data-theme="light"]) header{}
+header h1{margin:0;font-size:20px;font-weight:600}
+header h1 span{font-weight:400;opacity:.85}
+nav{display:flex;gap:4px}
+nav button{background:transparent;border:0;color:#fff;padding:8px 14px;border-radius:6px;cursor:pointer;opacity:.8}
+nav button[aria-selected="true"]{background:rgba(255,255,255,.2);opacity:1;font-weight:500}
+.note{background:var(--ac);color:#fff;padding:6px 20px;font-size:13px}
+main{max-width:1180px;margin:0 auto;padding:16px 20px 40px}
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
+.seg{display:flex;border:1px solid var(--ln);border-radius:8px;overflow:hidden;background:var(--sf)}
+.seg button{border:0;background:transparent;padding:7px 14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--br);color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{color:#13161b}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:#13161b}}
+select{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:7px 10px;min-width:150px}
+.wk{margin-left:auto;display:flex;align-items:center;gap:6px}
+.wk button{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:6px 12px;cursor:pointer}
+.wk b{min-width:150px;text-align:center;font-weight:500}
+.sc{overflow-x:auto;background:var(--sf);border:1px solid var(--ln);border-radius:10px}
+.g{display:grid;grid-template-columns:78px repeat(5,minmax(135px,1fr));min-width:780px}
+.g>div{border-right:1px solid var(--ln);border-bottom:1px solid var(--ln);padding:4px;min-height:64px}
+.g>div:nth-child(6n){border-right:0}
+.g .h{min-height:0;text-align:center;font-weight:500;padding:8px 4px;background:var(--bg)}
+.g .h small{display:block;color:var(--mut);font-weight:400}
+.g .h.t{box-shadow:inset 0 -3px 0 var(--br)}
+.g .tm{font-size:12px;color:var(--mut);text-align:center;background:var(--bg);padding-top:10px}
+.g .tm b{display:block;color:var(--ink);font-size:15px}
+.ls{display:block;width:100%;text-align:left;border:0;border-left:4px solid hsl(var(--h) 60% 48%);background:hsl(var(--h) 55% var(--bl));color:var(--ink);border-radius:4px;padding:5px 7px;margin-bottom:3px;cursor:pointer}
+.ls b{display:block;font-weight:600}
+.ls span{font-size:12.5px;color:var(--mut)}
+:root[data-theme="dark"] .ls span{color:#c6ccd6}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .ls span{color:#c6ccd6}}
+.ls.sub{outline:2px solid var(--ac);outline-offset:-2px}
+.ls.sub em,.tag.sub{color:var(--ac);font-style:normal;font-weight:600}
+.ls.cancel b,.ls.cancel span{text-decoration:line-through}
+.ls.cancel{opacity:.65}
+.ls.cancel em{font-style:normal;color:#c0392b;font-weight:600;text-decoration:none;display:inline-block}
+.ls[aria-current="true"]{box-shadow:0 0 0 2px var(--br)}
+.det{margin-top:12px;padding:12px 16px;background:var(--sf);border:1px solid var(--ln);border-radius:10px;min-height:48px;color:var(--mut)}
+.det strong{color:var(--ink)}
+table{width:100%;border-collapse:collapse;background:var(--sf);border:1px solid var(--ln);border-radius:10px;overflow:hidden}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--ln)}
+th{background:var(--bg);font-weight:500;color:var(--mut)}
+.tw{overflow-x:auto}
+.tag{font-weight:600}
+.tag.cancel{color:#c0392b}
+.empty{padding:20px;color:var(--mut);background:var(--sf);border:1px solid var(--ln);border-radius:10px}
+nav{flex-wrap:wrap}.dh{margin:18px 0 8px;font-size:16px;font-weight:600}.dh:first-child{margin-top:0}.card{background:var(--sf);border:1px solid var(--ln);border-left:4px solid hsl(var(--h,215) 60% 48%);border-radius:8px;padding:10px 14px;margin-bottom:8px}.card p{margin:2px 0 0;color:var(--mut)}
+</style>
+</head>
+<body>
+<header>
+<h1>Ліцей 2 <span>· Розклад</span></h1>
+<nav role="tablist" aria-label="Розділи"><button role="tab" id="tab-tt" aria-selected="true">Розклад</button><button role="tab" id="tab-sub" aria-selected="false">Заміни</button><button role="tab" id="tab-hw" aria-selected="false">Домашні завдання</button><button role="tab" id="tab-ev" aria-selected="false">Заходи</button><button role="tab" id="tab-ab" aria-selected="false">Відсутні</button></nav>
+</header>
+<div class="note">Неофіційний проєкт, не затверджений школою. Дані демонстраційні.</div>
+<main>
+<div class="bar" id="bar"></div>
+<section id="tt"><div class="sc"><div class="g" id="grid"></div></div><div class="det" id="det">Оберіть урок, щоб побачити подробиці.</div></section>
+<section id="sub" hidden></section><section id="hw" hidden></section><section id="ev" hidden></section><section id="ab" hidden></section>
+</main>
+<script>
+/* ===== ДАНІ: редагуйте тут (дати у форматі РРРР-ММ-ДД) ===== */
+const HW=[{d:'2026-11-09',c:'7А',k:'mat',t:'§ 14, вправи 312–318.'},{d:'2026-11-09',c:'7А',k:'rus',t:'Вправа 145, виписати 10 слів із наголосом.'},{d:'2026-11-10',c:'7А',k:'eng',t:'Підручник, с. 56, вправа 3 (письмово).'},{d:'2026-11-10',c:'7А',k:'his',t:'Підготувати коротку розповідь за § 9.'},{d:'2026-11-11',c:'7А',k:'phy',t:'Задачі 5–8 після § 12.'},{d:'2026-11-09',c:'5А',k:'mat',t:'Вправи 201, 204, 207.'},{d:'2026-11-10',c:'5А',k:'lit',t:'Вивчити напам’ять вірш (1 строфа).'},{d:'2026-11-09',c:'9А',k:'chem',t:'Опрацювати § 21, відповісти на питання 1–5.'},{d:'2026-11-12',c:'9А',k:'inf',t:'Практична робота № 4.'}];
+const EV=[{d:'2026-11-12',tm:'14:00',t:'Осінній концерт',pl:'Актова зала',c:'Усі класи'},{d:'2026-11-16',tm:'10:20',t:'Виховна година до Дня толерантності',pl:'Класні кімнати',c:'5–9 класи'},{d:'2026-11-20',tm:'15:00',t:'Батьківські збори',pl:'Актова зала',c:'Батьки 5–11 класів'},{d:'2026-11-25',tm:'12:20',t:'Спортивна естафета',pl:'Спортзал',c:'5–7 класи'},{d:'2026-12-05',tm:'16:00',t:'Зимовий ярмарок',pl:'Шкільне подвір’я',c:'Усі класи'}];
+const AB=[{d:'2026-11-09',w:'Мороз С. К.',ty:'Вчитель',n:'Відрядження'},{d:'2026-11-10',w:'Попова О. Д.',ty:'Вчитель',n:'Курси підвищення кваліфікації'},{d:'2026-11-10',w:'7А',ty:'Клас',n:'Екскурсія, уроки 1–4 не проводяться'},{d:'2026-11-11',w:'Тихонов В. М.',ty:'Вчитель',n:'Відрядження'},{d:'2026-11-13',w:'9А',ty:'Клас',n:'Профорієнтаційний захід'}];
+/* ===== кінець даних ===== */
+const SB={mat:['Математика',210],rus:['Українська мова',0],lit:['Українська література',330],eng:['Англійська мова',270],phy:['Фізика',190],chem:['Хімія',150],bio:['Біологія',120],his:['Історія',35],geo:['Географія',170],inf:['Інформатика',240],pe:['Фізкультура',95],soc:['Громадянська освіта',300]};
+const SK=Object.keys(SB),CNT={mat:5,rus:4,lit:3,eng:4,phy:2,chem:2,bio:2,his:3,geo:1,inf:2,pe:3,soc:1};
+const NM=['Смірнова А. П.','Кузьменко І. В.','Орлик Т. С.','Лебедєв Д. А.','Волошина Н. Є.','Мороз С. К.','Попова О. Д.','Савченко П. Р.','Новікова М. Ю.','Федоренко А. Л.','Зайченко О. В.','Бєляєв Г. Н.','Кравченко І. А.','Тихонов В. М.','Мельник Л. Г.','Андрієнко Ю. С.','Павленко Р. Т.','Григоренко К. Б.','Захарченко В. П.','Коваль Н. О.','Левченко Д. Ю.','Сергієнко Є. М.','Жук С. Н.','Ісаєнко Т. А.'];
+const CL=['5А','5Б','6А','6Б','7А','7Б','8А','9А','10А','11А'];
+const DN=['Понеділок','Вівторок','Середа','Четвер','П’ятниця'],DS=['Пн','Вт','Ср','Чт','Пт'],SL=[6,6,7,6,7];
+const TM=['08:30–09:15','09:25–10:10','10:20–11:05','11:20–12:05','12:20–13:05','13:15–14:00','14:10–14:55'];
+const rm=t=>SK[t>>1]==='pe'?'Спортзал':String(101+t);
+function mul(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const L=[],busy=new Set();
+CL.forEach((c,ci)=>{const r=mul(ci+7);let pool=[];SK.forEach(k=>{for(let i=0;i<CNT[k];i++)pool.push(k)});
+for(let i=pool.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+for(let d=0;d<5;d++){const u={};for(let p=0;p<SL[d];p++){let pk=-1,tid=0;
+for(let i=0;i<pool.length&&pk<0;i++){const k=pool[i];if((u[k]||0)>=2)continue;const ti=SK.indexOf(k)*2+(ci%2);
+for(const t of[ti,ti^1]){if(!busy.has(t+'|'+d+'|'+p)){pk=i;tid=t;break}}}
+if(pk<0){pk=0;tid=SK.indexOf(pool[0])*2+(ci%2)}
+const k=pool.splice(pk,1)[0];u[k]=(u[k]||0)+1;busy.add(tid+'|'+d+'|'+p);L.push({c,d,p,k,t:tid})}}});
+function hs(s){let h=0;for(const ch of s)h=(h*31+ch.charCodeAt(0))>>>0;return h}
+function st(l,wk){const h=hs(l.c+l.d+l.p+wk);if(h%23===0)return{s:'sub',t:(l.t+5+h%7)%24};if(h%37===0)return{s:'cancel'};return{s:''}}
+const RM=[...new Set(NM.map((_,t)=>rm(t)))].sort((a,b)=>a==='Спортзал'?1:b==='Спортзал'?-1:a-b);
+const wd=new Date().getDay();
+const S={hc:'7А',tab:'tt',vt:'c',val:'5А',off:0,day:wd>=1&&wd<=5?wd-1:0,sel:null};
+const $=id=>document.getElementById(id);
+function mon(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7)+S.off*7);return d}
+const fd=(d,o)=>d.toLocaleDateString('uk-UA',o||{day:'numeric',month:'short'});
+const wkn=()=>Math.floor(mon().getTime()/604800000);
+function opts(){return S.vt==='c'?CL.map(c=>[c,c]):S.vt==='t'?NM.map((n,i)=>[i,n]):RM.map(r=>[r,r])}
+function bar(){if(S.tab==="hw"){$("bar").innerHTML=`<select id="hc" aria-label="Клас">${CL.map(c=>`<option${c===S.hc?" selected":""}>${c}</option>`).join("")}</select>`;return}if(S.tab==="ev"||S.tab==="ab"){$("bar").innerHTML="";return}const m=mon(),f=new Date(m);f.setDate(f.getDate()+4);
+const names={c:'Класи',t:'Вчителі',r:'Кабінети'};
+$('bar').innerHTML=(S.tab==='tt'?'<div class="seg" role="group" aria-label="Вигляд">'+Object.keys(names).map(k=>`<button data-vt="${k}" aria-pressed="${S.vt===k}">${names[k]}</button>`).join('')+'</div><select id="sel" aria-label="Вибір">'+opts().map(o=>`<option value="${o[0]}"${String(o[0])===String(S.val)?' selected':''}>${o[1]}</option>`).join('')+'</select>':'')+
+`<div class="wk"><button id="pv" aria-label="Попередній тиждень">‹</button><b>${fd(m)} – ${fd(f,{day:'numeric',month:'short',year:'numeric'})}</b><button id="nx" aria-label="Наступний тиждень">›</button><button id="td">Сьогодні</button></div>`}
+function match(l){return S.vt==='c'?l.c===S.val:S.vt==='t'?String(l.t)===String(S.val):rm(l.t)===S.val}
+function ls(l,i,wk){const x=st(l,wk),[n,h]=SB[l.k];let tn=NM[l.t],tag='';
+if(x.s==='sub'){tn=NM[x.t];tag=' <em>заміна</em>'}if(x.s==='cancel')tag=' <em>скасовано</em>';
+const meta=S.vt==='c'?`${tn} · ${rm(l.t)}`:S.vt==='t'?`${l.c} · ${rm(l.t)}`:`${l.c} · ${tn}`;
+return`<button class="ls ${x.s}" style="--h:${h}" data-i="${i}"${S.sel===i?' aria-current="true"':''}><b>${n}${tag}</b><span>${meta}</span></button>`}
+function grid(){const m=mon(),wk=wkn(),t0=new Date().toDateString();let h='<div class="h"></div>';
+for(let d=0;d<5;d++){const x=new Date(m);x.setDate(x.getDate()+d);h+=`<div class="h${x.toDateString()===t0?' t':''}">${DS[d]}<small>${fd(x)}</small></div>`}
+for(let p=0;p<7;p++){h+=`<div class="tm"><b>${p+1}</b>${TM[p]}</div>`;
+for(let d=0;d<5;d++)h+='<div>'+L.map((l,i)=>l.d===d&&l.p===p&&match(l)?ls(l,i,wk):'').join('')+'</div>'}
+$('grid').innerHTML=h}
+function det(){if(S.sel==null){$('det').textContent='Оберіть урок, щоб побачити подробиці.';return}
+const l=L[S.sel],x=st(l,wkn()),d=new Date(mon());d.setDate(d.getDate()+l.d);
+$('det').innerHTML=`<strong>${SB[l.k][0]}</strong> · ${l.c} · ${DN[l.d]}, ${fd(d)} · ${l.p+1} урок (${TM[l.p]})<br>Вчитель: ${x.s==='sub'?`${NM[x.t]} <span class="tag sub">(заміна замість ${NM[l.t]})</span>`:NM[l.t]} · Кабінет: ${rm(l.t)}${x.s==='cancel'?' <span class="tag cancel">Урок скасовано</span>':''}`}
+function subs(){const m=mon(),wk=wkn(),r=[];
+const tabs='<div class="seg" style="margin-bottom:12px;display:inline-flex" role="group" aria-label="День">'+DN.map((n,d)=>{const x=new Date(m);x.setDate(x.getDate()+d);return`<button data-day="${d}" aria-pressed="${S.day===d}">${DS[d]} ${fd(x,{day:'numeric'})}</button>`}).join('')+'</div>';
+L.forEach(l=>{if(l.d===S.day){const x=st(l,wk);if(x.s)r.push([l,x])}});
+r.sort((a,b)=>a[0].p-b[0].p||a[0].c.localeCompare(b[0].c,'ru'));
+$('sub').innerHTML=tabs+(r.length?'<div class="tw"><table><thead><tr><th>Урок</th><th>Клас</th><th>Предмет</th><th>За розкладом</th><th>Зміна</th></tr></thead><tbody>'+r.map(([l,x])=>`<tr><td>${l.p+1} (${TM[l.p].slice(0,5)})</td><td>${l.c}</td><td>${SB[l.k][0]}</td><td>${NM[l.t]}, каб. ${rm(l.t)}</td><td>${x.s==='sub'?`<span class="tag sub">Заміна: ${NM[x.t]}</span>`:'<span class="tag cancel">Урок скасовано</span>'}</td></tr>`).join('')+'</tbody></table></div>':'<div class="empty">На цей день замін немає.</div>')}
+function render(){['tt','sub','hw','ev','ab'].forEach(k=>{$(k).hidden=S.tab!==k;$('tab-'+k).setAttribute('aria-selected',S.tab===k)});bar();if(S.tab==='tt'){grid();det()}else if(S.tab==='sub')subs();else if(S.tab==='hw')hw();else if(S.tab==='ev')ev();else ab()}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+if(b.id&&b.id.startsWith('tab-')){S.tab=b.id.slice(4);}
+else if(b.dataset.vt){S.vt=b.dataset.vt;S.val=opts()[0][0];S.sel=null}
+else if(b.id==='pv')S.off--;else if(b.id==='nx')S.off++;else if(b.id==='td')S.off=0;
+else if(b.dataset.day)S.day=+b.dataset.day;
+else if(b.dataset.i){S.sel=+b.dataset.i}
+else return;render()});
+document.addEventListener('change',e=>{if(e.target.id==='sel'){S.val=e.target.value;S.sel=null;render()}});
+const dd=s=>new Date(s+'T12:00');
+const up=a=>{const t=new Date();t.setHours(0,0,0,0);return a.filter(x=>dd(x.d)>=t).sort((a,b)=>a.d.localeCompare(b.d)||(a.tm||'').localeCompare(b.tm||''))};
+const fl={weekday:'long',day:'numeric',month:'long'};
+function hw(){const r=up(HW.filter(h=>h.c===S.hc)),g={};r.forEach(h=>(g[h.d]=g[h.d]||[]).push(h));
+$('hw').innerHTML=Object.keys(g).length?Object.keys(g).map(d=>`<h2 class="dh">До ${fd(dd(d),fl)}</h2>`+g[d].map(h=>`<div class="card" style="--h:${SB[h.k][1]}"><b>${SB[h.k][0]}</b><p>${h.t}</p></div>`).join('')).join(''):'<div class="empty">Для цього класу домашніх завдань немає.</div>'}
+function ev(){const r=up(EV);$('ev').innerHTML=r.length?r.map(e=>`<div class="card"><b>${e.t}</b><p>${fd(dd(e.d),fl)}, ${e.tm} · ${e.pl}<br>${e.c}</p></div>`).join(''):'<div class="empty">Найближчих заходів немає.</div>'}
+function ab(){const r=up(AB);$('ab').innerHTML=r.length?'<div class="tw"><table><thead><tr><th>Дата</th><th>Хто</th><th>Тип</th><th>Примітка</th></tr></thead><tbody>'+r.map(a=>`<tr><td>${fd(dd(a.d),{weekday:'short',day:'numeric',month:'short'})}</td><td>${a.w}</td><td>${a.ty}</td><td>${a.n}</td></tr>`).join('')+'</tbody></table></div>':'<div class="empty">Відсутніх немає.</div>'}
+document.addEventListener('change',e=>{if(e.target.id==='hc'){S.hc=e.target.value;render()}});
+render();
+</script>
+</body>
+</html>
